@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { z } from 'zod'
 
@@ -97,12 +98,21 @@ export async function registerAction(
   }
 
   const supabase = await createClient()
+  const requestHeaders = await headers()
+  const origin = requestHeaders.get('origin')
+
+  if (!origin) {
+    return {
+      error: 'No se pudo determinar la URL de la aplicación. Intenta de nuevo.',
+    }
+  }
 
   const { data, error } = await supabase.auth.signUp({
     email: result.data.email,
     password: result.data.password,
 
     options: {
+      emailRedirectTo: `${origin}/confirm`,
       data: {
         full_name: result.data.fullName,
       },

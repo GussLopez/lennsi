@@ -6,7 +6,11 @@ import { redirect } from 'next/navigation'
 export async function logoutAction() {
   const supabase = await createClient()
 
-  await supabase.auth.signOut()
+  const { error } = await supabase.auth.signOut()
+
+  if (error) {
+    throw new Error('No se pudo cerrar la sesión. Intenta de nuevo.')
+  }
 
   redirect('/login')
 }
