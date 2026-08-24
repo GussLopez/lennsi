@@ -3,6 +3,11 @@
 import Link from 'next/link'
 import { useActionState } from 'react'
 import { AuthState, registerAction } from '../action'
+import { Label } from '@/components/ui/label'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { GoogleIcon } from '@/components/icons/GoogleIcon'
+import { Spinner } from '@/components/ui/spinner'
 
 const initialState: AuthState = {}
 
@@ -13,97 +18,68 @@ export default function RegisterPage() {
   )
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-zinc-50 px-4 py-10">
-      <div className="w-full max-w-md">
-        <div className="rounded-2xl border bg-white p-8 shadow-sm">
+    <main className="grid grid-cols-2 min-h-screen">
+      <div className='bg-black'></div>
 
+      <div className="flex justify-center items-center">
+        <div className="w-full max-w-sm p-6">
           <div className="mb-8">
-            <h1 className="text-2xl font-semibold tracking-tight">
+            <h1 className="text-xl font-semibold tracking-tight">
               Crear cuenta
             </h1>
-
-            <p className="mt-2 text-sm text-zinc-500">
+            <p className="mt-0.5 text-sm text-zinc-500">
               Administra tu restaurante y tus NFC desde un solo lugar.
             </p>
           </div>
 
-          <form action={formAction} className="space-y-5">
+          <form action={formAction} className="space-y-6">
 
             <div className="space-y-2">
-              <label
-                htmlFor="fullName"
-                className="text-sm font-medium"
-              >
+              <Label htmlFor="fullName">
                 Nombre
-              </label>
+              </Label>
 
-              <input
+              <Input
                 id="fullName"
                 name="fullName"
                 type="text"
                 autoComplete="name"
                 placeholder="Juan Pérez"
-                required
-                className="h-11 w-full rounded-lg border border-zinc-200 px-3 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-100"
+                className="h-10 w-full"
               />
             </div>
 
             <div className="space-y-2">
-              <label
-                htmlFor="email"
-                className="text-sm font-medium"
-              >
+              <Label htmlFor="email">
                 Correo electrónico
-              </label>
+              </Label>
 
-              <input
+              <Input
                 id="email"
                 name="email"
                 type="email"
                 autoComplete="email"
                 placeholder="correo@restaurante.com"
-                required
-                className="h-11 w-full rounded-lg border border-zinc-200 px-3 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-100"
+                className="h-10 w-full"
               />
             </div>
 
             <div className="space-y-2">
-              <label
+              <Label
                 htmlFor="password"
                 className="text-sm font-medium"
               >
                 Contraseña
-              </label>
+              </Label>
 
-              <input
+              <Input
                 id="password"
                 name="password"
                 type="password"
                 autoComplete="new-password"
                 placeholder="Mínimo 8 caracteres"
                 minLength={8}
-                required
-                className="h-11 w-full rounded-lg border border-zinc-200 px-3 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-100"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label
-                htmlFor="confirmPassword"
-                className="text-sm font-medium"
-              >
-                Confirmar contraseña
-              </label>
-
-              <input
-                id="confirmPassword"
-                name="confirmPassword"
-                type="password"
-                autoComplete="new-password"
-                placeholder="Repite tu contraseña"
-                minLength={8}
-                required
-                className="h-11 w-full rounded-lg border border-zinc-200 px-3 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-100"
+                className="h-10 w-full"
               />
             </div>
 
@@ -119,22 +95,38 @@ export default function RegisterPage() {
               </div>
             )}
 
-            <button
+            <Button
               type="submit"
               disabled={pending || Boolean(state.success)}
-              className="flex h-11 w-full items-center justify-center rounded-lg bg-zinc-950 text-sm font-medium text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
+              className="h-10 w-full"
             >
-              {pending ? 'Creando cuenta...' : 'Crear cuenta'}
-            </button>
+              {pending ? (
+                <>
+                  <Spinner />
+                  Creando
+                </>
+              ) : 'Crear cuenta'}
+            </Button>
 
           </form>
-
+          <div className="relative bg-zinc-300 max-w-full h-px my-5 mx-3">
+            <span className='absolute px-2.5 -translate-x-1/2 -translate-y-1/2 text-muted-foreground bg-white left-1/2 top-1/2'>o</span>
+          </div>
+          <div>
+            <Button
+              variant={'outline'}
+              className='h-10 w-full'
+            >
+              <GoogleIcon />
+              Acceder con Google
+            </Button>
+          </div>
           <p className="mt-6 text-center text-sm text-zinc-500">
             ¿Ya tienes cuenta?{' '}
 
             <Link
               href="/login"
-              className="font-medium text-zinc-950 hover:underline"
+              className="font-medium text-primary hover:underline"
             >
               Iniciar sesión
             </Link>

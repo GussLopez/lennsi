@@ -5,6 +5,10 @@ import { Suspense, useActionState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { AuthState, loginAction } from '../action'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Button } from '@/components/ui/button'
+import { GoogleIcon } from '@/components/icons/GoogleIcon'
+import { Spinner } from '@/components/ui/spinner'
 
 const initialState: AuthState = {}
 
@@ -17,30 +21,28 @@ function LoginForm() {
 
   return (
     <main className="grid grid-cols-2 min-h-screen">
-      <div className='bg-black'>
+      <div className='bg-black'></div>
 
-      </div>
-      <div className="flex justify-center items-center ">
-        <div className="p-8">
+      <div className="flex justify-center items-center">
+        <div className="w-full max-w-sm p-6">
           <div className="mb-8">
-            <h1 className="text-2xl font-semibold tracking-tight">
+            <h1 className="text-xl font-semibold tracking-tight">
               Iniciar sesión
             </h1>
 
-            <p className="mt-2 text-sm text-zinc-500">
+            <p className="mt-0.5 text-sm text-zinc-500">
               Accede al panel de tu restaurante.
             </p>
           </div>
 
-          <form action={formAction} className="space-y-5">
+          <form action={formAction} className="space-y-6">
 
             <div className="space-y-2">
-              <label
+              <Label
                 htmlFor="email"
-                className="text-sm font-medium"
               >
                 Correo electrónico
-              </label>
+              </Label>
 
               <Input
                 id="email"
@@ -48,17 +50,22 @@ function LoginForm() {
                 type="email"
                 autoComplete="email"
                 placeholder="correo@restaurante.com"
-                className="h-11 w-full"
+                className="h-10 w-full"
               />
             </div>
 
             <div className="space-y-2">
-              <label
-                htmlFor="password"
-                className="text-sm font-medium"
-              >
-                Contraseña
-              </label>
+              <div className='flex justify-between items-center'>
+                <Label htmlFor="password">
+                  Contraseña
+                </Label>
+                <Link
+                  href={'/'}
+                  className='text-sm font-medium text-primary hover:underline'
+                >
+                  ¿Olvidaste tu contraseña?
+                </Link>
+              </div>
 
               <Input
                 id="password"
@@ -66,7 +73,7 @@ function LoginForm() {
                 type="password"
                 autoComplete="current-password"
                 placeholder="••••••••"
-                className="h-11 w-full"
+                className="h-10 w-full"
               />
             </div>
 
@@ -76,27 +83,42 @@ function LoginForm() {
               </div>
             )}
 
-            <button
+            <Button
               type="submit"
               disabled={pending}
-              className="flex h-11 w-full items-center justify-center rounded-lg bg-zinc-950 text-sm font-medium text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
+              className="h-10 w-full"
             >
-              {pending ? 'Iniciando sesión...' : 'Iniciar sesión'}
-            </button>
+              {pending ? (
+                <>
+                  <Spinner />
+                  Accediendo
+                </>
+              ) : 'Acceder'}
+            </Button>
 
           </form>
-
+          <div className="relative bg-zinc-300 max-w-full h-px my-5 mx-3">
+            <span className='absolute px-2.5 -translate-x-1/2 -translate-y-1/2 text-muted-foreground bg-white left-1/2 top-1/2'>o</span>
+          </div>
+          <div>
+            <Button
+              variant={'outline'}
+              className='h-10 w-full'
+            >
+              <GoogleIcon />
+              Acceder con Google
+            </Button>
+          </div>
           <p className="mt-6 text-center text-sm text-zinc-500">
             ¿No tienes cuenta?{' '}
 
             <Link
               href="/register"
-              className="font-medium text-zinc-950 hover:underline"
+              className="font-medium text-primary hover:underline"
             >
               Crear cuenta
             </Link>
           </p>
-
         </div>
       </div>
     </main>
