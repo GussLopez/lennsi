@@ -10,6 +10,30 @@ export type AuthState = {
   success?: string
 }
 
+export async function googleOAuthAction(formData: FormData) {
+  const supabase = await createClient()
+  const requestHeaders = await headers()
+  const origin = requestHeaders.get('origin')
+  const authPage = formData.get('authPage') === 'register' ? '/register' : '/login'
+
+  if (!origin) {
+    redirect(`${authPage}?error=${encodeURIComponent('No se pudo determinar la URL de la aplicación.')}`)
+  }
+
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: `${origin}/confirm`,
+    },
+  })
+
+  if (error || !data.url) {
+    redirect(`${authPage}?error=${encodeURIComponent('No se pudo iniciar sesión con Google.')}`)
+  }
+
+  redirect(data.url)
+}
+
 const loginSchema = z.object({
   email: z
     .string()

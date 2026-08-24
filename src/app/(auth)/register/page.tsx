@@ -1,8 +1,9 @@
 'use client'
 
 import Link from 'next/link'
-import { useActionState } from 'react'
-import { AuthState, registerAction } from '../action'
+import { Suspense, useActionState } from 'react'
+import { useSearchParams } from 'next/navigation'
+import { AuthState, googleOAuthAction, registerAction } from '../action'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -11,7 +12,8 @@ import Image from 'next/image'
 
 const initialState: AuthState = {}
 
-export default function RegisterPage() {
+function RegisterForm() {
+  const searchParams = useSearchParams()
   const [state, formAction, pending] = useActionState(
     registerAction,
     initialState
@@ -83,9 +85,9 @@ export default function RegisterPage() {
               />
             </div>
 
-            {state.error && (
+            {(state.error || searchParams.get('error')) && (
               <div className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">
-                {state.error}
+                {state.error ?? searchParams.get('error')}
               </div>
             )}
 
@@ -112,8 +114,10 @@ export default function RegisterPage() {
           <div className="relative bg-zinc-300 max-w-full h-px my-5 mx-3">
             <span className='absolute px-2.5 -translate-x-1/2 -translate-y-1/2 text-muted-foreground bg-white left-1/2 top-1/2'>o</span>
           </div>
-          <div>
+          <form action={googleOAuthAction}>
+            <input type="hidden" name="authPage" value="register" />
             <Button
+              type="submit"
               variant={'outline'}
               className='h-10 w-full'
             >
@@ -126,7 +130,7 @@ export default function RegisterPage() {
               />
               Acceder con Google
             </Button>
-          </div>
+          </form>
           <p className="mt-6 text-center text-sm text-zinc-500">
             ¿Ya tienes cuenta?{' '}
 
@@ -141,5 +145,13 @@ export default function RegisterPage() {
         </div>
       </div>
     </main>
+  )
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense>
+      <RegisterForm />
+    </Suspense>
   )
 }

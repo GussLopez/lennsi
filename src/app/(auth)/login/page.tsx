@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { Suspense, useActionState } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { AuthState, loginAction } from '../action'
+import { AuthState, googleOAuthAction, loginAction } from '../action'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
@@ -100,8 +100,10 @@ function LoginForm() {
           <div className="relative bg-zinc-300 max-w-full h-px my-5 mx-3">
             <span className='absolute px-2.5 -translate-x-1/2 -translate-y-1/2 text-muted-foreground bg-white left-1/2 top-1/2'>o</span>
           </div>
-          <div>
+          <form action={googleOAuthAction}>
+            <input type="hidden" name="authPage" value="login" />
             <Button
+              type="submit"
               variant={'outline'}
               className='h-10 w-full'
             >
@@ -114,7 +116,7 @@ function LoginForm() {
               />
               Acceder con Google
             </Button>
-          </div>
+          </form>
           <p className="mt-6 text-center text-sm text-zinc-500">
             ¿No tienes cuenta?{' '}
 

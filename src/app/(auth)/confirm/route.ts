@@ -17,6 +17,9 @@ export async function GET(request: NextRequest) {
   redirectTo.searchParams.delete('token_hash')
   redirectTo.searchParams.delete('type')
   redirectTo.searchParams.delete('code')
+  redirectTo.searchParams.delete('error')
+  redirectTo.searchParams.delete('error_code')
+  redirectTo.searchParams.delete('error_description')
 
   const supabase = await createClient()
 
@@ -43,7 +46,7 @@ export async function GET(request: NextRequest) {
 
   redirectTo.searchParams.set(
     'error',
-    'No se pudo confirmar tu correo.'
+    searchParams.get('error_description') ?? 'No se pudo completar la autenticación.'
   )
 
   return NextResponse.redirect(redirectTo)
