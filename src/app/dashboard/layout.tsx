@@ -1,3 +1,4 @@
+import RestaurantOnboarding from "@/components/onboarding/RestaurantOnboarding";
 import { AdminSidebar } from "@/components/sidebar/dashboard-sidebar";
 import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
@@ -26,6 +27,25 @@ export default async function AdminLayout({
     .select("full_name")
     .eq("id", user.id)
     .maybeSingle();
+
+  const { data: membership } = await supabase
+    .from("restaurant_members")
+    .select(`
+      restaurant_id,
+      role,
+      restaurants (
+        id,
+        name,
+        slug
+      )
+    `)
+    .eq("user_id", user.id)
+    .limit(1)
+    .maybeSingle()
+
+  if (!membership) {
+    return <RestaurantOnboarding />
+  }
 
   return (
     <SidebarProvider>
