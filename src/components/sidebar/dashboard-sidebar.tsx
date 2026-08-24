@@ -7,12 +7,8 @@ import { NavProjects } from "./nav-projects";
 import { NavUser } from "./nav-user";
 
 import {
-  ArrowRightLeft,
   ChartNoAxesCombined,
-  DollarSign,
-  FileClock,
   LayoutTemplate,
-  Package,
   PanelTopDashed,
   Settings2,
   Truck,
@@ -64,7 +60,14 @@ export const data = {
   ],
 }
 
-export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+type AdminSidebarProps = React.ComponentProps<typeof Sidebar> & {
+  user: {
+    name: string;
+    email: string;
+  };
+};
+
+export function AdminSidebar({ user, ...props }: AdminSidebarProps) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -75,7 +78,7 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
         <NavProjects projects={data.projects} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser />
+        <NavUser user={user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

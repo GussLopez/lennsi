@@ -1,22 +1,27 @@
 'use client'
 
 import Link from 'next/link'
-import { useActionState } from 'react'
+import { Suspense, useActionState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { AuthState, loginAction } from '../action'
+import { Input } from '@/components/ui/input'
 
 const initialState: AuthState = {}
 
-export default function LoginPage() {
+function LoginForm() {
+  const searchParams = useSearchParams()
   const [state, formAction, pending] = useActionState(
     loginAction,
     initialState
   )
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-zinc-50 px-4">
-      <div className="w-full max-w-md">
-        <div className="rounded-2xl border bg-white p-8 shadow-sm">
+    <main className="grid grid-cols-2 min-h-screen">
+      <div className='bg-black'>
 
+      </div>
+      <div className="flex justify-center items-center ">
+        <div className="p-8">
           <div className="mb-8">
             <h1 className="text-2xl font-semibold tracking-tight">
               Iniciar sesión
@@ -37,14 +42,13 @@ export default function LoginPage() {
                 Correo electrónico
               </label>
 
-              <input
+              <Input
                 id="email"
                 name="email"
                 type="email"
                 autoComplete="email"
                 placeholder="correo@restaurante.com"
-                required
-                className="h-11 w-full rounded-lg border border-zinc-200 px-3 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-100"
+                className="h-11 w-full"
               />
             </div>
 
@@ -56,20 +60,19 @@ export default function LoginPage() {
                 Contraseña
               </label>
 
-              <input
+              <Input
                 id="password"
                 name="password"
                 type="password"
                 autoComplete="current-password"
                 placeholder="••••••••"
-                required
-                className="h-11 w-full rounded-lg border border-zinc-200 px-3 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-100"
+                className="h-11 w-full"
               />
             </div>
 
-            {state.error && (
+            {(state.error || searchParams.get('error')) && (
               <div className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">
-                {state.error}
+                {state.error ?? searchParams.get('error')}
               </div>
             )}
 
@@ -97,5 +100,13 @@ export default function LoginPage() {
         </div>
       </div>
     </main>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginForm />
+    </Suspense>
   )
 }

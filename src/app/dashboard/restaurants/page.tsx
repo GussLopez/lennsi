@@ -9,12 +9,12 @@ export default function RestaurantsPage() {
       <div className="flex justify-between items-center">
         <h1>Restaurantes</h1>
         <div>
-          <Button render={
+          {/* <Button render={
             <Link href={'/dashboard/restaurants/create'}>
               <Plus />
               Agregar restaurante
             </Link>
-          } />
+          } /> */}
         </div>
       </div>
     </div>
