@@ -7,8 +7,8 @@ import { AuthState, loginAction } from '../action'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
-import { GoogleIcon } from '@/components/icons/GoogleIcon'
 import { Spinner } from '@/components/ui/spinner'
+import Image from 'next/image'
 
 const initialState: AuthState = {}
 
@@ -105,7 +105,13 @@ function LoginForm() {
               variant={'outline'}
               className='h-10 w-full'
             >
-              <GoogleIcon />
+              <Image
+                src="/icons/google.svg"
+                alt="Google Logo"
+                className='w-4 h-4'
+                width={16}
+                height={16}
+              />
               Acceder con Google
             </Button>
           </div>
