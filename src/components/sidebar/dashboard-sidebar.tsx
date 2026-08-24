@@ -1,85 +1,38 @@
 "use client"
+
 import * as React from "react"
-import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail } from "../ui/sidebar";
-import { NavHeader } from "./nav-header";
-import { NavMain } from "./nav-main";
-import { NavProjects } from "./nav-projects";
-import { NavUser } from "./nav-user";
+import { BarChart3, Building2, LayoutDashboard, MousePointerClick, Settings2, Zap } from "lucide-react"
 
-import {
-  ChartNoAxesCombined,
-  LayoutTemplate,
-  PanelTopDashed,
-  Settings2,
-  Truck,
-  Users,
-  Utensils,
-} from "lucide-react";
+import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail } from "@/components/ui/sidebar"
+import { NavHeader } from "./nav-header"
+import { NavMain } from "./nav-main"
+import { NavUser } from "./nav-user"
 
-export const data = {
-  navMain: [
-    {
-      title: "Inicio",
-      url: "/dashboard",
-      icon: LayoutTemplate,
-    },
-    {
-      title: "Metricas",
-      url: "/dashboard/metrics",
-      icon: ChartNoAxesCombined,
-    },
-  ],
-  projects: [
-    {
-      name: "Restaurantes",
-      url: "/dashboard/restaurants",
-      icon: Utensils
-    },
-    {
-      name: "Menús",
-      url: "/dashboard/menus",
-      icon: PanelTopDashed
-    },
-    {
-      name: "Proveedores",
-      url: "/admin/proveedores",
-      icon: Truck
-    },
-  ],
-  settings: [
-    {
-      name: "Usuarios",
-      url: "/admin/usuarios",
-      icon: Users
-    },
-    {
-      name: "Ajustes",
-      url: "/admin/ajustes",
-      icon: Settings2
-    },
-  ],
+const navigation = [
+  { title: "Resumen", url: "/dashboard", icon: LayoutDashboard },
+  { title: "Sucursales", url: "/dashboard/branches", icon: Building2 },
+  { title: "Puntos NFC", url: "/dashboard/touchpoints", icon: Zap },
+  { title: "Acciones", url: "/dashboard/actions", icon: MousePointerClick },
+  { title: "Analytics", url: "/dashboard/analytics", icon: BarChart3 },
+  { title: "Configuración", url: "/dashboard/settings", icon: Settings2 },
+]
+
+export type DashboardRestaurant = { id: number; name: string; role: string }
+
+type DashboardSidebarProps = React.ComponentProps<typeof Sidebar> & {
+  restaurants: DashboardRestaurant[]
+  activeRestaurantId: number
+  user: { name: string; email: string }
 }
 
-type AdminSidebarProps = React.ComponentProps<typeof Sidebar> & {
-  user: {
-    name: string;
-    email: string;
-  };
-};
-
-export function AdminSidebar({ user, ...props }: AdminSidebarProps) {
+export function DashboardSidebar({ restaurants, activeRestaurantId, user, ...props }: DashboardSidebarProps) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <NavHeader />
+        <NavHeader restaurants={restaurants} activeRestaurantId={activeRestaurantId} />
       </SidebarHeader>
-      <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
-      </SidebarContent>
-      <SidebarFooter>
-        <NavUser user={user} />
-      </SidebarFooter>
+      <SidebarContent><NavMain items={navigation} /></SidebarContent>
+      <SidebarFooter><NavUser user={user} /></SidebarFooter>
       <SidebarRail />
     </Sidebar>
   )
