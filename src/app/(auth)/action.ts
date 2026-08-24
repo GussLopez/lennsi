@@ -1,0 +1,134 @@
+'use server'
+
+import { createClient } from '@/lib/supabase/server'
+import { redirect } from 'next/navigation'
+import { z } from 'zod'
+
+export type AuthState = {
+  error?: string
+  success?: string
+}
+
+const loginSchema = z.object({
+  email: z
+    .string()
+    .trim()
+    .email('Ingresa un correo electrónico válido.'),
+
+  password: z
+    .string()
+    .min(1, 'Ingresa tu contraseña.'),
+})
+
+const registerSchema = z
+  .object({
+    fullName: z
+      .string()
+      .trim()
+      .min(2, 'Ingresa tu nombre.'),
+
+    email: z
+      .string()
+      .trim()
+      .email('Ingresa un correo electrónico válido.'),
+
+    password: z
+      .string()
+      .min(8, 'La contraseña debe tener al menos 8 caracteres.'),
+
+    confirmPassword: z.string(),
+  })
+  .refine(
+    (data) => data.password === data.confirmPassword,
+    {
+      message: 'Las contraseñas no coinciden.',
+      path: ['confirmPassword'],
+    }
+  )
+
+
+export async function loginAction(
+  previousState: AuthState,
+  formData: FormData
+): Promise<AuthState> {
+  const result = loginSchema.safeParse({
+    email: formData.get('email'),
+    password: formData.get('password'),
+  })
+
+  if (!result.success) {
+    return {
+      error: result.error.issues[0]?.message ?? 'Datos inválidos.',
+    }
+  }
+
+  const supabase = await createClient()
+
+  const { error } = await supabase.auth.signInWithPassword({
+    email: result.data.email,
+    password: result.data.password,
+  })
+
+  if (error) {
+    return {
+      error: 'Correo electrónico o contraseña incorrectos.',
+    }
+  }
+
+  redirect('/dashboard')
+}
+
+
+export async function registerAction(
+  previousState: AuthState,
+  formData: FormData
+): Promise<AuthState> {
+  const result = registerSchema.safeParse({
+    fullName: formData.get('fullName'),
+    email: formData.get('email'),
+    password: formData.get('password'),
+    confirmPassword: formData.get('confirmPassword'),
+  })
+
+  if (!result.success) {
+    return {
+      error: result.error.issues[0]?.message ?? 'Datos inválidos.',
+    }
+  }
+
+  const supabase = await createClient()
+
+  const { data, error } = await supabase.auth.signUp({
+    email: result.data.email,
+    password: result.data.password,
+
+    options: {
+      data: {
+        full_name: result.data.fullName,
+      },
+    },
+  })
+
+  if (error) {
+    return {
+      error: error.message,
+    }
+  }
+
+  /*
+   * Si desactivaste la confirmación de email,
+   * Supabase crea inmediatamente una sesión.
+   */
+  if (data.session) {
+    redirect('/dashboard')
+  }
+
+  /*
+   * Con confirmación de email habilitada
+   * normalmente session será null.
+   */
+  return {
+    success:
+      'Cuenta creada. Revisa tu correo electrónico para confirmar tu cuenta.',
+  }
+}
