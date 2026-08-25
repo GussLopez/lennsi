@@ -6,7 +6,7 @@ import { useActionState, useState } from "react"
 import {
   type RestaurantSettingsState,
   updateRestaurantSettings,
-} from "@/app/dashboard/settings/actions"
+} from "@/features/restaurants/actions/update-restaurant-settings"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -19,7 +19,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Spinner } from "@/components/ui/spinner"
-import { Switch } from "../ui/switch"
+import { Switch } from "@/components/ui/switch"
 
 type RestaurantSettingsFormProps = {
   restaurant: {

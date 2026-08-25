@@ -1,7 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
-import { ACTIVE_RESTAURANT_COOKIE } from '@/lib/dashboard'
+import { ACTIVE_RESTAURANT_COOKIE } from '@/features/dashboard/constants'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 

@@ -3,11 +3,11 @@ import { cookies } from "next/headers"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 
-import { columns } from "@/components/branches/colums"
+import { columns } from "@/features/branches/components/branch-columns"
 import { Button } from "@/components/ui/button"
 import { DataTable } from "@/components/ui/data-table"
 import EmptyState from "@/components/ui/empty-state"
-import { ACTIVE_RESTAURANT_COOKIE } from "@/lib/dashboard"
+import { ACTIVE_RESTAURANT_COOKIE } from "@/features/dashboard/constants"
 import { createClient } from "@/lib/supabase/server"
 
 export default async function BranchesPage() {

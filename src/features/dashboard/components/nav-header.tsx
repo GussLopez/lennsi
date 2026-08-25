@@ -4,7 +4,7 @@ import { Check, ChevronsUpDown, Utensils } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useState, useTransition } from "react"
 
-import { setActiveRestaurant } from "@/app/dashboard/action"
+import { setActiveRestaurant } from "@/features/dashboard/actions/dashboard-actions"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar"
 import type { DashboardRestaurant } from "./dashboard-sidebar"

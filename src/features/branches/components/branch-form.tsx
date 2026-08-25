@@ -6,13 +6,13 @@ import { useActionState, useState } from "react"
 import {
   saveBranch,
   type BranchFormState,
-} from "@/app/dashboard/branches/actions"
+} from "@/features/branches/actions/save-branch"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Spinner } from "@/components/ui/spinner"
-import { Checkbox } from "../ui/checkbox"
-import { Switch } from "../ui/switch"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Switch } from "@/components/ui/switch"
 
 export type BranchFormValues = {
   id?: number

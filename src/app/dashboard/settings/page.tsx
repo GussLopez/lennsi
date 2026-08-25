@@ -1,8 +1,8 @@
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
 
-import { RestaurantSettingsForm } from "@/components/restaurants/restaurant-settings-form"
-import { ACTIVE_RESTAURANT_COOKIE } from "@/lib/dashboard"
+import { RestaurantSettingsForm } from "@/features/restaurants/components/restaurant-settings-form"
+import { ACTIVE_RESTAURANT_COOKIE } from "@/features/dashboard/constants"
 import { createClient } from "@/lib/supabase/server"
 
 export default async function SettingsPage() {

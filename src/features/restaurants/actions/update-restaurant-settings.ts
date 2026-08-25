@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache"
 import { cookies } from "next/headers"
 import { z } from "zod"
 
-import { ACTIVE_RESTAURANT_COOKIE } from "@/lib/dashboard"
+import { ACTIVE_RESTAURANT_COOKIE } from "@/features/dashboard/constants"
 import { createClient } from "@/lib/supabase/server"
 
 const optionalUrl = z.union([

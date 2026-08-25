@@ -2,16 +2,16 @@
 
 import { createColumnHelper } from "@tanstack/react-table"
 
-import { type DataTableFeatures } from "./data-table-features"
-import { Branches } from "@/types"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu"
-import { Button } from "../ui/button"
+import { type DataTableFeatures } from "@/components/ui/data-table-features"
+import { type Branch } from "@/features/branches/types"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { Button } from "@/components/ui/button"
 import { Edit, Eye, MoreHorizontal, Trash2 } from "lucide-react"
 import Link from "next/link"
-import { Checkbox } from "../ui/checkbox"
+import { Checkbox } from "@/components/ui/checkbox"
 
 // Use `accessor` for data columns and `display` for columns without one.
-const columnHelper = createColumnHelper<DataTableFeatures, Branches>()
+const columnHelper = createColumnHelper<DataTableFeatures, Branch>()
 
 export const columns = columnHelper.columns([
   columnHelper.display({

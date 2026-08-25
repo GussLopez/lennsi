@@ -11,7 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
-import { features, type DataTableFeatures } from "../branches/data-table-features"
+import { features, type DataTableFeatures } from "@/components/ui/data-table-features"
 import { useState } from "react"
 
 interface DataTableProps<TData extends RowData> {

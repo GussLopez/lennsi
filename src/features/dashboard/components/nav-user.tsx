@@ -2,7 +2,7 @@
 
 import { ChevronsUpDown, LogOut, Moon, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
-import { logoutAction } from "@/app/dashboard/action"
+import { logoutAction } from "@/features/dashboard/actions/dashboard-actions"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/components/ui/sidebar"
 

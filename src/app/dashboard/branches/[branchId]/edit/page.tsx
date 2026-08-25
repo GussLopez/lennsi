@@ -3,9 +3,9 @@ import Link from "next/link"
 import { cookies } from "next/headers"
 import { notFound, redirect } from "next/navigation"
 
-import { BranchForm } from "@/components/branches/branch-form"
+import { BranchForm } from "@/features/branches/components/branch-form"
 import { Button } from "@/components/ui/button"
-import { ACTIVE_RESTAURANT_COOKIE } from "@/lib/dashboard"
+import { ACTIVE_RESTAURANT_COOKIE } from "@/features/dashboard/constants"
 import { createClient } from "@/lib/supabase/server"
 
 export default async function EditBranchPage({
