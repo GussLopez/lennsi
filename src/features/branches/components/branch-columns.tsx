@@ -3,7 +3,7 @@
 import { createColumnHelper } from "@tanstack/react-table"
 
 import { type DataTableFeatures } from "@/components/ui/data-table-features"
-import { type Branch } from "@/features/branches/types"
+import { type Branch } from "@/features/branches/types/types"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
 import { Edit, Eye, MoreHorizontal, Trash2 } from "lucide-react"
