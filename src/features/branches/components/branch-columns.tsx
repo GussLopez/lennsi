@@ -4,20 +4,26 @@ import { createColumnHelper } from "@tanstack/react-table"
 
 import { type DataTableFeatures } from "@/components/ui/data-table-features"
 import { type Branch } from "@/features/branches/types/types"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button"
-import { Edit, Eye, MoreHorizontal, Trash2 } from "lucide-react"
+import { Edit, Eye, MoreHorizontal } from "lucide-react";
 import Link from "next/link"
 import { Checkbox } from "@/components/ui/checkbox"
 
 // Use `accessor` for data columns and `display` for columns without one.
 const columnHelper = createColumnHelper<DataTableFeatures, Branch>()
-
 export const columns = columnHelper.columns([
   columnHelper.display({
     id: "select",
     header: ({ table }) => (
-      <Checkbox 
+      <Checkbox
         checked={table.getIsAllPageRowsSelected()}
         indeterminate={
           table.getIsSomePageRowsSelected() && !table.getIsAllPageRowsSelected()
@@ -27,7 +33,7 @@ export const columns = columnHelper.columns([
       />
     ),
     cell: ({ row }) => (
-      <Checkbox 
+      <Checkbox
         checked={row.getIsSelected()}
         onCheckedChange={value => row.toggleSelected(!!value)}
         aria-label="Seleccionar fila"
@@ -62,7 +68,6 @@ export const columns = columnHelper.columns([
     id: "actions",
     cell: ({ row }) => {
       const branch = row.original
-
       return (
         <DropdownMenu>
           <DropdownMenuTrigger
@@ -87,11 +92,6 @@ export const columns = columnHelper.columns([
                   Editar
                 </Link>
               } />
-              <DropdownMenuSeparator />
-              <DropdownMenuItem variant="destructive">
-                <Trash2 />
-                Eliminar
-              </DropdownMenuItem>
             </DropdownMenuGroup>
           </DropdownMenuContent>
         </DropdownMenu>

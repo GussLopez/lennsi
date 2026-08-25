@@ -3,10 +3,9 @@ import { cookies } from "next/headers"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 
-import { columns } from "@/features/branches/components/branch-columns"
 import { Button } from "@/components/ui/button"
-import { DataTable } from "@/components/ui/data-table"
 import EmptyState from "@/components/ui/empty-state"
+import { BranchesTable } from "@/features/branches/components/branches-table"
 import { ACTIVE_RESTAURANT_COOKIE } from "@/features/dashboard/constants"
 import { createClient } from "@/lib/supabase/server"
 
@@ -23,7 +22,8 @@ export default async function BranchesPage() {
     .from("restaurant_members")
     .select("restaurant_id, role")
     .eq("user_id", user.id)
-    .order("created_at", { ascending: true })
+    .order("created_at", { ascending: true });
+
   const membership = memberships?.find(
     (item) => item.restaurant_id === requestedRestaurantId
   ) ?? memberships?.[0]
@@ -36,6 +36,7 @@ export default async function BranchesPage() {
     .eq("restaurant_id", membership.restaurant_id)
     .order("created_at", { ascending: true })
   const canManage = ["owner", "admin", "manager"].includes(membership.role)
+  const canDelete = ["owner", "admin"].includes(membership.role)
 
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-col gap-6">
@@ -74,23 +75,23 @@ export default async function BranchesPage() {
           icon={Building2}
         >
           {canManage && (
-            <Button
-              className="mt-5"
-              nativeButton={false}
-              render={
-                <Link href="/dashboard/branches/new">
-                  <Plus />
-                  Crear sucursal
-                </Link>
-              }
-            />
+              <Button
+                className="mt-5"
+                nativeButton={false}
+                render={
+                  <Link href="/dashboard/branches/new">
+                    <Plus />
+                    Crear sucursal
+                  </Link>
+                }
+              />
           )}
         </EmptyState>
       )}
 
       {!error && branches && branches.length > 0 && (
         <div className="flex flex-col gap-2">
-          <DataTable columns={columns} data={branches} />
+          <BranchesTable branches={branches} canDelete={canDelete} />
         </div>
       )}
     </div>
