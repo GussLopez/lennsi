@@ -217,8 +217,8 @@ export function RestaurantSettingsForm({
                 : "El restaurante está desactivado."}
             </p>
           </div>
-          <input type="hidden" name="isActive" value={String(isActive)} />
           <Switch
+            name="isActive"
             className={'scale-120'}
             aria-label={
               isActive ? "Desactivar restaurante" : "Activar restaurante"
