@@ -13,7 +13,7 @@ const sectionNames: Record<string, string> = {
   "/dashboard/settings": "Configuración",
 }
 
-export function DashboardHeader({ restaurantName }: { restaurantName: string }) {
+export function DashboardHeader({ restaurantName, branchName }: { restaurantName: string; branchName: string | null }) {
   const pathname = usePathname()
   const section = Object.entries(sectionNames).sort(([a], [b]) => b.length - a.length)
     .find(([path]) => pathname === path || (path !== "/dashboard" && pathname.startsWith(`${path}/`)))?.[1] ?? "Dashboard"
@@ -21,8 +21,8 @@ export function DashboardHeader({ restaurantName }: { restaurantName: string }) 
     <header className="sticky top-0 z-20 flex h-14 shrink-0 items-center gap-3 border-b bg-background/90 px-4 backdrop-blur sm:px-6">
       <SidebarTrigger className="-ml-1" />
       <Separator orientation="vertical" className="data-[orientation=vertical]:h-4" />
-      <div className="min-w-0"><p className="truncate text-sm font-medium">{section}</p><p className="truncate text-xs text-muted-foreground md:hidden">{restaurantName}</p></div>
-      <p className="ml-auto hidden max-w-64 truncate text-sm text-muted-foreground md:block">{restaurantName}</p>
+      <div className="min-w-0"><p className="truncate text-sm font-medium">{section}</p><p className="truncate text-xs text-muted-foreground md:hidden">{branchName ?? restaurantName}</p></div>
+      <p className="ml-auto hidden max-w-64 truncate text-sm text-muted-foreground md:block">{branchName ? `${restaurantName} · ${branchName}` : restaurantName}</p>
     </header>
   )
 }

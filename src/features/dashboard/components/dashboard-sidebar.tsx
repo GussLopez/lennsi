@@ -18,21 +18,34 @@ const navigation = [
 ]
 
 export type DashboardRestaurant = { id: number; name: string; role: string }
+export type DashboardBranch = { id: number; name: string; restaurantId: number }
 
 type DashboardSidebarProps = React.ComponentProps<typeof Sidebar> & {
   restaurants: DashboardRestaurant[]
   activeRestaurantId: number
+  branches: DashboardBranch[]
+  activeBranchId: number | null
   user: { name: string; email: string }
 }
 
-export function DashboardSidebar({ restaurants, activeRestaurantId, user, ...props }: DashboardSidebarProps) {
+export function DashboardSidebar({ restaurants, activeRestaurantId, branches, activeBranchId, user, ...props }: DashboardSidebarProps) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <NavHeader restaurants={restaurants} activeRestaurantId={activeRestaurantId} />
+        <NavHeader
+          key={`${activeRestaurantId}:${activeBranchId ?? "none"}`}
+          restaurants={restaurants}
+          activeRestaurantId={activeRestaurantId}
+          branches={branches}
+          activeBranchId={activeBranchId}
+        />
       </SidebarHeader>
-      <SidebarContent><NavMain items={navigation} /></SidebarContent>
-      <SidebarFooter><NavUser user={user} /></SidebarFooter>
+      <SidebarContent>
+        <NavMain items={navigation} />
+      </SidebarContent>
+      <SidebarFooter>
+        <NavUser user={user} />
+      </SidebarFooter>
       <SidebarRail />
     </Sidebar>
   )
