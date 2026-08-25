@@ -1,25 +1,47 @@
-import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
-import Link from "next/link";
+import { ArrowLeft } from "lucide-react"
+import Link from "next/link"
+
+import { BranchForm } from "@/components/branches/branch-form"
+import { Button } from "@/components/ui/button"
 
 export default function CreateBranchPage() {
-
   return (
-    <div className="w-full max-w-5xl mx-auto px-4">
-      <div className="flex items-center gap-5">
+    <div className="mx-auto w-full max-w-5xl space-y-6">
+      <div className="flex items-center gap-4">
         <Button
-          size={'icon'}
-          variant={'outline'}
+          size="icon"
+          variant="outline"
           nativeButton={false}
           render={
-            <Link href={'/dashboard/branches'}>
+            <Link href="/dashboard/branches">
               <ArrowLeft />
-              <span className="sr-only">Volver atras</span>
+              <span className="sr-only">Volver atrás</span>
             </Link>
           }
         />
-        <h1 className="text-2xl font-semibold">Crear Sucursal</h1>
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight">
+            Crear sucursal
+          </h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Agrega una nueva ubicación al restaurante seleccionado.
+          </p>
+        </div>
       </div>
+
+      <BranchForm
+        initialValues={{
+          name: "",
+          address: "",
+          phone: "",
+          whatsapp: "",
+          googleReviewUrl: "",
+          wifiSsid: "",
+          wifiPassword: "",
+          timezone: "America/Cancun",
+          isActive: true,
+        }}
+      />
     </div>
   )
 }
