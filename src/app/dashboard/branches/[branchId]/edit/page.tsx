@@ -2,16 +2,18 @@ import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import { cookies } from "next/headers"
 import { notFound, redirect } from "next/navigation"
-
 import { BranchForm } from "@/features/branches/components/branch-form"
 import { Button } from "@/components/ui/button"
 import { ACTIVE_RESTAURANT_COOKIE } from "@/features/dashboard/constants"
 import { createClient } from "@/lib/supabase/server"
 
+interface PageProps {
+  params: Promise<{ branchId: string }>
+}
 export default async function EditBranchPage({
   params,
-}: PageProps<"/dashboard/branches/[branchId]/edit">) {
-  const { branchId: branchIdParam } = await params
+}: PageProps) {
+  const { branchId: branchIdParam } = await params;
   const branchId = Number(branchIdParam)
   if (!Number.isSafeInteger(branchId) || branchId <= 0) notFound()
 
