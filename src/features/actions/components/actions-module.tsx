@@ -44,6 +44,7 @@ import { Iphone } from "@/components/ui/iphone-mock"
 import { Badge } from "@/components/ui/badge"
 import ActionPreview from "./action-preview"
 import ActionEditor from "./action-editor"
+import { Reorder } from "motion/react"
 
 
 export const typeDetails: Record<ActionType, ActionTypeDetails> = {
@@ -273,7 +274,7 @@ export function ActionsModule(props: Props) {
 
       <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
         <section className="">
-          <div className="flex items-center justify-between p-4 sm:px-5">
+          <div className="flex items-center justify-between py-4">
             <div>
               <h2 className="font-semibold">Enlaces</h2>
               <p className="text-sm text-muted-foreground">
@@ -300,34 +301,54 @@ export function ActionsModule(props: Props) {
             </Button>
           </div>
 
-          <div className="flex flex-col gap-5">
+          <div>
             {items.length === 0 ? (
               <div className="p-10 text-center text-sm text-muted-foreground">
                 No hay acciones. Aplica una plantilla o agrega un enlace.
               </div>
             ) : (
-              items.map((item, index) => (
-                <ActionEditor
-                  key={item.clientId}
-                  item={item}
-                  index={index}
-                  itemCount={items.length}
-                  canManage={props.canManage}
-                  onUpdate={update}
-                  onMove={move}
-                  onDelete={() =>
-                    setItems((current) =>
-                      current.filter(
-                        (entry) => entry.clientId !== item.clientId
-                      )
-                    )
-                  }
-                />
-              ))
+              <Reorder.Group
+                as="div"
+                values={items}
+                onReorder={setItems}
+                aria-label="Reorable list"
+                className="flex flex-col gap-5"
+              >
+
+                {items.map((item, index) => (
+                  <Reorder.Item
+                    as="div"
+                    key={item.clientId}
+                    value={item}
+                    transition={{
+                      type: "spring",
+                      stiffness: 350,
+                      damping: 30
+                    }}
+                    whileDrag={{ scale: 1.08 }}
+                  >
+                    <ActionEditor
+                      item={item}
+                      index={index}
+                      itemCount={items.length}
+                      canManage={props.canManage}
+                      onUpdate={update}
+                      onMove={move}
+                      onDelete={() =>
+                        setItems((current) =>
+                          current.filter(
+                            (entry) => entry.clientId !== item.clientId
+                          )
+                        )
+                      }
+                    />
+                  </Reorder.Item>
+                ))}
+              </Reorder.Group>
             )}
           </div>
 
-          <div className="flex flex-col gap-3 border-t p-4 sm:flex-row sm:items-center sm:justify-between sm:px-5">
+          <div className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between sm:px-5">
             {message ? (
               <p
                 role="status"

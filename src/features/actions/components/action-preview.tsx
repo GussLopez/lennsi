@@ -24,7 +24,7 @@ export default function ActionPreview({
   return (
     <aside className="lg:sticky lg:top-24">
       <Iphone>
-        <div className="mx-auto w-full max-w-85 h-full z-9">
+        <div className="mx-auto w-full h-full z-9">
           <div
             className={cn(
               "h-full overflow-hidden rounded-[2rem] p-6",
@@ -46,7 +46,6 @@ export default function ActionPreview({
             <div className="space-y-3">
               {items.length ? (
                 items.map((item) => {
-                  const Icon = typeDetails[item.type].icon
 
                   return (
                     <a
@@ -54,10 +53,9 @@ export default function ActionPreview({
                       href={item.url || undefined}
                       target="_blank"
                       rel="noreferrer"
-                      className="flex min-h-12 items-center gap-3 rounded-xl border border-current/10 bg-current/10 px-4 backdrop-blur"
+                      className="flex justify-center min-h-12 items-center gap-4 rounded-xl border border-current/10 bg-current/10 px-4 backdrop-blur"
                     >
-                      <Icon className="size-5" />
-                      <span className="flex-1 text-sm font-medium">
+                      <span className="flex-1 text-center font-medium">
                         {item.label || "Sin label"}
                       </span>
                     </a>

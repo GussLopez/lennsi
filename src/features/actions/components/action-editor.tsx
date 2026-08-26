@@ -31,7 +31,7 @@ export default function ActionEditor({
 
   return (
     <div className="grid gap-3 p-4 sm:grid-cols-[auto_1fr_auto] sm:items-start sm:px-5 rounded-lg border border-input shadow-xs bg-background">
-      <GripVertical className="mt-2 hidden size-4 text-muted-foreground sm:block" />
+      <GripVertical className="mt-2 hidden size-4 text-muted-foreground sm:block cursor-grab" />
 
       <div className="space-y-3">
         <div className="flex items-center gap-2">
@@ -48,7 +48,7 @@ export default function ActionEditor({
             <SelectTrigger className="w-44">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent alignItemWithTrigger={false}>
               {Object.entries(typeDetails).map(([value, detail]) => (
                 <SelectItem key={value} value={value}>
                   {detail.label}
@@ -99,28 +99,10 @@ export default function ActionEditor({
         <Button
           variant="ghost"
           size="icon-sm"
-          disabled={!canManage || index === 0}
-          onClick={() => onMove(index, -1)}
-          aria-label="Subir acción"
-        >
-          <ArrowUp />
-        </Button>
-        <Button
-          variant="ghost"
-          size="icon-sm"
-          disabled={!canManage || index === itemCount - 1}
-          onClick={() => onMove(index, 1)}
-          aria-label="Bajar acción"
-        >
-          <ArrowDown />
-        </Button>
-        <Button
-          variant="ghost"
-          size="icon-sm"
           disabled={!canManage}
           onClick={onDelete}
           aria-label="Eliminar acción"
-          className="text-destructive"
+          className="text-destructive hover:text-destructive hover:bg-red-50"
         >
           <Trash2 />
         </Button>
