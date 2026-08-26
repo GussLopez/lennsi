@@ -1,4 +1,4 @@
-import { Nfc, Plus } from "lucide-react"
+import { Plus, Zap } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import EmptyState from "@/components/ui/empty-state"
@@ -85,7 +85,7 @@ export default async function TouchpointsPage() {
           description={branch
             ? `Todavía no hay touchpoints en ${branch.name}. Crea el primero para comenzar.`
             : "Crea o selecciona una sucursal para administrar sus touchpoints."}
-          icon={Nfc}
+          icon={Zap}
         >
           {canManage && <Button
             className="mt-5"
