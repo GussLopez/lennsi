@@ -51,7 +51,7 @@ type OnboardingValues = z.infer<typeof onboardingSchema>
 const dynamicFields: Record<UseCase, { label: string; placeholder: string; type: string }> = {
   google_reviews: { label: "Enlace para dejar una reseña", placeholder: "https://g.page/r/.../review", type: "url" },
   menu: { label: "Enlace de tu menú", placeholder: "https://tu-restaurante.com/menu", type: "url" },
-  whatsapp: { label: "Número de WhatsApp", placeholder: "+52 998 123 4567", type: "tel" },
+  whatsapp: { label: "Número de WhatsApp", placeholder: "+529981234567", type: "tel" },
   social_media: { label: "Enlace de tu red social principal", placeholder: "https://instagram.com/tu-restaurante", type: "url" },
   link_page: { label: "Enlace de tu sitio web", placeholder: "https://tu-restaurante.com", type: "url" },
 }

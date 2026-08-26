@@ -19,6 +19,19 @@ import ActionPreview from "./action-preview"
 import ActionEditor from "./action-editor"
 import { Reorder } from "motion/react"
 import { templates, typeDetails } from "../data";
+import { isValidHttpUrl, isValidWhatsAppValue } from "../validation"
+
+function inferTemplate(items: ActionItem[]) {
+  const itemTypes = items.map((item) => item.type)
+
+  return (
+    templates.find(
+      (candidate) =>
+        candidate.types.length === itemTypes.length &&
+        candidate.types.every((type, index) => type === itemTypes[index])
+    )?.id ?? "classic"
+  )
+}
 
 type ActionModulesProps = {
   restaurantName: string
@@ -52,7 +65,13 @@ export function ActionsModule(props: ActionModulesProps) {
   const [scope, setScope] = useState<ActionScope>("global")
   const [globalItems, setGlobalItems] = useState(props.initialGlobal)
   const [branchItems, setBranchItems] = useState(props.initialBranch)
-  const [template, setTemplate] = useState("classic")
+  const [scopeTemplates, setScopeTemplates] = useState<
+    Record<ActionScope, string>
+  >(() => ({
+    global: inferTemplate(props.initialGlobal),
+    branch: inferTemplate(props.initialBranch),
+  }))
+  const [urlErrors, setUrlErrors] = useState<Record<string, string>>({})
   const [pending, setPending] = useState(false)
   const [message, setMessage] = useState<{
     ok: boolean
@@ -69,6 +88,7 @@ export function ActionsModule(props: ActionModulesProps) {
 
   const items = scope === "global" ? globalItems : branchItems
   const setItems = scope === "global" ? setGlobalItems : setBranchItems
+  const template = scopeTemplates[scope]
   const selectedTemplate =
     templates.find((item) => item.id === template) ?? templates[0]
   const enabledItems = useMemo(
@@ -82,10 +102,17 @@ export function ActionsModule(props: ActionModulesProps) {
         item.clientId === clientId ? { ...item, ...patch } : item
       )
     )
+    if (patch.url !== undefined) {
+      setUrlErrors((current) => {
+        const next = { ...current }
+        delete next[clientId]
+        return next
+      })
+    }
   }
 
   function applyTemplate(id: string) {
-    setTemplate(id)
+    setScopeTemplates((current) => ({ ...current, [scope]: id }))
     const preset = templates.find((item) => item.id === id)
     if (!preset) return
     const existingByType = new Map(items.map((item) => [item.type, item]))
@@ -104,6 +131,26 @@ export function ActionsModule(props: ActionModulesProps) {
   }
 
   function submit() {
+    const errors = Object.fromEntries(
+      items.flatMap((item) => {
+        const url = item.url.trim()
+        if (!url) return [[item.clientId, "El enlace es obligatorio."]]
+        if (item.type === "whatsapp" && !isValidWhatsAppValue(url)) {
+          return [[item.clientId, "Ingresa un número de WhatsApp válido o un enlace."]]
+        }
+        if (item.type !== "whatsapp" && !isValidHttpUrl(url)) {
+          return [[item.clientId, "Ingresa una URL válida con http:// o https://."]]
+        }
+        return []
+      })
+    )
+
+    if (Object.keys(errors).length > 0) {
+      setUrlErrors(errors)
+      setMessage({ ok: false, text: "Revisa los enlaces antes de guardar." })
+      return
+    }
+
     setPending(true)
     setMessage(null)
 
@@ -133,7 +180,7 @@ export function ActionsModule(props: ActionModulesProps) {
           items={scopeOptions}
           onValueChange={(value) => setScope(value as ActionScope)}
         >
-          <SelectTrigger className="w-full sm:w-64">
+          <SelectTrigger className="w-full sm:w-64 bg-background">
             <SelectValue />
           </SelectTrigger>
           <SelectContent alignItemWithTrigger={false}>
@@ -245,6 +292,7 @@ export function ActionsModule(props: ActionModulesProps) {
                   >
                     <ActionEditor
                       item={item}
+                      urlError={urlErrors[item.clientId]}
                       canManage={props.canManage}
                       onUpdate={update}
                       onDelete={() =>
@@ -261,7 +309,7 @@ export function ActionsModule(props: ActionModulesProps) {
             )}
           </div>
 
-          <div className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between sm:px-5">
+          <div className="flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between">
             {message ? (
               <p
                 role="status"

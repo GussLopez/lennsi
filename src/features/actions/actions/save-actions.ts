@@ -10,15 +10,34 @@ import {
   ACTIVE_RESTAURANT_COOKIE,
 } from "@/features/dashboard/constants";
 import { createClient } from "@/lib/supabase/server";
+import {
+  isValidHttpUrl,
+  isValidWhatsAppValue,
+} from "@/features/actions/validation";
 
-const itemSchema = z.object({
-  id: z.number().int().positive().nullable(),
-  type: z.enum(ACTION_TYPES),
-  label: z.string().trim().min(1).max(80),
-  url: z.union([z.literal(""), z.url()]).transform((value) => value || null),
-  isEnabled: z.boolean(),
-  sortOrder: z.number().int().min(0),
-});
+const itemSchema = z
+  .object({
+    id: z.number().int().positive().nullable(),
+    type: z.enum(ACTION_TYPES),
+    label: z.string().trim().min(1).max(80),
+    url: z.string().trim().min(1),
+    isEnabled: z.boolean(),
+    sortOrder: z.number().int().min(0),
+  })
+  .superRefine((item, context) => {
+    const isValid =
+      item.type === "whatsapp"
+        ? isValidWhatsAppValue(item.url)
+        : isValidHttpUrl(item.url);
+
+    if (!isValid) {
+      context.addIssue({
+        code: "custom",
+        path: ["url"],
+        message: "El enlace o número no es válido.",
+      });
+    }
+  });
 
 const payloadSchema = z.object({
   scope: z.enum(["global", "branch"]),
@@ -34,7 +53,7 @@ export async function saveActions(
   if (!parsed.success)
     return {
       ok: false,
-      message: "Revisa los labels y las URLs antes de guardar.",
+      message: "Revisa los labels, enlaces y números antes de guardar.",
     };
 
   const cookieStore = await cookies();

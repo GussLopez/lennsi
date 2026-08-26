@@ -10,6 +10,7 @@ import { typeDetails } from "../data"
 type ActionEditorProps = {
   item: ActionItem
   canManage: boolean
+  urlError?: string
   onUpdate: (clientId: string, patch: Partial<ActionItem>) => void
   onDelete: () => void
 }
@@ -18,12 +19,14 @@ type ActionEditorProps = {
 export default function ActionEditor({
   item,
   canManage,
+  urlError,
   onUpdate,
   onDelete,
 }: ActionEditorProps) {
   const selectedType =
     typeDetails.find((detail) => detail.value === item.type) ?? typeDetails[0]
   const Icon = selectedType.icon
+  const isWhatsApp = item.type === "whatsapp"
 
   return (
     <div className="grid gap-3 p-4 sm:grid-cols-[auto_1fr_auto] sm:items-start sm:px-5 rounded-lg border border-input shadow-xs bg-background">
@@ -77,17 +80,30 @@ export default function ActionEditor({
             />
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor={`url-${item.clientId}`}>URL</Label>
+            <Label htmlFor={`url-${item.clientId}`}>
+              {isWhatsApp ? "Número o enlace de WhatsApp" : "URL"}
+            </Label>
             <Input
               id={`url-${item.clientId}`}
-              type="url"
-              placeholder="https://..."
+              type={isWhatsApp ? "tel" : "url"}
+              required
+              placeholder={isWhatsApp ? "+529981234567" : "https://..."}
               value={item.url}
               disabled={!canManage}
+              aria-invalid={Boolean(urlError)}
+              aria-describedby={urlError ? `url-error-${item.clientId}` : undefined}
               onChange={(event) =>
                 onUpdate(item.clientId, { url: event.target.value })
               }
             />
+            {urlError && (
+              <p
+                id={`url-error-${item.clientId}`}
+                className="text-xs text-destructive"
+              >
+                {urlError}
+              </p>
+            )}
           </div>
         </div>
       </div>
