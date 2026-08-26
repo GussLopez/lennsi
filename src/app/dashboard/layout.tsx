@@ -52,13 +52,18 @@ export default async function DashboardLayout({ children }: LayoutProps<"/dashbo
         branches={branches}
         activeBranchId={activeBranch?.id ?? null}
         user={{
-        name: profile?.full_name ?? user.email?.split("@")[0] ?? "Usuario",
-        email: user.email ?? "",
+          name: profile?.full_name ?? user.email?.split("@")[0] ?? "Usuario",
+          email: user.email ?? "",
         }}
       />
       <SidebarInset className="min-w-0 bg-muted/35">
-        <DashboardHeader restaurantName={activeRestaurant.name} branchName={activeBranch?.name ?? null} />
-        <main className="flex flex-1 flex-col p-4 sm:p-6 lg:p-8">{children}</main>
+        <DashboardHeader
+          restaurantName={activeRestaurant.name}
+          branchName={activeBranch?.name ?? null}
+        />
+        <main className="flex flex-1 flex-col p-4 sm:p-6 lg:p-8 bg-neutral-50">
+          {children}
+        </main>
       </SidebarInset>
     </SidebarProvider>
   )
