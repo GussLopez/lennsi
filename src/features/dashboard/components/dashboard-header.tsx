@@ -8,6 +8,7 @@ const sectionNames: Record<string, string> = {
   "/dashboard": "Resumen",
   "/dashboard/branches": "Sucursales",
   "/dashboard/touchpoints": "Puntos NFC",
+  "/dashboard/tags": "Tags NFC",
   "/dashboard/actions": "Acciones",
   "/dashboard/analytics": "Analytics",
   "/dashboard/settings": "Configuración",
