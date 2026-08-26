@@ -10,6 +10,7 @@ import { type DataTableFeatures } from "@/components/ui/data-table-features"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { touchpointTypeLabels } from "@/features/touchpoints/schemas/touchpoint-schema"
 import type { Touchpoint } from "@/features/touchpoints/types/types"
+import { Badge } from "@/components/ui/badge"
 
 const columnHelper = createColumnHelper<DataTableFeatures, Touchpoint>()
 
@@ -46,9 +47,16 @@ export const touchpointColumns = columnHelper.columns([
   columnHelper.accessor("is_active", {
     header: "Estado",
     cell: ({ row }) => (
-      <span className={row.original.is_active ? "text-emerald-600" : "text-muted-foreground"}>
-        {row.original.is_active ? "Activo" : "Inactivo"}
-      </span>
+      <div>
+        <Badge
+          variant={'secondary'}
+          className={row.original.is_active
+            ? "bg-green-100 text-emerald-700"
+            : ""}
+        >
+          {row.original.is_active ? "Activo" : "Inactivo"}
+        </Badge>
+      </div>
     ),
   }),
   columnHelper.display({
