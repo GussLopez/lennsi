@@ -65,7 +65,7 @@ export function Iphone({
       )}
       {children && (
         <div
-          className="pointer-events-none absolute z-999 overflow-hidden"
+          className="pointer-events-auto absolute z-999 overflow-hidden"
           style={{
             left: `${LEFT_PCT}%`,
             top: `${TOP_PCT}%`,

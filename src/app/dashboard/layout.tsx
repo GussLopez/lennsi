@@ -4,11 +4,8 @@ import { DashboardSidebar, type DashboardBranch, type DashboardRestaurant } from
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import { createClient } from "@/lib/supabase/server"
 import { ACTIVE_BRANCH_COOKIE, ACTIVE_RESTAURANT_COOKIE } from "@/features/dashboard/constants"
-import type { Metadata } from "next"
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
-
-export const metadata: Metadata = { title: "Dashboard | Flyzzio" }
 
 export default async function DashboardLayout({ children }: LayoutProps<"/dashboard">) {
   const supabase = await createClient()
@@ -16,8 +13,16 @@ export default async function DashboardLayout({ children }: LayoutProps<"/dashbo
   if (!user) redirect("/login")
 
   const [{ data: profile }, { data: memberships }] = await Promise.all([
-    supabase.from("profiles").select("full_name").eq("id", user.id).maybeSingle(),
-    supabase.from("restaurant_members").select("restaurant_id, role, restaurants(id, name)").eq("user_id", user.id).order("created_at", { ascending: true }),
+    supabase
+      .from("profiles")
+      .select("full_name")
+      .eq("id", user.id)
+      .maybeSingle(),
+    supabase
+      .from("restaurant_members")
+      .select("restaurant_id, role, restaurants(id, name)")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: true }),
   ])
 
   if (!memberships?.length) return <RestaurantOnboarding />
@@ -26,11 +31,13 @@ export default async function DashboardLayout({ children }: LayoutProps<"/dashbo
     const restaurant = Array.isArray(membership.restaurants) ? membership.restaurants[0] : membership.restaurants
     return restaurant ? [{ id: restaurant.id, name: restaurant.name, role: membership.role }] : []
   })
+
   if (!restaurants.length) return <RestaurantOnboarding />
 
   const cookieStore = await cookies()
   const requestedRestaurantId = Number(cookieStore.get(ACTIVE_RESTAURANT_COOKIE)?.value)
-  const activeRestaurant = restaurants.find((restaurant) => restaurant.id === requestedRestaurantId) ?? restaurants[0]
+  const activeRestaurant = restaurants
+    .find((restaurant) => restaurant.id === requestedRestaurantId) ?? restaurants[0]
   const { data: branchRows } = await supabase
     .from("branches")
     .select("id, name, restaurant_id")

@@ -1,10 +1,11 @@
 import { Iphone } from "@/components/ui/iphone-mock"
-import { ActionItem, ActionScope, ActionTemplate } from "../types/types"
-import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
-import { typeDetails } from "./actions-module"
-import { ExternalLink } from "lucide-react"
 
+import type {
+  ActionItem,
+  ActionScope,
+  ActionTemplate,
+} from "../types/types"
 
 type ActionPreviewProps = {
   restaurantName: string
@@ -22,19 +23,17 @@ export default function ActionPreview({
   template,
 }: ActionPreviewProps) {
   return (
-    <aside className="lg:sticky lg:top-24">
-      <Iphone>
-        <div className="mx-auto w-full h-full z-9">
-          <div
-            className={cn(
-              "h-full overflow-hidden rounded-[2rem] p-6",
-              template.className
-            )}
-          >
-            <div className="mx-auto mb-6 h-1.5 w-20 rounded-full bg-current opacity-20" />
-
-            <div className="mb-8 text-center">
-              <div className="mx-auto mb-3 flex size-16 items-center justify-center rounded-2xl bg-current/10 text-2xl font-bold">
+    <aside className="mx-auto w-full max-w-90 lg:sticky lg:top-24">
+      <Iphone className="block">
+        <div
+          className={cn(
+            "h-full overflow-y-auto px-5 pb-10 pt-16",
+            template.className
+          )}
+        >
+          <div className="mx-auto flex min-h-full max-w-sm flex-col">
+            <div className="mb-7 text-center">
+              <div className="mx-auto mb-3 flex size-16 items-center justify-center rounded-2xl bg-current/10 text-2xl font-bold shadow-sm">
                 {restaurantName.slice(0, 1).toUpperCase()}
               </div>
               <h3 className="text-xl font-semibold">{restaurantName}</h3>
@@ -43,30 +42,28 @@ export default function ActionPreview({
               )}
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-3 pb-5">
               {items.length ? (
-                items.map((item) => {
-
-                  return (
-                    <a
-                      key={item.clientId}
-                      href={item.url || undefined}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="flex justify-center min-h-12 items-center gap-4 rounded-xl border border-current/10 bg-current/10 px-4 backdrop-blur"
-                    >
-                      <span className="flex-1 text-center font-medium">
-                        {item.label || "Sin label"}
-                      </span>
-                    </a>
-                  )
-                })
+                items.map((item) => (
+                  <div
+                    key={item.clientId}
+                    className="flex min-h-12 items-center justify-center rounded-xl border border-current/15 bg-current/10 px-4 shadow-sm backdrop-blur"
+                  >
+                    <span className="text-center text-sm font-medium">
+                      {item.label || "Sin label"}
+                    </span>
+                  </div>
+                ))
               ) : (
                 <p className="py-10 text-center text-sm opacity-60">
                   Activa una acción para verla aquí.
                 </p>
               )}
             </div>
+
+            <p className="mt-auto pt-8 text-center text-[11px] opacity-50">
+              Powered by Gus
+            </p>
           </div>
         </div>
       </Iphone>

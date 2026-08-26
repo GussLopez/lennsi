@@ -1,27 +1,9 @@
 "use client"
 
-import {
-  ArrowDown,
-  ArrowUp,
-  AtSign,
-  ExternalLink,
-  Globe2,
-  GripVertical,
-  Link2,
-  MessageCircle,
-  Plus,
-  Save,
-  Sparkles,
-  Star,
-  Trash2,
-  Utensils,
-  Wifi,
-} from "lucide-react"
+import { Plus, Save } from "lucide-react";
 import { startTransition, useMemo, useState } from "react"
 
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import {
   Select,
   SelectContent,
@@ -30,84 +12,15 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Spinner } from "@/components/ui/spinner"
-import { Switch } from "@/components/ui/switch"
 import { saveActions } from "@/features/actions/actions/save-actions"
-import type {
-  ActionItem,
-  ActionScope,
-  ActionTemplate,
-  ActionType,
-  ActionTypeDetails,
-} from "@/features/actions/types/types"
+import type { ActionItem, ActionScope, ActionType } from "@/features/actions/types/types";
 import { cn } from "@/lib/utils"
-import { Iphone } from "@/components/ui/iphone-mock"
-import { Badge } from "@/components/ui/badge"
 import ActionPreview from "./action-preview"
 import ActionEditor from "./action-editor"
 import { Reorder } from "motion/react"
+import { templates, typeDetails } from "../data";
 
-
-export const typeDetails: Record<ActionType, ActionTypeDetails> = {
-  menu: { label: "Menú", icon: Utensils, defaultLabel: "Ver menú" },
-  wifi: { label: "Wi-Fi", icon: Wifi, defaultLabel: "Conectarse al Wi-Fi" },
-  google_review: {
-    label: "Google Review",
-    icon: Star,
-    defaultLabel: "Déjanos una reseña",
-  },
-  instagram: {
-    label: "Instagram",
-    icon: AtSign,
-    defaultLabel: "Síguenos en Instagram",
-  },
-  whatsapp: {
-    label: "WhatsApp",
-    icon: MessageCircle,
-    defaultLabel: "Escríbenos por WhatsApp",
-  },
-  promotion: {
-    label: "Promoción",
-    icon: Sparkles,
-    defaultLabel: "Ver promoción",
-  },
-  website: {
-    label: "Sitio web",
-    icon: Globe2,
-    defaultLabel: "Visitar sitio web",
-  },
-  custom: {
-    label: "Personalizada",
-    icon: Link2,
-    defaultLabel: "Nuevo enlace",
-  },
-}
-
-const templates: ActionTemplate[] = [
-  {
-    id: "classic",
-    name: "Clásica",
-    description: "Todo lo esencial",
-    className: "bg-zinc-950 text-white",
-    types: ["menu", "wifi", "google_review", "instagram", "whatsapp", "website"],
-  },
-  {
-    id: "social",
-    name: "Social",
-    description: "Conversación y comunidad",
-    className:
-      "bg-gradient-to-br from-fuchsia-600 to-orange-400 text-white",
-    types: ["instagram", "whatsapp", "google_review", "website"],
-  },
-  {
-    id: "minimal",
-    name: "Minimal",
-    description: "Directa y elegante",
-    className: "bg-stone-100 text-stone-950",
-    types: ["menu", "google_review", "website"],
-  },
-]
-
-type Props = {
+type ActionModulesProps = {
   restaurantName: string
   branchName: string | null
   activeBranchId: number | null
@@ -124,7 +37,9 @@ function newAction(
   return {
     id: null,
     type,
-    label: typeDetails[type].defaultLabel,
+    label:
+      typeDetails.find((detail) => detail.value === type)?.defaultLabel ??
+      "Nuevo enlace",
     url: "",
     isEnabled: true,
     sortOrder: index,
@@ -133,7 +48,7 @@ function newAction(
   }
 }
 
-export function ActionsModule(props: Props) {
+export function ActionsModule(props: ActionModulesProps) {
   const [scope, setScope] = useState<ActionScope>("global")
   const [globalItems, setGlobalItems] = useState(props.initialGlobal)
   const [branchItems, setBranchItems] = useState(props.initialBranch)
@@ -143,6 +58,14 @@ export function ActionsModule(props: Props) {
     ok: boolean
     text: string
   } | null>(null)
+
+  const scopeOptions = [
+    { value: "global", label: "Configuración global" },
+    {
+      value: "branch",
+      label: `Sucursal: ${props.branchName ?? "Sin sucursal"}`,
+    },
+  ] satisfies Array<{ value: ActionScope; label: string }>
 
   const items = scope === "global" ? globalItems : branchItems
   const setItems = scope === "global" ? setGlobalItems : setBranchItems
@@ -159,14 +82,6 @@ export function ActionsModule(props: Props) {
         item.clientId === clientId ? { ...item, ...patch } : item
       )
     )
-  }
-
-  function move(index: number, direction: -1 | 1) {
-    const target = index + direction
-    if (target < 0 || target >= items.length) return
-    const next = [...items]
-      ;[next[index], next[target]] = [next[target], next[index]]
-    setItems(next.map((item, sortOrder) => ({ ...item, sortOrder })))
   }
 
   function applyTemplate(id: string) {
@@ -202,7 +117,7 @@ export function ActionsModule(props: Props) {
       setPending(false)
     })
   }
-
+  
   return (
     <div className="mx-auto w-full max-w-7xl space-y-6">
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
@@ -215,6 +130,7 @@ export function ActionsModule(props: Props) {
 
         <Select
           value={scope}
+          items={scopeOptions}
           onValueChange={(value) => setScope(value as ActionScope)}
         >
           <SelectTrigger className="w-full sm:w-64">
@@ -315,7 +231,7 @@ export function ActionsModule(props: Props) {
                 className="flex flex-col gap-5"
               >
 
-                {items.map((item, index) => (
+                {items.map((item) => (
                   <Reorder.Item
                     as="div"
                     key={item.clientId}
@@ -329,11 +245,8 @@ export function ActionsModule(props: Props) {
                   >
                     <ActionEditor
                       item={item}
-                      index={index}
-                      itemCount={items.length}
                       canManage={props.canManage}
                       onUpdate={update}
-                      onMove={move}
                       onDelete={() =>
                         setItems((current) =>
                           current.filter(

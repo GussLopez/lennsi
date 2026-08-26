@@ -1,33 +1,29 @@
-import { ArrowDown, ArrowUp, GripVertical, Trash2 } from "lucide-react"
-import { ActionItem, ActionType } from "../types/types"
-import { typeDetails } from "./actions-module"
+import { GripVertical, Trash2 } from "lucide-react"
+import type { ActionItem, ActionType } from "../types/types"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { typeDetails } from "../data"
 
 type ActionEditorProps = {
   item: ActionItem
-  index: number
-  itemCount: number
   canManage: boolean
   onUpdate: (clientId: string, patch: Partial<ActionItem>) => void
-  onMove: (index: number, direction: -1 | 1) => void
   onDelete: () => void
 }
 
 
 export default function ActionEditor({
   item,
-  index,
-  itemCount,
   canManage,
   onUpdate,
-  onMove,
   onDelete,
 }: ActionEditorProps) {
-  const Icon = typeDetails[item.type].icon
+  const selectedType =
+    typeDetails.find((detail) => detail.value === item.type) ?? typeDetails[0]
+  const Icon = selectedType.icon
 
   return (
     <div className="grid gap-3 p-4 sm:grid-cols-[auto_1fr_auto] sm:items-start sm:px-5 rounded-lg border border-input shadow-xs bg-background">
@@ -38,8 +34,9 @@ export default function ActionEditor({
           <span className="flex size-8 items-center justify-center rounded-lg bg-muted">
             <Icon className="size-4" />
           </span>
-          <Select
+          <Select<ActionType>
             value={item.type}
+            items={typeDetails}
             disabled={!canManage}
             onValueChange={(value) =>
               onUpdate(item.clientId, { type: value as ActionType })
@@ -49,9 +46,9 @@ export default function ActionEditor({
               <SelectValue />
             </SelectTrigger>
             <SelectContent alignItemWithTrigger={false}>
-              {Object.entries(typeDetails).map(([value, detail]) => (
-                <SelectItem key={value} value={value}>
-                  {detail.label}
+              {typeDetails.map((item) => (
+                <SelectItem key={item.value} value={item.value}>
+                  {item.label}
                 </SelectItem>
               ))}
             </SelectContent>
