@@ -6,6 +6,8 @@ import { createClient } from "@/lib/supabase/server"
 import { ACTIVE_BRANCH_COOKIE, ACTIVE_RESTAURANT_COOKIE } from "@/features/dashboard/constants"
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
+import { TouchpointsTable } from "@/features/touchpoints/components/touchpoints-table"
+import type { Touchpoint } from "@/features/touchpoints/types/types"
 
 export default async function TouchpointsPage() {
   const supabase = await createClient();
@@ -18,7 +20,7 @@ export default async function TouchpointsPage() {
 
   const { data: memberships } = await supabase
     .from("restaurant_members")
-    .select("restaurant_id")
+    .select("restaurant_id, role")
     .eq("user_id", user.id)
     .order("created_at", { ascending: true })
   const membership = memberships?.find(
@@ -43,6 +45,9 @@ export default async function TouchpointsPage() {
         .eq("branch_id", branch.id)
         .order("created_at", { ascending: true })
     : { data: [], error: null }
+  const canManage = membership
+    ? ["owner", "admin", "manager"].includes(membership.role)
+    : false
 
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-col gap-6">
@@ -55,22 +60,24 @@ export default async function TouchpointsPage() {
             Administra los touchpoints de {branch?.name ?? "la sucursal seleccionada"}.
           </p>
         </div>
-        <Button
-          nativeButton={false}
-          render={
-            <Link href="/dashboard/touchpoints/new">
-              <Plus />
-              Crear Touchpoint
-            </Link>
-          }
-        />
+        {branch && canManage && (
+          <Button
+            nativeButton={false}
+            render={
+              <Link href="/dashboard/touchpoints/new">
+                <Plus />
+                Crear touchpoint
+              </Link>
+            }
+          />
+        )}
       </div>
 
-      {/* {error && (
+      {error && (
         <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-5 text-sm text-destructive">
-          No se pudieron cargar las sucursales.
+          No se pudieron cargar los touchpoints.
         </div>
-      )} */}
+      )}
 
       {!error && touchpoints?.length === 0 && (
         <EmptyState
@@ -80,7 +87,7 @@ export default async function TouchpointsPage() {
             : "Crea o selecciona una sucursal para administrar sus touchpoints."}
           icon={Nfc}
         >
-          <Button
+          {canManage && <Button
             className="mt-5"
             nativeButton={false}
             render={
@@ -89,13 +96,16 @@ export default async function TouchpointsPage() {
                 {branch ? "Crear touchpoint" : "Crear sucursal"}
               </Link>
             }
-          />
+          />}
         </EmptyState>
       )}
 
       {!error && touchpoints && touchpoints.length > 0 && (
         <div className="flex flex-col gap-2">
-          {/* <BranchesTable branches={branches} canDelete={canDelete} /> */}
+          <TouchpointsTable
+            touchpoints={touchpoints as Touchpoint[]}
+            canManage={canManage}
+          />
         </div>
       )}
     </div>
