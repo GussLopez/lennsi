@@ -24,7 +24,7 @@ export type BranchFormValues = {
   wifiSsid: string
   wifiPassword: string
   timezone: string
-  isActive: boolean
+  is_active: boolean
 }
 
 type BranchFormProps = {
@@ -39,7 +39,7 @@ const initialState: BranchFormState = {
 export function BranchForm({ initialValues }: BranchFormProps) {
   const [state, formAction, pending] = useActionState(saveBranch, initialState)
   const [hideWifi, setHideWifi] = useState(false);
-  const [isActive, setIsActive] = useState(initialValues.isActive)
+  const [isActive, setIsActive] = useState(initialValues.is_active)
 
   return (
     <form action={formAction} className="space-y-6">

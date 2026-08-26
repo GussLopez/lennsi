@@ -39,7 +39,7 @@ export default function CreateBranchPage() {
           wifiSsid: "",
           wifiPassword: "",
           timezone: "America/Cancun",
-          isActive: true,
+          is_active: true,
         }}
       />
     </div>

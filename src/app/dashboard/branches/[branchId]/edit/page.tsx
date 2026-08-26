@@ -88,7 +88,7 @@ export default async function EditBranchPage({
           wifiSsid: branch.wifi_ssid ?? "",
           wifiPassword: branch.wifi_password ?? "",
           timezone: branch.timezone,
-          isActive: branch.is_active,
+          is_active: branch.is_active,
         }}
       />
     </div>
