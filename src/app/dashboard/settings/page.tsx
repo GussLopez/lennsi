@@ -16,7 +16,16 @@ export default async function SettingsPage() {
   const { data: memberships } = await supabase
     .from("restaurant_members")
     .select(
-      "restaurant_id, role, restaurants(id, name, instagram_url, facebook_url, website, is_active)"
+      `
+        restaurant_id, 
+        role, 
+        restaurants(
+          id,
+          name,
+          description,
+          is_active
+        )
+      `
     )
     .eq("user_id", user.id)
     .order("created_at", { ascending: true })
@@ -31,7 +40,6 @@ export default async function SettingsPage() {
   const activeRestaurant = availableRestaurants.find(
     (restaurant) => restaurant.id === requestedRestaurantId
   ) ?? availableRestaurants[0]
-
   if (!activeRestaurant) redirect("/dashboard")
 
   return (
@@ -39,9 +47,7 @@ export default async function SettingsPage() {
       key={activeRestaurant.id}
       restaurant={{
         name: activeRestaurant.name,
-        instagramUrl: activeRestaurant.instagram_url ?? "",
-        facebookUrl: activeRestaurant.facebook_url ?? "",
-        website: activeRestaurant.website ?? "",
+        description: activeRestaurant.description ?? "",
         isActive: activeRestaurant.is_active,
       }}
       canEdit={activeRestaurant.role === "owner" || activeRestaurant.role === "admin"}

@@ -6,11 +6,8 @@ import { z } from "zod"
 
 import { ACTIVE_RESTAURANT_COOKIE } from "@/features/dashboard/constants"
 import { createClient } from "@/lib/supabase/server"
+import { RestaurantForm } from "../types"
 
-const optionalUrl = z.union([
-  z.literal(""),
-  z.url("Ingresa una URL completa, por ejemplo https://..."),
-])
 
 const restaurantSchema = z.object({
   name: z
@@ -18,30 +15,28 @@ const restaurantSchema = z.object({
     .trim()
     .min(2, "El nombre debe tener al menos 2 caracteres.")
     .max(120, "El nombre no puede exceder 120 caracteres."),
-  instagramUrl: optionalUrl,
-  facebookUrl: optionalUrl,
-  website: optionalUrl,
-  isActive: z.enum(["true", "false"]),
+  description: z
+    .string()
+    .trim()
+    .max(300, "La descripción no puede exceder 300 caracteres"),
+  isActive: z.boolean(),
 })
 
 export type RestaurantSettingsState = {
   status: "idle" | "success" | "error"
   message: string
   errors?: Partial<
-    Record<"name" | "instagramUrl" | "facebookUrl" | "website", string>
+    Record<"name" | "description", string>
   >
 }
 
 export async function updateRestaurantSettings(
-  _previousState: RestaurantSettingsState,
-  formData: FormData
+  formData: RestaurantForm
 ): Promise<RestaurantSettingsState> {
   const parsed = restaurantSchema.safeParse({
-    name: formData.get("name"),
-    instagramUrl: formData.get("instagramUrl"),
-    facebookUrl: formData.get("facebookUrl"),
-    website: formData.get("website"),
-    isActive: formData.get("isActive"),
+    name: formData.name,
+    description: formData.description,
+    isActive: formData.isActive,
   })
 
   if (!parsed.success) {
@@ -51,9 +46,7 @@ export async function updateRestaurantSettings(
       message: "Revisa los campos marcados.",
       errors: {
         name: fields.name?.[0],
-        instagramUrl: fields.instagramUrl?.[0],
-        facebookUrl: fields.facebookUrl?.[0],
-        website: fields.website?.[0],
+        description: fields.description?.[0],
       },
     }
   }
@@ -94,14 +87,12 @@ export async function updateRestaurantSettings(
     .from("restaurants")
     .update({
       name: parsed.data.name,
-      instagram_url: parsed.data.instagramUrl || null,
-      facebook_url: parsed.data.facebookUrl || null,
-      website: parsed.data.website || null,
-      is_active: parsed.data.isActive === "true",
+      description: parsed.data.description || null,
+      is_active: parsed.data.isActive,
       updated_at: new Date().toISOString(),
     })
     .eq("id", restaurantId)
-
+  console.log(error);
   if (error) {
     return {
       status: "error",

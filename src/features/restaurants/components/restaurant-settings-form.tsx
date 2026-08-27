@@ -1,32 +1,26 @@
-"use client"
-
-import { AtSign, Globe2, Link2, Save, Store } from "lucide-react"
-import { useActionState, useState } from "react"
+"use client";
+import { Save, Store } from "lucide-react";
+import { useState } from "react";
 
 import {
   type RestaurantSettingsState,
   updateRestaurantSettings,
 } from "@/features/restaurants/actions/update-restaurant-settings"
 import { Button } from "@/components/ui/button"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Spinner } from "@/components/ui/spinner"
 import { Switch } from "@/components/ui/switch"
+import { Textarea } from "@/components/ui/textarea"
+import { Controller, useForm } from "react-hook-form"
+import { RestaurantForm } from "../types"
+import { useMutation } from "@tanstack/react-query"
+import toast from "react-hot-toast"
 
 type RestaurantSettingsFormProps = {
   restaurant: {
     name: string
-    instagramUrl: string
-    facebookUrl: string
-    website: string
+    description: string
     isActive: boolean
   }
   canEdit: boolean
@@ -41,19 +35,30 @@ export function RestaurantSettingsForm({
   restaurant,
   canEdit,
 }: RestaurantSettingsFormProps) {
-  const [state, formAction, pending] = useActionState(
-    updateRestaurantSettings,
-    initialRestaurantSettingsState
-  )
-  const [isActive, setIsActive] = useState(restaurant.isActive)
-  const [showDeactivateDialog, setShowDeactivateDialog] = useState(false)
 
-  function changeActive(nextValue: boolean) {
-    if (!nextValue) {
-      setShowDeactivateDialog(true)
-      return
+  const { register, handleSubmit, watch, formState: { errors }, control } = useForm<RestaurantForm>({
+    defaultValues: {
+      name: restaurant.name,
+      description: restaurant.description,
+      isActive: true
     }
-    setIsActive(true)
+  });
+  const isActive = watch("isActive")
+  const { mutate, isPending } = useMutation({
+    mutationFn: async (formData: RestaurantForm) => {
+      const response = await updateRestaurantSettings(formData);
+      if (response.status === "error") throw new Error("Error al actualizar los datos");
+    },
+    onSuccess: () => {
+      toast.success('Información actualizada');
+    },
+    onError: () => {
+      toast.error('Error al actualizar la información');
+    }
+  })
+
+  const onSave = (data: RestaurantForm) => {
+    mutate(data)
   }
 
   return (
@@ -65,7 +70,7 @@ export function RestaurantSettingsForm({
         </p>
       </div>
 
-      <form action={formAction} className="space-y-6">
+      <form onSubmit={handleSubmit(onSave)} className="space-y-6">
         <section className="rounded-xl border bg-background shadow-xs">
           <div className="border-b px-5 py-4 sm:px-6">
             <h2 className="font-semibold">Información general</h2>
@@ -83,123 +88,31 @@ export function RestaurantSettingsForm({
                 />
                 <Input
                   id="restaurant-name"
-                  name="name"
-                  defaultValue={restaurant.name}
                   className="pl-9"
-                  maxLength={120}
-                  required
-                  disabled={!canEdit || pending}
-                  aria-invalid={Boolean(state.errors?.name)}
-                  aria-describedby={
-                    state.errors?.name ? "restaurant-name-error" : undefined
-                  }
+                  disabled={!canEdit || isPending}
+                  aria-invalid={Boolean(errors.name?.message)}
+                  {...register('name', {
+                    required: 'El nombre es requerido'
+                  })}
                 />
               </div>
-              {state.errors?.name && (
-                <p
-                  id="restaurant-name-error"
-                  className="text-sm text-destructive"
-                >
-                  {state.errors.name}
-                </p>
-              )}
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="restaurant-instagram">Instagram</Label>
-              <div className="relative">
-                <AtSign
-                  className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
-                />
-                <Input
-                  id="restaurant-instagram"
-                  name="instagramUrl"
-                  type="url"
-                  inputMode="url"
-                  placeholder="https://instagram.com/tu-restaurante"
-                  defaultValue={restaurant.instagramUrl}
-                  className="pl-9"
-                  disabled={!canEdit || pending}
-                  aria-invalid={Boolean(state.errors?.instagramUrl)}
-                  aria-describedby={
-                    state.errors?.instagramUrl
-                      ? "restaurant-instagram-error"
-                      : undefined
-                  }
-                />
-              </div>
-              {state.errors?.instagramUrl && (
+              <Label htmlFor="restaurant-description">Descripción</Label>
+              <Textarea
+                id="restaurant-description"
+                className="h-fit max-h-30"
+                disabled={!canEdit || isPending}
+                aria-invalid={Boolean(errors.description?.message)}
+                {...register('description')}
+              />
+              {errors.description?.message && (
                 <p
                   id="restaurant-instagram-error"
                   className="text-sm text-destructive"
                 >
-                  {state.errors.instagramUrl}
-                </p>
-              )}
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="restaurant-facebook">Facebook</Label>
-              <div className="relative">
-                <Link2
-                  className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
-                />
-                <Input
-                  id="restaurant-facebook"
-                  name="facebookUrl"
-                  type="url"
-                  inputMode="url"
-                  placeholder="https://facebook.com/tu-restaurante"
-                  defaultValue={restaurant.facebookUrl}
-                  className="pl-9"
-                  disabled={!canEdit || pending}
-                  aria-invalid={Boolean(state.errors?.facebookUrl)}
-                  aria-describedby={
-                    state.errors?.facebookUrl
-                      ? "restaurant-facebook-error"
-                      : undefined
-                  }
-                />
-              </div>
-              {state.errors?.facebookUrl && (
-                <p
-                  id="restaurant-facebook-error"
-                  className="text-sm text-destructive"
-                >
-                  {state.errors.facebookUrl}
-                </p>
-              )}
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="restaurant-website">Sitio Web</Label>
-              <div className="relative">
-                <Globe2
-                  className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
-                />
-                <Input
-                  id="restaurant-website"
-                  name="website"
-                  type="url"
-                  inputMode="url"
-                  placeholder="https://tu-restaurante.com"
-                  defaultValue={restaurant.website}
-                  className="pl-9"
-                  disabled={!canEdit || pending}
-                  aria-invalid={Boolean(state.errors?.website)}
-                  aria-describedby={
-                    state.errors?.website
-                      ? "restaurant-website-error"
-                      : undefined
-                  }
-                />
-              </div>
-              {state.errors?.website && (
-                <p
-                  id="restaurant-website-error"
-                  className="text-sm text-destructive"
-                >
-                  {state.errors.website}
+                  {errors.description.message}
                 </p>
               )}
             </div>
@@ -217,14 +130,19 @@ export function RestaurantSettingsForm({
                 : "El restaurante está desactivado."}
             </p>
           </div>
-          <Switch
+          <Controller
+            control={control}
             name="isActive"
-            className={'scale-120'}
-            aria-label={
-              isActive ? "Desactivar restaurante" : "Activar restaurante"
-            }
-            onCheckedChange={changeActive}
-            checked={isActive}
+            render={({ field }) => (
+              <Switch
+                className={'scale-120'}
+                aria-label={
+                  isActive ? "Desactivar restaurante" : "Activar restaurante"
+                }
+                onCheckedChange={field.onChange}
+                checked={field.value}
+              />
+            )}
           />
         </section>
 
@@ -235,63 +153,15 @@ export function RestaurantSettingsForm({
           </p>
         )}
 
-        {state.message && (
-          <p
-            className={
-              state.status === "success"
-                ? "text-sm text-emerald-600"
-                : "text-sm text-destructive"
-            }
-            role="status"
-            aria-live="polite"
-          >
-            {state.message}
-          </p>
-        )}
-
         {canEdit && (
           <div className="flex justify-end">
-            <Button type="submit" disabled={pending}>
-              {pending ? <Spinner /> : <Save />}
-              {pending ? "Guardando" : "Guardar cambios"}
+            <Button type="submit" disabled={isPending}>
+              {isPending ? <Spinner /> : <Save />}
+              {isPending ? "Guardando" : "Guardar cambios"}
             </Button>
           </div>
         )}
       </form>
-
-      <Dialog
-        open={showDeactivateDialog}
-        onOpenChange={setShowDeactivateDialog}
-      >
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>¿Desactivar restaurante?</DialogTitle>
-            <DialogDescription>
-              El restaurante aparecerá como inactivo hasta que vuelvas a
-              activarlo. Esta acción se aplicará cuando guardes los cambios.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => setShowDeactivateDialog(false)}
-            >
-              Cancelar
-            </Button>
-            <Button
-              type="button"
-              variant="destructive"
-              onClick={() => {
-                setIsActive(false)
-                setShowDeactivateDialog(false)
-              }}
-            >
-              Desactivar
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   )
 }
