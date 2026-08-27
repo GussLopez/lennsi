@@ -48,7 +48,7 @@ export function DataTable<TData extends RowData>({
   }, [rowSelection])
 
   return (
-    <div className="overflow-hidden rounded-md border">
+    <div className="overflow-hidden rounded-md border border-input shadow-xs bg-background">
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (

@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button"
 import { Edit, Eye, MoreHorizontal } from "lucide-react";
 import Link from "next/link"
 import { Checkbox } from "@/components/ui/checkbox"
+import { Badge } from "@/components/ui/badge";
 
 // Use `accessor` for data columns and `display` for columns without one.
 const columnHelper = createColumnHelper<DataTableFeatures, Branch>()
@@ -63,6 +64,21 @@ export const columns = columnHelper.columns([
         {phone ? phone : '—'}
       </div>
     }
+  }),
+  columnHelper.accessor("is_active", {
+    header: "Estado",
+    cell: ({ row }) => (
+      <div>
+        <Badge
+          variant={'secondary'}
+          className={row.original.is_active
+            ? "bg-green-100 text-emerald-700"
+            : ""}
+        >
+          {row.original.is_active ? "Activo" : "Inactivo"}
+        </Badge>
+      </div>
+    ),
   }),
   columnHelper.display({
     id: "actions",

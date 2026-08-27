@@ -29,6 +29,7 @@ export async function deleteTags(ids: number[]) {
 async function request<T>(input: string, init?: RequestInit): Promise<T> {
   const response = await fetch(input, {
     ...init,
+    cache: "no-store",
     headers: { "Content-Type": "application/json", ...init?.headers },
   })
   const payload = await response.json().catch(() => null) as { error?: string } | null

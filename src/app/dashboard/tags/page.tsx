@@ -23,5 +23,8 @@ export default async function TagsPage() {
     )
   }
 
-  return <TagsModule branchId={context.branch.id} branchName={context.branch.name} />
+  return <TagsModule
+    branchId={context.branch.id}
+    branchName={context.branch.name}
+  />
 }

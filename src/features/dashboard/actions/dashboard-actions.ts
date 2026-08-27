@@ -5,6 +5,25 @@ import { ACTIVE_BRANCH_COOKIE, ACTIVE_RESTAURANT_COOKIE } from '@/features/dashb
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 
+const activeContextCookieOptions = {
+  httpOnly: true,
+  sameSite: 'lax' as const,
+  secure: process.env.NODE_ENV === 'production',
+  path: '/',
+  maxAge: 60 * 60 * 24 * 365,
+}
+
+function clearLegacyDashboardCookie(
+  cookieStore: Awaited<ReturnType<typeof cookies>>,
+  name: string,
+) {
+  cookieStore.set(name, '', {
+    ...activeContextCookieOptions,
+    path: '/dashboard',
+    maxAge: 0,
+  })
+}
+
 export async function setActiveRestaurant(restaurantId: number) {
   if (!Number.isSafeInteger(restaurantId) || restaurantId <= 0) {
     throw new Error('Restaurante inválido.')
@@ -24,13 +43,13 @@ export async function setActiveRestaurant(restaurantId: number) {
   if (!membership) throw new Error('No tienes acceso a este restaurante.')
 
   const cookieStore = await cookies()
-  cookieStore.set(ACTIVE_RESTAURANT_COOKIE, String(restaurantId), {
-    httpOnly: true,
-    sameSite: 'lax',
-    secure: process.env.NODE_ENV === 'production',
-    path: '/dashboard',
-    maxAge: 60 * 60 * 24 * 365,
-  })
+  clearLegacyDashboardCookie(cookieStore, ACTIVE_RESTAURANT_COOKIE)
+  clearLegacyDashboardCookie(cookieStore, ACTIVE_BRANCH_COOKIE)
+  cookieStore.set(
+    ACTIVE_RESTAURANT_COOKIE,
+    String(restaurantId),
+    activeContextCookieOptions,
+  )
 
   const { data: firstBranch } = await supabase
     .from('branches')
@@ -41,13 +60,11 @@ export async function setActiveRestaurant(restaurantId: number) {
     .maybeSingle()
 
   if (firstBranch) {
-    cookieStore.set(ACTIVE_BRANCH_COOKIE, String(firstBranch.id), {
-      httpOnly: true,
-      sameSite: 'lax',
-      secure: process.env.NODE_ENV === 'production',
-      path: '/dashboard',
-      maxAge: 60 * 60 * 24 * 365,
-    })
+    cookieStore.set(
+      ACTIVE_BRANCH_COOKIE,
+      String(firstBranch.id),
+      activeContextCookieOptions,
+    )
   } else {
     cookieStore.delete(ACTIVE_BRANCH_COOKIE)
   }
@@ -80,15 +97,18 @@ export async function setActiveBranch(branchId: number) {
   if (!membership) throw new Error('No tienes acceso a esta sucursal.')
 
   const cookieStore = await cookies()
-  const cookieOptions = {
-    httpOnly: true,
-    sameSite: 'lax' as const,
-    secure: process.env.NODE_ENV === 'production',
-    path: '/dashboard',
-    maxAge: 60 * 60 * 24 * 365,
-  }
-  cookieStore.set(ACTIVE_RESTAURANT_COOKIE, String(branch.restaurant_id), cookieOptions)
-  cookieStore.set(ACTIVE_BRANCH_COOKIE, String(branch.id), cookieOptions)
+  clearLegacyDashboardCookie(cookieStore, ACTIVE_RESTAURANT_COOKIE)
+  clearLegacyDashboardCookie(cookieStore, ACTIVE_BRANCH_COOKIE)
+  cookieStore.set(
+    ACTIVE_RESTAURANT_COOKIE,
+    String(branch.restaurant_id),
+    activeContextCookieOptions,
+  )
+  cookieStore.set(
+    ACTIVE_BRANCH_COOKIE,
+    String(branch.id),
+    activeContextCookieOptions,
+  )
 }
 
 export async function logoutAction() {

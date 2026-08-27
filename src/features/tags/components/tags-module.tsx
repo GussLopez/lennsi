@@ -73,7 +73,7 @@ export function TagsModule({ branchId, branchName }: TagsModuleProps) {
           <Button nativeButton={false} render={
             <Link href="/dashboard/tags/new">
               <Plus />
-              Crear tag
+              Crear Tag
             </Link>
           } />
         )}
