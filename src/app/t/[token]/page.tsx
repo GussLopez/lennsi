@@ -65,6 +65,7 @@ export default async function TokenPage({ params }: PageProps<"/t/[token]">) {
           ))}
         </div>
       </div>
+      <span className="text-sm text-muted-foreground absolute bottom-10 right-1/2 translate-x-1/2">Powered by Guss</span>
     </main>
   )
 }
