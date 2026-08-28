@@ -132,7 +132,11 @@ export function ActionsModule(props: ActionModulesProps) {
           items: items.map((item, sortOrder) => ({ ...item, sortOrder })),
         })
 
-        toast.success(result.message)
+        if (result.ok) {
+          toast.success(result.message)
+        } else {
+          toast.error(result.message)
+        }
       } catch {
         toast.error("El servidor no pudo procesar la solicitud. Reinicia el servidor de desarrollo e intenta nuevamente.")
       } finally {

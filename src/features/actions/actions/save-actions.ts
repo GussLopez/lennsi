@@ -72,25 +72,12 @@ async function saveActionsImpl(payload: unknown): Promise<SaveActionsResult> {
     };
 
   const cookieStore = await cookies();
-  const restaurantId = Number(cookieStore.get(ACTIVE_RESTAURANT_COOKIE)?.value);
-  const activeBranchId = Number(cookieStore.get(ACTIVE_BRANCH_COOKIE)?.value);
-  const branchId = parsed.data.scope === "branch" ? activeBranchId : null;
-
-  if (!Number.isSafeInteger(restaurantId) || restaurantId <= 0) {
-    return {
-      ok: false,
-      message: "No se pudo identificar el restaurante activo.",
-    };
-  }
-  if (
-    parsed.data.scope === "branch" &&
-    (!Number.isSafeInteger(branchId) || !branchId || branchId <= 0)
-  ) {
-    return {
-      ok: false,
-      message: "Selecciona una sucursal para guardar esta configuración.",
-    };
-  }
+  const requestedRestaurantId = Number(
+    cookieStore.get(ACTIVE_RESTAURANT_COOKIE)?.value,
+  );
+  const requestedBranchId = Number(
+    cookieStore.get(ACTIVE_BRANCH_COOKIE)?.value,
+  );
 
   const supabase = await createClient();
   const {
@@ -99,12 +86,17 @@ async function saveActionsImpl(payload: unknown): Promise<SaveActionsResult> {
   if (!user)
     return { ok: false, message: "Tu sesión expiró. Vuelve a iniciar sesión." };
 
-  const { data: membership } = await supabase
+  const { data: memberships } = await supabase
     .from("restaurant_members")
-    .select("role")
-    .eq("restaurant_id", restaurantId)
+    .select("restaurant_id, role")
     .eq("user_id", user.id)
-    .maybeSingle();
+    .order("created_at", { ascending: true });
+
+  const membership =
+    memberships?.find(
+      (item) => item.restaurant_id === requestedRestaurantId,
+    ) ?? memberships?.[0];
+
   if (!membership || !["owner", "admin", "manager"].includes(membership.role)) {
     return {
       ok: false,
@@ -112,19 +104,27 @@ async function saveActionsImpl(payload: unknown): Promise<SaveActionsResult> {
     };
   }
 
-  if (Number.isSafeInteger(activeBranchId) && activeBranchId > 0) {
-    const { data: branch } = await supabase
-      .from("branches")
-      .select("id")
-      .eq("id", activeBranchId)
-      .eq("restaurant_id", restaurantId)
-      .maybeSingle();
-    if (!branch)
-      return {
-        ok: false,
-        message: "La sucursal seleccionada no pertenece al restaurante.",
-      };
+  const restaurantId = membership.restaurant_id;
+  const { data: branches } = await supabase
+    .from("branches")
+    .select("id")
+    .eq("restaurant_id", restaurantId)
+    .order("created_at", { ascending: true });
+
+  const activeBranch =
+    branches?.find((item) => item.id === requestedBranchId) ?? branches?.[0];
+
+  if (!activeBranch) {
+    return {
+      ok: false,
+      message: "Crea o selecciona una sucursal antes de guardar.",
+    };
   }
+
+  const activeBranchId = activeBranch.id;
+  const branchId = parsed.data.scope === "branch" ? activeBranchId : null;
+
+  persistActiveContext(cookieStore, restaurantId, activeBranchId);
 
   const scopeQuery = supabase
     .from("actions")
@@ -228,4 +228,29 @@ async function saveActionsImpl(payload: unknown): Promise<SaveActionsResult> {
   revalidatePath("/dashboard/actions");
   revalidatePath("/t/[token]", "page");
   return { ok: true, message: "Configuración guardada." };
+}
+
+function persistActiveContext(
+  cookieStore: Awaited<ReturnType<typeof cookies>>,
+  restaurantId: number,
+  branchId: number,
+) {
+  const options = {
+    httpOnly: true,
+    sameSite: "lax" as const,
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    maxAge: 60 * 60 * 24 * 365,
+  };
+
+  for (const name of [ACTIVE_RESTAURANT_COOKIE, ACTIVE_BRANCH_COOKIE]) {
+    cookieStore.set(name, "", {
+      ...options,
+      path: "/dashboard",
+      maxAge: 0,
+    });
+  }
+
+  cookieStore.set(ACTIVE_RESTAURANT_COOKIE, String(restaurantId), options);
+  cookieStore.set(ACTIVE_BRANCH_COOKIE, String(branchId), options);
 }
