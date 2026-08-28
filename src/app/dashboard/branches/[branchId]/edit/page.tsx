@@ -80,6 +80,7 @@ export default async function EditBranchPage({
       <BranchForm
         initialValues={{
           id: branch.id,
+          branchId: branch.id,
           name: branch.name,
           address: branch.address ?? "",
           phone: branch.phone ?? "",
