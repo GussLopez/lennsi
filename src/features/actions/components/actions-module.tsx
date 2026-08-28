@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/select"
 import { Spinner } from "@/components/ui/spinner"
 import { saveActions } from "@/features/actions/actions/save-actions"
-import type { ActionItem, ActionScope, ActionType } from "@/features/actions/types/types";
+import type { ActionItem, ActionScope, ActionTemplateId, ActionType } from "@/features/actions/types/types";
 import { cn } from "@/lib/utils"
 import ActionPreview from "./action-preview"
 import ActionEditor from "./action-editor"
@@ -21,23 +21,12 @@ import { Reorder } from "motion/react"
 import { templates, typeDetails } from "../data";
 import { isValidHttpUrl, isValidWhatsAppValue } from "../validation"
 
-function inferTemplate(items: ActionItem[]) {
-  const itemTypes = items.map((item) => item.type)
-
-  return (
-    templates.find(
-      (candidate) =>
-        candidate.types.length === itemTypes.length &&
-        candidate.types.every((type, index) => type === itemTypes[index])
-    )?.id ?? "classic"
-  )
-}
-
 type ActionModulesProps = {
   restaurantName: string
   branchName: string | null
   activeBranchId: number | null
   canManage: boolean
+  initialBranchTemplateId: ActionTemplateId
   initialGlobal: ActionItem[]
   initialBranch: ActionItem[]
 }
@@ -65,12 +54,9 @@ export function ActionsModule(props: ActionModulesProps) {
   const [scope, setScope] = useState<ActionScope>("global")
   const [globalItems, setGlobalItems] = useState(props.initialGlobal)
   const [branchItems, setBranchItems] = useState(props.initialBranch)
-  const [scopeTemplates, setScopeTemplates] = useState<
-    Record<ActionScope, string>
-  >(() => ({
-    global: inferTemplate(props.initialGlobal),
-    branch: inferTemplate(props.initialBranch),
-  }))
+  const [templateId, setTemplateId] = useState<ActionTemplateId>(
+    props.initialBranchTemplateId,
+  )
   const [urlErrors, setUrlErrors] = useState<Record<string, string>>({})
   const [pending, setPending] = useState(false)
   const [message, setMessage] = useState<{
@@ -88,9 +74,8 @@ export function ActionsModule(props: ActionModulesProps) {
 
   const items = scope === "global" ? globalItems : branchItems
   const setItems = scope === "global" ? setGlobalItems : setBranchItems
-  const template = scopeTemplates[scope]
   const selectedTemplate =
-    templates.find((item) => item.id === template) ?? templates[0]
+    templates.find((item) => item.id === templateId) ?? templates[0]
   const enabledItems = useMemo(
     () => items.filter((item) => item.isEnabled),
     [items]
@@ -111,8 +96,8 @@ export function ActionsModule(props: ActionModulesProps) {
     }
   }
 
-  function applyTemplate(id: string) {
-    setScopeTemplates((current) => ({ ...current, [scope]: id }))
+  function applyTemplate(id: ActionTemplateId) {
+    setTemplateId(id)
     const preset = templates.find((item) => item.id === id)
     if (!preset) return
     const existingByType = new Map(items.map((item) => [item.type, item]))
@@ -157,6 +142,7 @@ export function ActionsModule(props: ActionModulesProps) {
     startTransition(async () => {
       const result = await saveActions({
         scope,
+        templateId: selectedTemplate.id,
         items: items.map((item, sortOrder) => ({ ...item, sortOrder })),
       })
 
@@ -211,7 +197,7 @@ export function ActionsModule(props: ActionModulesProps) {
               onClick={() => applyTemplate(item.id)}
               className={cn(
                 "rounded-xl border-2 p-3 text-left transition",
-                template === item.id
+                templateId === item.id
                   ? "border-primary ring-2 ring-primary/15"
                   : "border-transparent bg-background hover:border-border"
               )}

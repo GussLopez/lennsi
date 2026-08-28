@@ -2,7 +2,7 @@ import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
 
 import { ActionsModule } from "@/features/actions/components/actions-module"
-import type { ActionItem, ActionType } from "@/features/actions/types/types"
+import { ACTION_TEMPLATE_IDS, type ActionItem, type ActionTemplateId, type ActionType } from "@/features/actions/types/types"
 import { ACTIVE_BRANCH_COOKIE, ACTIVE_RESTAURANT_COOKIE } from "@/features/dashboard/constants"
 import { createClient } from "@/lib/supabase/server"
 
@@ -32,7 +32,7 @@ export default async function ActionsPage() {
   const [{ data: branches }, { data: rows }] = await Promise.all([
     supabase
       .from("branches")
-      .select("id, name")
+      .select("id, name, template_id")
       .eq("restaurant_id", restaurant.id)
       .order("created_at"),
     supabase
@@ -55,6 +55,11 @@ export default async function ActionsPage() {
     clientId: `action-${row.id}`,
   })
   const actions = (rows ?? []).map(mapAction)
+  const branchTemplateId = ACTION_TEMPLATE_IDS.includes(
+    branch?.template_id as ActionTemplateId,
+  )
+    ? (branch?.template_id as ActionTemplateId)
+    : "classic"
 
   return <ActionsModule
     key={`${restaurant.id}:${branch?.id ?? "none"}`}
@@ -62,6 +67,7 @@ export default async function ActionsPage() {
     branchName={branch?.name ?? null}
     activeBranchId={branch?.id ?? null}
     canManage={["owner", "admin", "manager"].includes(restaurant.role)}
+    initialBranchTemplateId={branchTemplateId}
     initialGlobal={actions.filter((item) => item.branchId === null)}
     initialBranch={actions.filter((item) => item.branchId === branch?.id)}
   />

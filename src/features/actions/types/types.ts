@@ -7,6 +7,10 @@ export const ACTION_TYPES = [
 
 export type ActionType = (typeof ACTION_TYPES)[number]
 
+export const ACTION_TEMPLATE_IDS = ["classic", "social", "minimal"] as const
+
+export type ActionTemplateId = (typeof ACTION_TEMPLATE_IDS)[number]
+
 export type ActionItem = {
   id: number | null
   type: ActionType
@@ -29,7 +33,7 @@ export type ActionTypeDetails = {
 }
 
 export type ActionTemplate = {
-  id: string
+  id: ActionTemplateId
   name: string
   description: string
   className: string

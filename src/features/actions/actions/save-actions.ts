@@ -4,7 +4,10 @@ import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { z } from "zod";
 
-import { ACTION_TYPES } from "@/features/actions/types/types";
+import {
+  ACTION_TEMPLATE_IDS,
+  ACTION_TYPES,
+} from "@/features/actions/types/types";
 import {
   ACTIVE_BRANCH_COOKIE,
   ACTIVE_RESTAURANT_COOKIE,
@@ -41,6 +44,7 @@ const itemSchema = z
 
 const payloadSchema = z.object({
   scope: z.enum(["global", "branch"]),
+  templateId: z.enum(ACTION_TEMPLATE_IDS),
   items: z.array(itemSchema).max(40),
 });
 
@@ -58,9 +62,12 @@ export async function saveActions(
 
   const cookieStore = await cookies();
   const restaurantId = Number(cookieStore.get(ACTIVE_RESTAURANT_COOKIE)?.value);
+  const activeBranchId = Number(
+    cookieStore.get(ACTIVE_BRANCH_COOKIE)?.value,
+  );
   const branchId =
     parsed.data.scope === "branch"
-      ? Number(cookieStore.get(ACTIVE_BRANCH_COOKIE)?.value)
+      ? activeBranchId
       : null;
 
   if (!Number.isSafeInteger(restaurantId) || restaurantId <= 0) {
@@ -99,11 +106,11 @@ export async function saveActions(
     };
   }
 
-  if (branchId) {
+  if (Number.isSafeInteger(activeBranchId) && activeBranchId > 0) {
     const { data: branch } = await supabase
       .from("branches")
       .select("id")
-      .eq("id", branchId)
+      .eq("id", activeBranchId)
       .eq("restaurant_id", restaurantId)
       .maybeSingle();
     if (!branch)
@@ -189,6 +196,24 @@ export async function saveActions(
       };
   }
 
+  if (Number.isSafeInteger(activeBranchId) && activeBranchId > 0) {
+    const { error } = await supabase
+      .from("branches")
+      .update({
+        template_id: parsed.data.templateId,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", activeBranchId)
+      .eq("restaurant_id", restaurantId);
+    if (error) {
+      return {
+        ok: false,
+        message: "Las acciones se guardaron, pero no se pudo guardar la plantilla.",
+      };
+    }
+  }
+
   revalidatePath("/dashboard/actions");
+  revalidatePath("/t/[token]", "page");
   return { ok: true, message: "Configuración guardada correctamente." };
 }
