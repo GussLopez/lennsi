@@ -34,6 +34,7 @@ export default function CreateBranchPage() {
           name: "",
           address: "",
           phone: "",
+          branchId: undefined,
           whatsapp: "",
           googleReviewUrl: "",
           wifiSsid: "",

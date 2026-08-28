@@ -13,36 +13,41 @@ import { Label } from "@/components/ui/label"
 import { Spinner } from "@/components/ui/spinner"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Switch } from "@/components/ui/switch"
+import { Controller, useForm } from "react-hook-form"
+import FormMessage from "@/components/ui/form-message"
+import { BranchFormValues } from "../types/types"
+import toast from "react-hot-toast"
 
-export type BranchFormValues = {
-  id?: number
-  name: string
-  address: string
-  phone: string
-  whatsapp: string
-  googleReviewUrl: string
-  wifiSsid: string
-  wifiPassword: string
-  timezone: string
-  is_active: boolean
-}
+
 
 type BranchFormProps = {
   initialValues: BranchFormValues
 }
 
-const initialState: BranchFormState = {
-  status: "idle",
-  message: "",
-}
-
 export function BranchForm({ initialValues }: BranchFormProps) {
-  const [state, formAction, pending] = useActionState(saveBranch, initialState)
   const [hideWifi, setHideWifi] = useState(false);
-  const [isActive, setIsActive] = useState(initialValues.is_active)
+  const [loading, setLoading] = useState(false);
+  const { register, handleSubmit, control, watch, formState: { errors } } = useForm({
+    defaultValues: initialValues
+  });
+  const isActive = watch('is_active');
 
+  const handleCreateBranch = async (formData: BranchFormValues) => {
+    setLoading(true);
+    const res = await saveBranch(formData);
+
+    setLoading(false);
+    if (res.status === "success") {
+      toast.success("Datos actualizados");
+    } else {
+      toast.error("Error al editar la sucursal")
+    }
+  }
   return (
-    <form action={formAction} className="space-y-6">
+    <form
+      className="space-y-6"
+      onSubmit={handleSubmit(handleCreateBranch)}
+    >
       {initialValues.id && (
         <input type="hidden" name="branchId" value={initialValues.id} />
       )}
@@ -56,67 +61,69 @@ export function BranchForm({ initialValues }: BranchFormProps) {
         </div>
 
         <div className="grid gap-5 p-5 sm:grid-cols-2 sm:p-6">
-          <FormField
-            id="branch-name"
-            label="Nombre"
-            name="name"
-            defaultValue={initialValues.name}
-            placeholder="Sucursal centro"
-            error={state.errors?.name}
-            required
-            disabled={pending}
-          />
-          <FormField
-            id="branch-timezone"
-            label="Zona horaria"
-            name="timezone"
-            defaultValue={initialValues.timezone}
-            placeholder="America/Cancun"
-            error={state.errors?.timezone}
-            required
-            disabled={pending}
-          />
-          <div className="sm:col-span-2">
-            <FormField
-              id="branch-address"
-              label="Dirección"
-              name="address"
-              defaultValue={initialValues.address}
-              placeholder="Calle, número, colonia, ciudad"
-              error={state.errors?.address}
-              disabled={pending}
+          <div className="space-y-2">
+            <Label htmlFor="branch-name">Nombre</Label>
+            <Input
+              id="branch-name"
+              placeholder="Sucursal centro"
+              aria-invalid={Boolean(errors.name?.message)}
+              disabled={loading}
+              {...register('name', {
+                required: 'El nombre es requerido'
+              })}
+            />
+            {errors.name?.message && <FormMessage message={errors.name.message} />}
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="branch-timezone">Zona horaria</Label>
+            <Input
+              id="branch-timezone"
+              placeholder="America/Cancun"
+              aria-invalid={Boolean(errors.timezone?.message)}
+              disabled={loading}
+              {...register('timezone')}
             />
           </div>
-          <FormField
-            id="branch-phone"
-            label="Teléfono"
-            name="phone"
-            type="tel"
-            defaultValue={initialValues.phone}
-            placeholder="+52 998 123 4567"
-            error={state.errors?.phone}
-            disabled={pending}
-          />
-          <FormField
-            id="branch-whatsapp"
-            label="WhatsApp"
-            name="whatsapp"
-            type="tel"
-            defaultValue={initialValues.whatsapp}
-            placeholder="+52 998 123 4567"
-            error={state.errors?.whatsapp}
-            disabled={pending}
-          />
           <div className="sm:col-span-2">
-            <FormField
+            <div className="space-y-2">
+              <Label htmlFor="branch-address">Dirección</Label>
+              <Input
+                id="branch-address"
+                placeholder="Calle, número, colonia, ciudad"
+                aria-invalid={Boolean(errors.address?.message)}
+                disabled={loading}
+                {...register('address')}
+              />
+            </div>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="branch-phone">Télefono</Label>
+            <Input
+              id="branch-phone"
+              placeholder="+52 998 123 4567"
+              aria-invalid={Boolean(errors.phone?.message)}
+              disabled={loading}
+              {...register('phone')}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="branch-whatsapp">Whatsapp</Label>
+            <Input
+              id="branch-whatsapp"
+              placeholder="+52 998 123 4567"
+              aria-invalid={Boolean(errors.whatsapp?.message)}
+              disabled={loading}
+              {...register('whatsapp')}
+            />
+          </div>
+          <div className="sm:col-span-2 space-y-2">
+            <Label htmlFor="branch-google-review">Enlace de reseñas de Google</Label>
+            <Input
               id="branch-google-review"
-              label="Enlace de reseñas de Google"
-              name="googleReviewUrl"
-              type="url"
-              defaultValue={initialValues.googleReviewUrl}
               placeholder="https://g.page/r/.../review"
-              error={state.errors?.googleReviewUrl}
-              disabled={pending}
+              aria-invalid={Boolean(errors.googleReviewUrl?.message)}
+              disabled={loading}
+              {...register('googleReviewUrl')}
             />
           </div>
         </div>
@@ -130,26 +137,28 @@ export function BranchForm({ initialValues }: BranchFormProps) {
           </p>
         </div>
         <div className="grid gap-5 p-5 sm:grid-cols-2 sm:p-6">
-          <FormField
-            id="branch-wifi-ssid"
-            label="Nombre de red"
-            name="wifiSsid"
-            defaultValue={initialValues.wifiSsid}
-            placeholder="WiFi Restaurante"
-            error={state.errors?.wifiSsid}
-            disabled={pending || hideWifi}
-          />
-          <FormField
-            id="branch-wifi-password"
-            label="Contraseña"
-            name="wifiPassword"
-            defaultValue={initialValues.wifiPassword}
-            placeholder="Contraseña de la red"
-            error={state.errors?.wifiPassword}
-            disabled={pending || hideWifi}
-          />
+          <div className="space-y-2">
+            <Label htmlFor="branch-wifi-ssid">Nombre de red</Label>
+            <Input
+              id="branch-wifi-ssid"
+              placeholder="WiFi Restaurante"
+              aria-invalid={Boolean(errors.wifiSsid?.message)}
+              disabled={loading || hideWifi}
+              {...register('wifiSsid')}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="branch-wifi-password">Contraseña</Label>
+            <Input
+              id="branch-wifi-password"
+              placeholder="WiFi Restaurante"
+              aria-invalid={Boolean(errors.wifiPassword?.message)}
+              disabled={loading || hideWifi}
+              {...register('wifiPassword')}
+            />
+          </div>
           <div className="flex items-center gap-2">
-            <Checkbox 
+            <Checkbox
               id="hide-wifi"
               onCheckedChange={setHideWifi}
             />
@@ -167,36 +176,27 @@ export function BranchForm({ initialValues }: BranchFormProps) {
               : "La sucursal está desactivada."}
           </p>
         </div>
-        <Switch 
-          name="isActive"
-          value="true"
-          uncheckedValue="false"
-          checked={isActive}
+        <Controller
+          name="is_active"
+          control={control}
           aria-label={isActive ? "Desactivar sucursal" : "Activar sucursal"}
-          disabled={pending}
-          onCheckedChange={setIsActive}
-          className={'scale-120'}
+          render={({ field }) => (
+            <Switch
+              checked={field.value}
+              disabled={loading}
+              onCheckedChange={field.onChange}
+              className={'scale-120'}
+            />
+          )}
+
         />
+
       </section>
 
-      {state.message && (
-        <p
-          className={
-            state.status === "success"
-              ? "text-sm text-emerald-600"
-              : "text-sm text-destructive"
-          }
-          role="status"
-          aria-live="polite"
-        >
-          {state.message}
-        </p>
-      )}
-
       <div className="flex justify-end">
-        <Button type="submit" disabled={pending}>
-          {pending ? <Spinner /> : <Save />}
-          {pending
+        <Button type="submit" disabled={loading}>
+          {loading ? <Spinner /> : <Save />}
+          {loading
             ? "Guardando"
             : initialValues.id
               ? "Guardar cambios"
@@ -204,54 +204,5 @@ export function BranchForm({ initialValues }: BranchFormProps) {
         </Button>
       </div>
     </form>
-  )
-}
-
-type FormFieldProps = {
-  id: string
-  label: string
-  name: string
-  defaultValue: string
-  error?: string
-  placeholder?: string
-  type?: "text" | "tel" | "url"
-  required?: boolean
-  disabled?: boolean
-}
-
-function FormField({
-  id,
-  label,
-  name,
-  defaultValue,
-  error,
-  placeholder,
-  type = "text",
-  required,
-  disabled,
-}: FormFieldProps) {
-  const errorId = `${id}-error`
-
-  return (
-    <div className="space-y-2">
-      <Label htmlFor={id}>{label}</Label>
-      <Input
-        id={id}
-        name={name}
-        type={type}
-        inputMode={type === "url" ? "url" : undefined}
-        defaultValue={defaultValue}
-        placeholder={placeholder}
-        required={required}
-        disabled={disabled}
-        aria-invalid={Boolean(error)}
-        aria-describedby={error ? errorId : undefined}
-      />
-      {error && (
-        <p id={errorId} className="text-sm text-destructive">
-          {error}
-        </p>
-      )}
-    </div>
   )
 }

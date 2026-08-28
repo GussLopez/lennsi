@@ -7,6 +7,7 @@ import { z } from "zod";
 
 import { ACTIVE_RESTAURANT_COOKIE } from "@/features/dashboard/constants";
 import { createClient } from "@/lib/supabase/server";
+import { BranchFormValues } from "../types/types";
 
 const optionalUrl = z.union([
   z.literal(""),
@@ -27,7 +28,7 @@ const branchSchema = z.object({
   wifiSsid: z.string().trim().max(100, "El nombre de red es demasiado largo."),
   wifiPassword: z.string().max(100, "La contraseña es demasiado larga."),
   timezone: z.string().trim().min(1, "Ingresa una zona horaria."),
-  isActive: z.enum(["true", "false"]),
+  isActive: z.boolean(),
 });
 
 type BranchField =
@@ -64,20 +65,19 @@ function getFieldErrors(
 }
 
 export async function saveBranch(
-  _previousState: BranchFormState,
-  formData: FormData,
+  formData: BranchFormValues,
 ): Promise<BranchFormState> {
   const parsed = branchSchema.safeParse({
-    branchId: formData.get("branchId") || undefined,
-    name: formData.get("name"),
-    address: formData.get("address"),
-    phone: formData.get("phone"),
-    whatsapp: formData.get("whatsapp"),
-    googleReviewUrl: formData.get("googleReviewUrl"),
-    wifiSsid: formData.get("wifiSsid") ?? "",
-    wifiPassword: formData.get("wifiPassword") ?? "",
-    timezone: formData.get("timezone"),
-    isActive: formData.get("isActive"),
+    branchId: formData.branchId || undefined,
+    name: formData.name,
+    address: formData.address,
+    phone: formData.phone,
+    whatsapp: formData.whatsapp,
+    googleReviewUrl: formData.googleReviewUrl,
+    wifiSsid: formData.wifiSsid ?? "",
+    wifiPassword: formData.wifiPassword ?? "",
+    timezone: formData.timezone,
+    isActive: formData.is_active,
   });
 
   if (!parsed.success) {
@@ -130,7 +130,7 @@ export async function saveBranch(
     wifi_ssid: parsed.data.wifiSsid || null,
     wifi_password: parsed.data.wifiPassword || null,
     timezone: parsed.data.timezone,
-    is_active: parsed.data.isActive === "true",
+    is_active: parsed.data.isActive === true,
     updated_at: new Date().toISOString(),
   };
 
