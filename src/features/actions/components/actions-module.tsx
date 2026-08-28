@@ -1,6 +1,6 @@
 "use client"
 
-import { Plus, Save } from "lucide-react";
+import { Plus, Save } from "lucide-react"
 import { startTransition, useMemo, useState } from "react"
 
 import { Button } from "@/components/ui/button"
@@ -13,13 +13,19 @@ import {
 } from "@/components/ui/select"
 import { Spinner } from "@/components/ui/spinner"
 import { saveActions } from "@/features/actions/actions/save-actions"
-import type { ActionItem, ActionScope, ActionTemplateId, ActionType } from "@/features/actions/types/types";
+import type {
+  ActionItem,
+  ActionScope,
+  ActionTemplateId,
+  ActionType,
+} from "@/features/actions/types/types"
 import { cn } from "@/lib/utils"
-import ActionPreview from "./action-preview"
-import ActionEditor from "./action-editor"
 import { Reorder } from "motion/react"
-import { templates, typeDetails } from "../data";
+import { templates, typeDetails } from "../data"
 import { isValidHttpUrl, isValidWhatsAppValue } from "../validation"
+import ActionEditor from "./action-editor"
+import ActionPreview from "./action-preview"
+import toast from "react-hot-toast"
 
 type ActionModulesProps = {
   restaurantName: string
@@ -59,10 +65,6 @@ export function ActionsModule(props: ActionModulesProps) {
   )
   const [urlErrors, setUrlErrors] = useState<Record<string, string>>({})
   const [pending, setPending] = useState(false)
-  const [message, setMessage] = useState<{
-    ok: boolean
-    text: string
-  } | null>(null)
 
   const scopeOptions = [
     { value: "global", label: "Configuración global" },
@@ -98,21 +100,6 @@ export function ActionsModule(props: ActionModulesProps) {
 
   function applyTemplate(id: ActionTemplateId) {
     setTemplateId(id)
-    const preset = templates.find((item) => item.id === id)
-    if (!preset) return
-    const existingByType = new Map(items.map((item) => [item.type, item]))
-    setItems(
-      preset.types.map((type, index) => ({
-        ...(existingByType.get(type) ??
-          newAction(
-            type,
-            scope === "branch" ? props.activeBranchId : null,
-            index
-          )),
-        isEnabled: true,
-        sortOrder: index,
-      }))
-    )
   }
 
   function submit() {
@@ -132,25 +119,28 @@ export function ActionsModule(props: ActionModulesProps) {
 
     if (Object.keys(errors).length > 0) {
       setUrlErrors(errors)
-      setMessage({ ok: false, text: "Revisa los enlaces antes de guardar." })
+      toast.error("Revisa los enlaces antes de guardar.")
       return
     }
-
-    setPending(true)
-    setMessage(null)
+    setPending(true);
 
     startTransition(async () => {
-      const result = await saveActions({
-        scope,
-        templateId: selectedTemplate.id,
-        items: items.map((item, sortOrder) => ({ ...item, sortOrder })),
-      })
+      try {
+        const result = await saveActions({
+          scope,
+          templateId: selectedTemplate.id,
+          items: items.map((item, sortOrder) => ({ ...item, sortOrder })),
+        })
 
-      setMessage({ ok: result.ok, text: result.message })
-      setPending(false)
+        toast.success(result.message)
+      } catch {
+        toast.error("El servidor no pudo procesar la solicitud. Reinicia el servidor de desarrollo e intenta nuevamente.")
+      } finally {
+        setPending(false)
+      }
     })
   }
-  
+
   return (
     <div className="mx-auto w-full max-w-7xl space-y-6">
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
@@ -184,7 +174,7 @@ export function ActionsModule(props: ActionModulesProps) {
         <div>
           <h2 className="font-semibold">Elige una plantilla</h2>
           <p className="text-sm text-muted-foreground">
-            Puedes personalizarla después de aplicarla.
+            Cambiar el diseño no modifica tus enlaces configurados.
           </p>
         </div>
 
@@ -272,7 +262,7 @@ export function ActionsModule(props: ActionModulesProps) {
                     transition={{
                       type: "spring",
                       stiffness: 350,
-                      damping: 30
+                      damping: 30,
                     }}
                     whileDrag={{ scale: 1.08 }}
                   >
@@ -295,21 +285,7 @@ export function ActionsModule(props: ActionModulesProps) {
             )}
           </div>
 
-          <div className="flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between">
-            {message ? (
-              <p
-                role="status"
-                className={cn(
-                  "text-sm",
-                  message.ok ? "text-emerald-600" : "text-destructive"
-                )}
-              >
-                {message.text}
-              </p>
-            ) : (
-              <span />
-            )}
-
+          <div className="flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-end">
             {props.canManage ? (
               <Button onClick={submit} disabled={pending}>
                 {pending ? <Spinner /> : <Save />}

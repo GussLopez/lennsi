@@ -53,6 +53,17 @@ export type SaveActionsResult = { ok: boolean; message: string };
 export async function saveActions(
   payload: unknown,
 ): Promise<SaveActionsResult> {
+  try {
+    return await saveActionsImpl(payload);
+  } catch {
+    return {
+      ok: false,
+      message: "Ocurri\u00f3 un error inesperado al guardar la configuraci\u00f3n.",
+    };
+  }
+}
+
+async function saveActionsImpl(payload: unknown): Promise<SaveActionsResult> {
   const parsed = payloadSchema.safeParse(payload);
   if (!parsed.success)
     return {
@@ -62,13 +73,8 @@ export async function saveActions(
 
   const cookieStore = await cookies();
   const restaurantId = Number(cookieStore.get(ACTIVE_RESTAURANT_COOKIE)?.value);
-  const activeBranchId = Number(
-    cookieStore.get(ACTIVE_BRANCH_COOKIE)?.value,
-  );
-  const branchId =
-    parsed.data.scope === "branch"
-      ? activeBranchId
-      : null;
+  const activeBranchId = Number(cookieStore.get(ACTIVE_BRANCH_COOKIE)?.value);
+  const branchId = parsed.data.scope === "branch" ? activeBranchId : null;
 
   if (!Number.isSafeInteger(restaurantId) || restaurantId <= 0) {
     return {
@@ -206,14 +212,20 @@ export async function saveActions(
       .eq("id", activeBranchId)
       .eq("restaurant_id", restaurantId);
     if (error) {
+      const migrationIsMissing =
+        error.code === "PGRST204" ||
+        error.message.toLowerCase().includes("template_id");
+
       return {
         ok: false,
-        message: "Las acciones se guardaron, pero no se pudo guardar la plantilla.",
+        message: migrationIsMissing
+          ? "Falta aplicar la migraci\u00f3n que agrega template_id a las sucursales."
+          : "Las acciones se guardaron, pero no se pudo guardar la plantilla.",
       };
     }
   }
 
   revalidatePath("/dashboard/actions");
   revalidatePath("/t/[token]", "page");
-  return { ok: true, message: "Configuración guardada correctamente." };
+  return { ok: true, message: "Configuración guardada." };
 }
