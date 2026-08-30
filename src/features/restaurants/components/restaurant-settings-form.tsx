@@ -40,13 +40,22 @@ export function RestaurantSettingsForm({
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [isDraggingImg, setIsDraggingImg] = useState(false);
   const logoInputRef = useRef<HTMLInputElement>(null);
-  const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const [logoPreview, setLogoPreview] = useState<string | null>(() => {
+    if (!restaurant.logo_url) return null;
+
+    const supabase = createClient();
+
+    return supabase.storage
+      .from("restaurants-logos")
+      .getPublicUrl(restaurant.logo_url)
+      .data.publicUrl;
+  });
   const { register, handleSubmit, setValue, watch, formState: { errors }, control } = useForm<RestaurantForm>({
     defaultValues: {
       name: restaurant.name,
       description: restaurant.description,
       logo_url: restaurant.logo_url || null,
-      isActive: true
+      isActive: restaurant.isActive
     }
   });
   const isActive = watch("isActive")
@@ -62,7 +71,7 @@ export function RestaurantSettingsForm({
 
       const response = await updateRestaurantSettings({
         ...formData,
-        logo_url: uploadedPath
+        logo_url: uploadedPath ?? formData.logo_url
       });
 
       if (response.status === "error") {
@@ -77,9 +86,14 @@ export function RestaurantSettingsForm({
         throw new Error(response.message)
       }
 
-      return response
+      return {
+        response,
+        logoPath: uploadedPath ?? formData.logo_url
+      }
     },
-    onSuccess: () => {
+    onSuccess: ({ logoPath }) => {
+      setLogoFile(null);
+      setValue("logo_url", logoPath)
       toast.success('Información actualizada');
     },
     onError: () => {

@@ -1,13 +1,12 @@
-"use server"
+"use server";
 
-import { revalidatePath } from "next/cache"
-import { cookies } from "next/headers"
-import { z } from "zod"
+import { revalidatePath } from "next/cache";
+import { cookies } from "next/headers";
+import { z } from "zod";
 
-import { ACTIVE_RESTAURANT_COOKIE } from "@/features/dashboard/constants"
-import { createClient } from "@/lib/supabase/server"
-import { RestaurantForm } from "../types"
-
+import { ACTIVE_RESTAURANT_COOKIE } from "@/features/dashboard/constants";
+import { createClient } from "@/lib/supabase/server";
+import { RestaurantForm } from "../types";
 
 const restaurantSchema = z.object({
   name: z
@@ -19,28 +18,28 @@ const restaurantSchema = z.object({
     .string()
     .trim()
     .max(300, "La descripción no puede exceder 300 caracteres"),
+  logo_url: z.string().trim().max(500).nullable,
   isActive: z.boolean(),
-})
+});
 
 export type RestaurantSettingsState = {
-  status: "idle" | "success" | "error"
-  message: string
-  errors?: Partial<
-    Record<"name" | "description", string>
-  >
-}
+  status: "idle" | "success" | "error";
+  message: string;
+  errors?: Partial<Record<"name" | "description", string>>;
+};
 
 export async function updateRestaurantSettings(
-  formData: RestaurantForm
+  formData: RestaurantForm,
 ): Promise<RestaurantSettingsState> {
   const parsed = restaurantSchema.safeParse({
     name: formData.name,
     description: formData.description,
+    logo_url: formData.logo_url,
     isActive: formData.isActive,
-  })
+  });
 
   if (!parsed.success) {
-    const fields = z.flattenError(parsed.error).fieldErrors
+    const fields = z.flattenError(parsed.error).fieldErrors;
     return {
       status: "error",
       message: "Revisa los campos marcados.",
@@ -48,25 +47,27 @@ export async function updateRestaurantSettings(
         name: fields.name?.[0],
         description: fields.description?.[0],
       },
-    }
+    };
   }
 
-  const cookieStore = await cookies()
-  const restaurantId = Number(cookieStore.get(ACTIVE_RESTAURANT_COOKIE)?.value)
+  const cookieStore = await cookies();
+  const restaurantId = Number(cookieStore.get(ACTIVE_RESTAURANT_COOKIE)?.value);
   if (!Number.isSafeInteger(restaurantId) || restaurantId <= 0) {
     return {
       status: "error",
       message: "No se pudo identificar el restaurante activo.",
-    }
+    };
   }
 
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!user) {
     return {
       status: "error",
       message: "Tu sesión expiró. Vuelve a iniciar sesión.",
-    }
+    };
   }
 
   const { data: membership } = await supabase
@@ -74,13 +75,16 @@ export async function updateRestaurantSettings(
     .select("role")
     .eq("restaurant_id", restaurantId)
     .eq("user_id", user.id)
-    .maybeSingle()
+    .maybeSingle();
 
-  if (!membership || (membership.role !== "owner" && membership.role !== "admin")) {
+  if (
+    !membership ||
+    (membership.role !== "owner" && membership.role !== "admin")
+  ) {
     return {
       status: "error",
       message: "No tienes permiso para editar este restaurante.",
-    }
+    };
   }
 
   const { error } = await supabase
@@ -88,36 +92,39 @@ export async function updateRestaurantSettings(
     .update({
       name: parsed.data.name,
       description: parsed.data.description || null,
+      logo_url: parsed.data.logo_url,
       is_active: parsed.data.isActive,
       updated_at: new Date().toISOString(),
     })
-    .eq("id", restaurantId)
+    .eq("id", restaurantId);
   console.log(error);
   if (error) {
     return {
       status: "error",
       message: "No se pudieron guardar los cambios. Intenta de nuevo.",
-    }
+    };
   }
 
-  revalidatePath("/dashboard", "layout")
-  return { status: "success", message: "Información actualizada correctamente." }
+  revalidatePath("/dashboard", "layout");
+  return {
+    status: "success",
+    message: "Información actualizada correctamente.",
+  };
 }
 
-export async function uploadRestaurantLogo(
-  restaurantId: number,
-  file: File
-) {
+export async function uploadRestaurantLogo(restaurantId: number, file: File) {
   const supabase = await createClient();
 
   const extensions: Record<string, string> = {
     "image/jpeg": "jpg",
     "image/png": "png",
     "image/webp": "webp",
-  }
+  };
 
   const extension = extensions[file.type];
-
+  if (file.size > 5 * 1024 * 1024) {
+    throw new Error("El logo no puede superar 5 MB");
+  }
   if (!extension) {
     throw new Error("Formato de imagen no permitido");
   }
@@ -128,8 +135,8 @@ export async function uploadRestaurantLogo(
     .upload(path, file, {
       contentType: file.type,
       cacheControl: "31536000",
-      upsert: false
-    })
+      upsert: false,
+    });
 
   if (error) {
     throw new Error(error.message);
