@@ -103,3 +103,37 @@ export async function updateRestaurantSettings(
   revalidatePath("/dashboard", "layout")
   return { status: "success", message: "Información actualizada correctamente." }
 }
+
+export async function uploadRestaurantLogo(
+  restaurantId: number,
+  file: File
+) {
+  const supabase = await createClient();
+
+  const extensions: Record<string, string> = {
+    "image/jpeg": "jpg",
+    "image/png": "png",
+    "image/webp": "webp",
+  }
+
+  const extension = extensions[file.type];
+
+  if (!extension) {
+    throw new Error("Formato de imagen no permitido");
+  }
+  const path = `${restaurantId}/${crypto.randomUUID()}.${extension}`;
+
+  const { error } = await supabase.storage
+    .from("restaurants-logos")
+    .upload(path, file, {
+      contentType: file.type,
+      cacheControl: "31536000",
+      upsert: false
+    })
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return path;
+}

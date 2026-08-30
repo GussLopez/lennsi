@@ -1,11 +1,8 @@
 "use client";
-import { Save, Store } from "lucide-react";
-import { useState } from "react";
+import { FileUp, Save, Store, Trash2, Upload } from "lucide-react";
+import React, { useRef, useState } from "react";
 
-import {
-  type RestaurantSettingsState,
-  updateRestaurantSettings,
-} from "@/features/restaurants/actions/update-restaurant-settings"
+import { updateRestaurantSettings, uploadRestaurantLogo } from "@/features/restaurants/actions/update-restaurant-settings"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -16,38 +13,71 @@ import { Controller, useForm } from "react-hook-form"
 import { RestaurantForm } from "../types"
 import { useMutation } from "@tanstack/react-query"
 import toast from "react-hot-toast"
+import { cn } from "@/lib/utils";
+import { createClient } from "@/lib/supabase/client";
 
 type RestaurantSettingsFormProps = {
   restaurant: {
+    id: number
     name: string
     description: string
+    logo_url: string | null;
     isActive: boolean
   }
   canEdit: boolean
 }
 
-const initialRestaurantSettingsState: RestaurantSettingsState = {
-  status: "idle",
-  message: "",
-}
+const allowedTypes = [
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+]
 
 export function RestaurantSettingsForm({
   restaurant,
   canEdit,
 }: RestaurantSettingsFormProps) {
-
-  const { register, handleSubmit, watch, formState: { errors }, control } = useForm<RestaurantForm>({
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [isDraggingImg, setIsDraggingImg] = useState(false);
+  const logoInputRef = useRef<HTMLInputElement>(null);
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const { register, handleSubmit, setValue, watch, formState: { errors }, control } = useForm<RestaurantForm>({
     defaultValues: {
       name: restaurant.name,
       description: restaurant.description,
+      logo_url: restaurant.logo_url || null,
       isActive: true
     }
   });
   const isActive = watch("isActive")
   const { mutate, isPending } = useMutation({
     mutationFn: async (formData: RestaurantForm) => {
-      const response = await updateRestaurantSettings(formData);
-      if (response.status === "error") throw new Error("Error al actualizar los datos");
+      let uploadedPath: string | null = null;
+      if (logoFile) {
+        uploadedPath = await uploadRestaurantLogo(
+          restaurant.id,
+          logoFile
+        )
+      }
+
+      const response = await updateRestaurantSettings({
+        ...formData,
+        logo_url: uploadedPath
+      });
+
+      if (response.status === "error") {
+        if (uploadedPath) {
+          const supabase = createClient()
+
+          await supabase.storage
+            .from("restaurants-logos")
+            .remove([uploadedPath])
+        }
+
+        throw new Error(response.message)
+      }
+
+      return response
     },
     onSuccess: () => {
       toast.success('Información actualizada');
@@ -61,6 +91,43 @@ export function RestaurantSettingsForm({
     mutate(data)
   }
 
+  const handleLogoDrop = (e: React.DragEvent<HTMLLabelElement>) => {
+    e.preventDefault();
+    setIsDraggingImg(false);
+
+    const file = Array.from(e.dataTransfer.files).find(
+      item => item.type.startsWith("image/"),
+    )
+
+    if (file) selectLogo(file);
+  }
+
+  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) selectLogo(file);
+  }
+  const handleLogoDragOver = (e: React.DragEvent<HTMLLabelElement>) => {
+    e.preventDefault();
+    setIsDraggingImg(true);
+  }
+  const handleLogoDragLeave = (e: React.DragEvent<HTMLLabelElement>) => {
+    e.preventDefault();
+    setIsDraggingImg(false);
+  }
+
+  const selectLogo = (file: File) => {
+    if (!allowedTypes.includes(file.type)) {
+      toast.error("Solo se permiten JPG, PNG y WEBP");
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("El logo no puede superar 5 MB");
+      return;
+    }
+    setLogoFile(file);
+    setLogoPreview(URL.createObjectURL(file));
+  }
   return (
     <div className="mx-auto w-full max-w-3xl space-y-6">
       <div>
@@ -116,6 +183,73 @@ export function RestaurantSettingsForm({
                 </p>
               )}
             </div>
+            <label
+              htmlFor="restaurant-logo"
+              onDrop={handleLogoDrop}
+              onDragOver={handleLogoDragOver}
+              onDragLeave={handleLogoDragLeave}
+              className={cn("flex flex-col justify-center items-center gap-2 border border-dashed p-4 rounded-lg overflow-hidden transition-all",
+                isDraggingImg
+                  ? "outline-3 outline-primary/20 border-primary bg-primary/5"
+                  : "border-input",
+                logoPreview && "bg-accent p-0 border-solid"
+              )}
+            >
+              {logoPreview ? (
+                <div className="w-full">
+                  <img
+                    src={logoPreview}
+                    alt="Logo del restaurante"
+                    className="w-40 h-auto mx-auto py-3"
+                  />
+                  <div className="grid grid-cols-2">
+                    <Button
+                      type="button"
+                      variant={'outline'}
+                      className={'rounded-none border-b-0 border-l-0'}
+                      onClick={() => logoInputRef.current?.click()}
+                    >
+                      <Upload />
+                      Cambiar
+                    </Button>
+                    <Button
+                      type="button"
+                      variant={'outline'}
+                      className={'rounded-none border-b-0 border-r-0'}
+                      onClick={() => {
+                        setLogoFile(null);
+                        setLogoPreview(null);
+                        setValue("logo_url", null);
+                      }}
+                    >
+                      <Trash2 />
+                      Eliminar
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <div className="w-10 h-10 flex justify-center items-center rounded-full text-primary bg-primary/10">
+                    <FileUp className="size-5" />
+                  </div>
+                  <p className="text-sm">
+                    <span className="font-medium text-primary cursor-pointer">
+                      Click aquí{" "}
+                    </span>
+                    para subir tu logo o arrastralo.
+                  </p>
+                  <span className="text-xs font-light text-muted-foreground">Formato soportado: JPG, JPEG, PNG, WEBP (5mb)</span>
+                </>
+              )}
+              <input
+                type="file"
+                id="restaurant-logo"
+                ref={logoInputRef}
+                accept="image/*"
+                onChange={handleLogoChange}
+                className="sr-only"
+              />
+            </label>
           </div>
         </section>
 

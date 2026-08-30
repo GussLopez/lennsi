@@ -23,6 +23,7 @@ export default async function SettingsPage() {
           id,
           name,
           description,
+          logo_url,
           is_active
         )
       `
@@ -46,8 +47,10 @@ export default async function SettingsPage() {
     <RestaurantSettingsForm
       key={activeRestaurant.id}
       restaurant={{
+        id: activeRestaurant.id,
         name: activeRestaurant.name,
         description: activeRestaurant.description ?? "",
+        logo_url: activeRestaurant.logo_url ?? null,
         isActive: activeRestaurant.is_active,
       }}
       canEdit={activeRestaurant.role === "owner" || activeRestaurant.role === "admin"}
