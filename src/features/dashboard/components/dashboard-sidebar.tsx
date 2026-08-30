@@ -32,7 +32,7 @@ type DashboardSidebarProps = React.ComponentProps<typeof Sidebar> & {
 export function DashboardSidebar({ restaurants, activeRestaurantId, branches, activeBranchId, user, ...props }: DashboardSidebarProps) {
   return (
     <Sidebar collapsible="icon" {...props}>
-      <SidebarHeader>
+      <SidebarHeader className="bg-white">
         <NavHeader
           key={`${activeRestaurantId}:${activeBranchId ?? "none"}`}
           restaurants={restaurants}
@@ -41,10 +41,10 @@ export function DashboardSidebar({ restaurants, activeRestaurantId, branches, ac
           activeBranchId={activeBranchId}
         />
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className="bg-white">
         <NavMain items={navigation} />
       </SidebarContent>
-      <SidebarFooter>
+      <SidebarFooter className="bg-white">
         <NavUser user={user} />
       </SidebarFooter>
       <SidebarRail />
