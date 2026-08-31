@@ -18,7 +18,6 @@ export const templates: ActionTemplate[] = [
   {
     id: "classic",
     name: "Clásica",
-    description: "Todo lo esencial",
     background: "bg-zinc-950",
     textColor: "text-white",
     bgColor: "bg-current/10 text-white",
@@ -27,7 +26,6 @@ export const templates: ActionTemplate[] = [
   {
     id: "social",
     name: "Social",
-    description: "Conversación y comunidad",
     background: "bg-white",
     textColor: "text-primary",
     bgColor: "bg-primary text-white",
@@ -36,7 +34,6 @@ export const templates: ActionTemplate[] = [
   {
     id: "minimal",
     name: "Minimal",
-    description: "Directa y elegante",
     background: "bg-stone-100",
     textColor: "text-stone-950",
     bgColor: "bg-current/15",

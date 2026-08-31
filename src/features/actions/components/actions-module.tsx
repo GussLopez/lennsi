@@ -206,9 +206,6 @@ export function ActionsModule(props: ActionModulesProps) {
                 <span className="h-2 w-full rounded-full bg-current opacity-40" />
               </div>
               <span className="font-medium">{item.name}</span>
-              <span className="block text-xs text-muted-foreground">
-                {item.description}
-              </span>
             </button>
           ))}
         </div>

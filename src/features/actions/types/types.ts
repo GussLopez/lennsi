@@ -35,7 +35,6 @@ export type ActionTypeDetails = {
 export type ActionTemplate = {
   id: ActionTemplateId
   name: string
-  description: string
   background: string
   textColor: string
   bgColor: string
