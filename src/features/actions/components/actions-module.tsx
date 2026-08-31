@@ -28,7 +28,6 @@ import ActionPreview from "./action-preview"
 import toast from "react-hot-toast"
 
 type ActionModulesProps = {
-  restaurantName: string
   branchName: string | null
   activeBranchId: number | null
   canManage: boolean
@@ -304,7 +303,6 @@ export function ActionsModule(props: ActionModulesProps) {
         </section>
 
         <ActionPreview
-          restaurantName={props.restaurantName}
           branchName={props.branchName}
           scope={scope}
           items={enabledItems}
