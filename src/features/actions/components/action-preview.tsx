@@ -72,7 +72,7 @@ export default function ActionPreview({
             </div>
 
             <p className="mt-auto pt-8 text-center text-[11px] text-muted-foreground">
-              Powered by Gus
+              Powered by Lennsi
             </p>
           </div>
         </div>
