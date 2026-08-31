@@ -22,7 +22,7 @@ const publicTagPageSchema = z.object({
   ),
 })
 
-export default async function TokenPage({ params }: PageProps<"/t/[token]">) {
+export default async function TokenPage({ params }: PageProps<"/go/[token]">) {
   const { token } = await params
   const supabase = await createClient()
   const { data, error } = await supabase.rpc("get_public_tag_page", {

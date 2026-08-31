@@ -226,7 +226,7 @@ async function saveActionsImpl(payload: unknown): Promise<SaveActionsResult> {
   }
 
   revalidatePath("/dashboard/actions");
-  revalidatePath("/t/[token]", "page");
+  revalidatePath("/go/[token]", "page");
   return { ok: true, message: "Configuración guardada." };
 }
 

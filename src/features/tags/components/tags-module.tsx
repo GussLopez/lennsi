@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { createColumnHelper } from "@tanstack/react-table"
 import { Check, Copy, Edit, MoreHorizontal, Nfc, Plus, Trash2 } from "lucide-react"
 import Link from "next/link"
-import { useMemo, useState, useSyncExternalStore } from "react"
+import { useMemo, useState } from "react"
 
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 import { Badge } from "@/components/ui/badge"
@@ -17,6 +17,7 @@ import EmptyState from "@/components/ui/empty-state"
 import { Spinner } from "@/components/ui/spinner"
 import { deleteTags, fetchTags } from "@/features/tags/api/tags-client"
 import type { Tag } from "@/features/tags/types/types"
+import { getPublicTagUrl } from "@/features/tags/public-tag-url"
 
 type TagsModuleProps = {
   branchId: number
@@ -28,7 +29,6 @@ export function TagsModule({ branchId, branchName }: TagsModuleProps) {
   const [selectedTags, setSelectedTags] = useState<Tag[]>([])
   const [dialogOpen, setDialogOpen] = useState(false)
   const [copiedToken, setCopiedToken] = useState<string | null>(null)
-  const origin = useBrowserOrigin()
   const tagsQuery = useQuery({
     queryKey: ["tags", branchId],
     queryFn: fetchTags,
@@ -42,12 +42,12 @@ export function TagsModule({ branchId, branchName }: TagsModuleProps) {
     },
   })
   const columns = useMemo(
-    () => createTagColumns(origin, copiedToken, async (tag) => {
-      await navigator.clipboard.writeText(`${window.location.origin}/t/${tag.token}`)
+    () => createTagColumns(copiedToken, async (tag) => {
+      await navigator.clipboard.writeText(getPublicTagUrl(tag.token))
       setCopiedToken(tag.token)
       window.setTimeout(() => setCopiedToken((current) => current === tag.token ? null : current), 2000)
     }),
-    [origin, copiedToken],
+    [copiedToken],
   )
 
   if (tagsQuery.isPending) {
@@ -151,7 +151,6 @@ export function TagsModule({ branchId, branchName }: TagsModuleProps) {
 const columnHelper = createColumnHelper<DataTableFeatures, Tag>()
 
 function createTagColumns(
-  origin: string,
   copiedToken: string | null,
   copyUrl: (tag: Tag) => Promise<void>,
 ) {
@@ -181,7 +180,7 @@ function createTagColumns(
       id: "url",
       header: "URL NFC",
       cell: ({ row }) => {
-        const url = `${origin}/t/${row.original.token}`
+        const url = getPublicTagUrl(row.original.token)
         return (
           <div className="flex min-w-64 items-center gap-2">
             <a className="truncate text-primary hover:underline" href={url} target="_blank" rel="noreferrer">
@@ -233,16 +232,4 @@ function createTagColumns(
       ),
     }),
   ])
-}
-
-function subscribeToOrigin() {
-  return () => undefined
-}
-
-function useBrowserOrigin() {
-  return useSyncExternalStore(
-    subscribeToOrigin,
-    () => window.location.origin,
-    () => "",
-  )
 }
