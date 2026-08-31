@@ -58,7 +58,7 @@ export default async function TokenPage({ params }: PageProps<"/t/[token]">) {
             />
           ) : (
             <div className="flex size-28 items-center justify-center rounded-full bg-current/10 text-4xl font-bold shadow-sm">
-              page.restaurantName.slice(0, 1).toUpperCase()
+              {page.restaurantName.slice(0, 1).toUpperCase()}
             </div>
           )}
           <div>
