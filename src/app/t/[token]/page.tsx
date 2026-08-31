@@ -9,6 +9,7 @@ import { createClient } from "@/lib/supabase/server"
 
 const publicTagPageSchema = z.object({
   restaurantName: z.string(),
+  restaurantLogoPath: z.string().nullable(),
   branchName: z.string(),
   templateId: z.enum(ACTION_TEMPLATE_IDS),
   actions: z.array(
@@ -34,6 +35,11 @@ export default async function TokenPage({ params }: PageProps<"/t/[token]">) {
   const page = parsed.data
   const template =
     templates.find((item) => item.id === page.templateId) ?? templates[0]
+  const restaurantLogoUrl = page.restaurantLogoPath
+    ? supabase.storage
+      .from("restaurants-logos")
+      .getPublicUrl(page.restaurantLogoPath).data.publicUrl
+    : null
 
   return (
     <main
@@ -44,9 +50,17 @@ export default async function TokenPage({ params }: PageProps<"/t/[token]">) {
     >
       <div className="mx-auto flex w-full max-w-xl flex-col items-center gap-12">
         <header className="flex flex-col items-center gap-5 text-center">
-          <div className="flex size-28 items-center justify-center rounded-full bg-current/10 text-4xl font-bold shadow-sm">
-            {page.restaurantName.slice(0, 1).toUpperCase()}
-          </div>
+          {restaurantLogoUrl ? (
+            <img
+              src={restaurantLogoUrl}
+              alt={`Logo de ${page.restaurantName}`}
+              className="w-full h-40 object-cover"
+            />
+          ) : (
+            <div className="flex size-28 items-center justify-center rounded-full bg-current/10 text-4xl font-bold shadow-sm">
+              page.restaurantName.slice(0, 1).toUpperCase()
+            </div>
+          )}
           <div>
             <h1 className="text-2xl font-semibold">{page.restaurantName}</h1>
             <p className="mt-1 text-sm opacity-70">{page.branchName}</p>
