@@ -19,29 +19,25 @@ export const templates: ActionTemplate[] = [
     id: "classic",
     name: "Clásica",
     description: "Todo lo esencial",
-    className: "bg-zinc-950 text-white",
-    types: [
-      "menu",
-      "wifi",
-      "google_review",
-      "instagram",
-      "whatsapp",
-      "website",
-    ],
+    background: "bg-zinc-950",
+    textColor: "text-white",
+    linkStyle: "rounded-xl border border-current/15 bg-current/10 px-4 shadow-sm backdrop-blur hover:bg-current/15"
   },
   {
     id: "social",
     name: "Social",
     description: "Conversación y comunidad",
-    className: "bg-gradient-to-br from-fuchsia-600 to-orange-400 text-white",
-    types: ["instagram", "whatsapp", "google_review", "website"],
+    background: "bg-white",
+    textColor: "text-white",
+    linkStyle: "rounded-full border border-primary bg-primary px-4 shadow-sm backdrop-blur hover:bg-current/15"
   },
   {
     id: "minimal",
     name: "Minimal",
     description: "Directa y elegante",
-    className: "bg-stone-100 text-stone-950",
-    types: ["menu", "google_review", "website"],
+    background: "bg-stone-100",
+    textColor: "text-stone-950",
+    linkStyle: "rounded-xl border border-current/15 bg-current/10 px-4 shadow-sm backdrop-blur hover:bg-current/15"
   },
 ];
 

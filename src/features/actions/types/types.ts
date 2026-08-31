@@ -36,6 +36,7 @@ export type ActionTemplate = {
   id: ActionTemplateId
   name: string
   description: string
-  className: string
-  types: ActionType[]
+  background: string
+  textColor: string
+  linkStyle: string
 }

@@ -28,7 +28,7 @@ export default function ActionPreview({
         <div
           className={cn(
             "h-full overflow-y-auto px-5 pb-10 pt-16",
-            template.className
+            template.background
           )}
         >
           <div className="mx-auto flex min-h-full max-w-sm flex-col">
@@ -47,7 +47,7 @@ export default function ActionPreview({
                 items.map((item) => (
                   <div
                     key={item.clientId}
-                    className="flex min-h-12 items-center justify-center rounded-xl border border-current/15 bg-current/10 px-4 shadow-sm backdrop-blur"
+                    className={cn("flex min-h-12 items-center justify-center", template.linkStyle)}
                   >
                     <span className="text-center text-sm font-medium">
                       {item.label || "Sin label"}

@@ -45,7 +45,7 @@ export default async function TokenPage({ params }: PageProps<"/t/[token]">) {
     <main
       className={cn(
         "min-h-screen w-full px-4 py-12",
-        template.className,
+        template.background,
       )}
     >
       <div className="mx-auto flex w-full max-w-xl flex-col items-center gap-12">
@@ -72,7 +72,7 @@ export default async function TokenPage({ params }: PageProps<"/t/[token]">) {
             <Link
               key={action.id}
               href={action.url}
-              className="rounded-2xl border border-current/15 bg-current/10 p-4 text-center text-lg font-medium shadow-sm backdrop-blur transition hover:bg-current/15"
+              className="rounded-2xl border p-4 text-center text-lg font-medium shadow-sm backdrop-blur transition hover:bg-current/15"
             >
               {action.label}
             </Link>
