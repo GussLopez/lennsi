@@ -20,7 +20,7 @@ export default async function DashboardLayout({ children }: LayoutProps<"/dashbo
       .maybeSingle(),
     supabase
       .from("restaurant_members")
-      .select("restaurant_id, role, restaurants(id, name)")
+      .select("restaurant_id, role, restaurants(id, name, logo_url)")
       .eq("user_id", user.id)
       .order("created_at", { ascending: true }),
   ])
@@ -29,7 +29,7 @@ export default async function DashboardLayout({ children }: LayoutProps<"/dashbo
 
   const restaurants: DashboardRestaurant[] = memberships.flatMap((membership) => {
     const restaurant = Array.isArray(membership.restaurants) ? membership.restaurants[0] : membership.restaurants
-    return restaurant ? [{ id: restaurant.id, name: restaurant.name, role: membership.role }] : []
+    return restaurant ? [{ id: restaurant.id, name: restaurant.name, role: membership.role, logo_url: restaurant.logo_url }] : []
   })
 
   if (!restaurants.length) return <RestaurantOnboarding />
@@ -51,13 +51,17 @@ export default async function DashboardLayout({ children }: LayoutProps<"/dashbo
   const requestedBranchId = Number(cookieStore.get(ACTIVE_BRANCH_COOKIE)?.value)
   const activeBranch = branches.find((branch) => branch.id === requestedBranchId) ?? branches[0] ?? null
 
+  const restaurantLogoUrl = supabase.storage
+      .from("restaurants-logos")
+      .getPublicUrl(activeRestaurant.logo_url ?? "").data.publicUrl
   return (
     <SidebarProvider>
       <DashboardSidebar
         restaurants={restaurants}
-        activeRestaurantId={activeRestaurant.id}
+        activeRestaurant={activeRestaurant}
         branches={branches}
         activeBranchId={activeBranch?.id ?? null}
+        restaurantLogo={restaurantLogoUrl}
         user={{
           name: profile?.full_name ?? user.email?.split("@")[0] ?? "Usuario",
           email: user.email ?? "",

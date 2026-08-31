@@ -7,6 +7,7 @@ import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail } fr
 import { NavHeader } from "./nav-header"
 import { NavMain } from "./nav-main"
 import { NavUser } from "./nav-user"
+import { useRestaurantStore } from "@/store/RestaurantStore"
 
 const navigation = [
   { title: "Resumen", url: "/dashboard", icon: LayoutDashboard },
@@ -18,25 +19,48 @@ const navigation = [
   { title: "Configuración", url: "/dashboard/settings", icon: Settings2 },
 ]
 
-export type DashboardRestaurant = { id: number; name: string; role: string }
+export type DashboardRestaurant = {
+  id: number;
+  name: string;
+  role: string;
+  logo_url: string | null;
+}
 export type DashboardBranch = { id: number; name: string; restaurantId: number }
 
 type DashboardSidebarProps = React.ComponentProps<typeof Sidebar> & {
   restaurants: DashboardRestaurant[]
-  activeRestaurantId: number
+  activeRestaurant: DashboardRestaurant
   branches: DashboardBranch[]
   activeBranchId: number | null
+  restaurantLogo: string | null
   user: { name: string; email: string }
 }
 
-export function DashboardSidebar({ restaurants, activeRestaurantId, branches, activeBranchId, user, ...props }: DashboardSidebarProps) {
+export function DashboardSidebar({
+  restaurants,
+  activeRestaurant,
+  branches,
+  activeBranchId,
+  user,
+  restaurantLogo,
+  ...props
+}: DashboardSidebarProps) {
+  const setRestaurant = useRestaurantStore(state => state.setRestaurant);
+
+  React.useEffect(() => {
+    setRestaurant({
+      id: activeRestaurant.id,
+      name: activeRestaurant.name,
+      logo_url: restaurantLogo ?? null
+    })
+  }, [activeRestaurant, restaurantLogo])
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader className="bg-white">
         <NavHeader
-          key={`${activeRestaurantId}:${activeBranchId ?? "none"}`}
+          key={`${activeRestaurant.id}:${activeBranchId ?? "none"}`}
           restaurants={restaurants}
-          activeRestaurantId={activeRestaurantId}
+          activeRestaurantId={activeRestaurant.id}
           branches={branches}
           activeBranchId={activeBranchId}
         />

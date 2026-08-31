@@ -6,6 +6,7 @@ import type {
   ActionScope,
   ActionTemplate,
 } from "../types/types"
+import { useRestaurantStore } from "@/store/RestaurantStore"
 
 type ActionPreviewProps = {
   restaurantName: string
@@ -22,6 +23,7 @@ export default function ActionPreview({
   items,
   template,
 }: ActionPreviewProps) {
+  const restaurantLogo = useRestaurantStore(state => state.logo_url);
   return (
     <aside className="mx-auto w-full max-w-90 lg:sticky lg:top-24">
       <Iphone className="block">
@@ -33,10 +35,18 @@ export default function ActionPreview({
         >
           <div className="mx-auto flex min-h-full max-w-sm flex-col">
             <div className="mb-7 text-center">
-              <div className="mx-auto mb-3 flex size-16 items-center justify-center rounded-2xl bg-current/10 text-2xl font-bold shadow-sm">
-                {restaurantName.slice(0, 1).toUpperCase()}
-              </div>
-              <h3 className="text-xl font-semibold">{restaurantName}</h3>
+              {restaurantLogo ? (
+                <img
+                  src={restaurantLogo}
+                  alt={`Logo del Restaurante`}
+                  className="w-full h-26 mb-3 object-contain"
+                />
+              ) : (
+                <div className={cn("mx-auto mb-3 flex size-16 items-center justify-center rounded-2xl text-2xl font-bold shadow-sm", template.bgColor)}>
+                  {restaurantName.slice(0, 1).toUpperCase()}
+                </div>
+              )}
+              <h3 className={cn(template.textColor, "text-xl font-semibold")}>{restaurantName}</h3>
               {scope === "branch" && (
                 <p className="mt-1 text-sm opacity-70">{branchName}</p>
               )}
@@ -61,7 +71,7 @@ export default function ActionPreview({
               )}
             </div>
 
-            <p className="mt-auto pt-8 text-center text-[11px] opacity-50">
+            <p className="mt-auto pt-8 text-center text-[11px] text-muted-foreground">
               Powered by Gus
             </p>
           </div>
