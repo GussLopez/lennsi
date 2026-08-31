@@ -6,10 +6,9 @@ import type {
   ActionScope,
   ActionTemplate,
 } from "../types/types"
-import { useRestaurantStore } from "@/store/RestaurantStore"
+import { useRestaurantStore } from "@/store/restaurant-store-provider"
 
 type ActionPreviewProps = {
-  restaurantName: string
   branchName: string | null
   scope: ActionScope
   items: ActionItem[]
@@ -17,13 +16,14 @@ type ActionPreviewProps = {
 }
 
 export default function ActionPreview({
-  restaurantName,
   branchName,
   scope,
   items,
   template,
 }: ActionPreviewProps) {
-  const restaurantLogo = useRestaurantStore(state => state.logo_url);
+  const restaurantName =
+    useRestaurantStore((state) => state.name) ?? "Restaurante"
+  const restaurantLogo = useRestaurantStore((state) => state.logoUrl)
   return (
     <aside className="mx-auto w-full max-w-90 lg:sticky lg:top-24">
       <Iphone className="block">
