@@ -15,6 +15,8 @@ import { useMutation } from "@tanstack/react-query"
 import toast from "react-hot-toast"
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
+import { useRestaurantStore } from "@/store/restaurant-store-provider";
+import { useRouter } from "next/navigation";
 
 type RestaurantSettingsFormProps = {
   restaurant: {
@@ -38,6 +40,8 @@ export function RestaurantSettingsForm({
   restaurant,
   canEdit,
 }: RestaurantSettingsFormProps) {
+  const router = useRouter()
+  const setRestaurant = useRestaurantStore((state) => state.setRestaurant)
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [isDraggingImg, setIsDraggingImg] = useState(false);
   const logoInputRef = useRef<HTMLInputElement>(null);
@@ -85,7 +89,19 @@ export function RestaurantSettingsForm({
         logoPath: uploadedPath ?? formData.logo_url
       }
     },
-    onSuccess: ({ logoPath }) => {
+    onSuccess: ({ logoPath }, formData) => {
+      const logoUrl = logoPath
+        ? createClient().storage
+            .from("restaurants-logos")
+            .getPublicUrl(logoPath).data.publicUrl
+        : null
+
+      setRestaurant({
+        id: restaurant.id,
+        name: formData.name,
+        logoUrl,
+      })
+      router.refresh()
       setLogoFile(null);
       setValue("logo_url", logoPath)
       toast.success('Información actualizada');
