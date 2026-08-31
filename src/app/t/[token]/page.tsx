@@ -40,7 +40,6 @@ export default async function TokenPage({ params }: PageProps<"/t/[token]">) {
       .from("restaurants-logos")
       .getPublicUrl(page.restaurantLogoPath).data.publicUrl
     : null
-
   return (
     <main
       className={cn(
@@ -62,7 +61,9 @@ export default async function TokenPage({ params }: PageProps<"/t/[token]">) {
             </div>
           )}
           <div>
-            <h1 className="text-2xl font-semibold">{page.restaurantName}</h1>
+            <h1 className={cn("text-2xl font-semibold", template.textColor)}>
+              {page.restaurantName}
+            </h1>
             <p className="mt-1 text-sm opacity-70">{page.branchName}</p>
           </div>
         </header>
@@ -72,7 +73,7 @@ export default async function TokenPage({ params }: PageProps<"/t/[token]">) {
             <Link
               key={action.id}
               href={action.url}
-              className="rounded-2xl border p-4 text-center text-lg font-medium shadow-sm backdrop-blur transition hover:bg-current/15"
+              className={cn("border p-4 text-center text-lg font-medium shadow-sm backdrop-blur transition", template.linkStyle)}
             >
               {action.label}
             </Link>

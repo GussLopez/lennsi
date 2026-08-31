@@ -38,5 +38,6 @@ export type ActionTemplate = {
   description: string
   background: string
   textColor: string
+  bgColor: string
   linkStyle: string
 }

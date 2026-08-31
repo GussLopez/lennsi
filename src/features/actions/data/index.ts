@@ -21,15 +21,17 @@ export const templates: ActionTemplate[] = [
     description: "Todo lo esencial",
     background: "bg-zinc-950",
     textColor: "text-white",
-    linkStyle: "rounded-xl border border-current/15 bg-current/10 px-4 shadow-sm backdrop-blur hover:bg-current/15"
+    bgColor: "bg-current/10 text-white",
+    linkStyle: "rounded-none border border-current/15 bg-current/10 px-4 shadow-sm hover:bg-current/15 text-white"
   },
   {
     id: "social",
     name: "Social",
     description: "Conversación y comunidad",
     background: "bg-white",
-    textColor: "text-white",
-    linkStyle: "rounded-full border border-primary bg-primary px-4 shadow-sm backdrop-blur hover:bg-current/15"
+    textColor: "text-primary",
+    bgColor: "bg-primary text-white",
+    linkStyle: "rounded-full border border-primary bg-primary px-4 shadow-sm backdrop-blur text-white"
   },
   {
     id: "minimal",
@@ -37,6 +39,7 @@ export const templates: ActionTemplate[] = [
     description: "Directa y elegante",
     background: "bg-stone-100",
     textColor: "text-stone-950",
+    bgColor: "bg-current/15",
     linkStyle: "rounded-xl border border-current/15 bg-current/10 px-4 shadow-sm backdrop-blur hover:bg-current/15"
   },
 ];

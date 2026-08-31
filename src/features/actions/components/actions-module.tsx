@@ -144,7 +144,6 @@ export function ActionsModule(props: ActionModulesProps) {
       }
     })
   }
-
   return (
     <div className="mx-auto w-full max-w-7xl space-y-6">
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
@@ -199,7 +198,8 @@ export function ActionsModule(props: ActionModulesProps) {
               <div
                 className={cn(
                   "mb-3 flex h-24 flex-col justify-center gap-2 rounded-lg p-4",
-                  item.className
+                  item.background,
+                  item.textColor
                 )}
               >
                 <span className="h-2 w-full rounded-full bg-current opacity-90" />
