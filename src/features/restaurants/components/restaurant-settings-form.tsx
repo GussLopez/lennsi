@@ -22,6 +22,7 @@ type RestaurantSettingsFormProps = {
     name: string
     description: string
     logo_url: string | null;
+    logoPreviewUrl: string | null
     isActive: boolean
   }
   canEdit: boolean
@@ -40,16 +41,9 @@ export function RestaurantSettingsForm({
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [isDraggingImg, setIsDraggingImg] = useState(false);
   const logoInputRef = useRef<HTMLInputElement>(null);
-  const [logoPreview, setLogoPreview] = useState<string | null>(() => {
-    if (!restaurant.logo_url) return null;
-
-    const supabase = createClient();
-
-    return supabase.storage
-      .from("restaurants-logos")
-      .getPublicUrl(restaurant.logo_url)
-      .data.publicUrl;
-  });
+  const [logoPreview, setLogoPreview] = useState<string | null>(
+    restaurant.logoPreviewUrl,
+  );
   const { register, handleSubmit, setValue, watch, formState: { errors }, control } = useForm<RestaurantForm>({
     defaultValues: {
       name: restaurant.name,

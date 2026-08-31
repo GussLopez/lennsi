@@ -43,6 +43,12 @@ export default async function SettingsPage() {
   ) ?? availableRestaurants[0]
   if (!activeRestaurant) redirect("/dashboard")
 
+  const logoPreviewUrl = activeRestaurant.logo_url
+    ? supabase.storage
+        .from("restaurants-logos")
+        .getPublicUrl(activeRestaurant.logo_url).data.publicUrl
+    : null
+
   return (
     <RestaurantSettingsForm
       key={activeRestaurant.id}
@@ -51,6 +57,7 @@ export default async function SettingsPage() {
         name: activeRestaurant.name,
         description: activeRestaurant.description ?? "",
         logo_url: activeRestaurant.logo_url ?? null,
+        logoPreviewUrl,
         isActive: activeRestaurant.is_active,
       }}
       canEdit={activeRestaurant.role === "owner" || activeRestaurant.role === "admin"}

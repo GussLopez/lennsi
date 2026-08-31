@@ -18,7 +18,7 @@ const restaurantSchema = z.object({
     .string()
     .trim()
     .max(300, "La descripción no puede exceder 300 caracteres"),
-  logo_url: z.string().trim().max(500).nullable,
+  logo_url: z.string().trim().max(500).nullable(),
   isActive: z.boolean(),
 });
 
