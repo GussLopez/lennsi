@@ -5,10 +5,12 @@ import { useTheme } from "next-themes"
 import { logoutAction } from "@/features/dashboard/actions/dashboard-actions"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/components/ui/sidebar"
+import { useRestaurantStore } from "@/store/restaurant-store-provider"
 
 export function NavUser({ user }: { user: { name: string; email: string } }) {
   const { isMobile } = useSidebar()
   const { resolvedTheme, setTheme } = useTheme()
+  const clearRestaurant = useRestaurantStore((state) => state.clearRestaurant)
   const initials = user.name.split(" ").filter(Boolean).slice(0, 2).map((part) => part[0]).join("").toUpperCase()
 
   return (
@@ -51,7 +53,10 @@ export function NavUser({ user }: { user: { name: string; email: string } }) {
             <DropdownMenuSeparator />
             <DropdownMenuItem
               variant="destructive"
-              onClick={() => logoutAction()}
+              onClick={() => {
+                clearRestaurant()
+                logoutAction()
+              }}
             >
               <LogOut />
               Cerrar sesión

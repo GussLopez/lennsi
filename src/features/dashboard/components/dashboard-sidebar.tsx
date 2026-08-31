@@ -7,7 +7,6 @@ import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail } fr
 import { NavHeader } from "./nav-header"
 import { NavMain } from "./nav-main"
 import { NavUser } from "./nav-user"
-import { useRestaurantStore } from "@/store/RestaurantStore"
 
 const navigation = [
   { title: "Resumen", url: "/dashboard", icon: LayoutDashboard },
@@ -32,7 +31,6 @@ type DashboardSidebarProps = React.ComponentProps<typeof Sidebar> & {
   activeRestaurant: DashboardRestaurant
   branches: DashboardBranch[]
   activeBranchId: number | null
-  restaurantLogo: string | null
   user: { name: string; email: string }
 }
 
@@ -42,18 +40,8 @@ export function DashboardSidebar({
   branches,
   activeBranchId,
   user,
-  restaurantLogo,
   ...props
 }: DashboardSidebarProps) {
-  const setRestaurant = useRestaurantStore(state => state.setRestaurant);
-
-  React.useEffect(() => {
-    setRestaurant({
-      id: activeRestaurant.id,
-      name: activeRestaurant.name,
-      logo_url: restaurantLogo ?? null
-    })
-  }, [activeRestaurant, restaurantLogo])
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader className="bg-white">
