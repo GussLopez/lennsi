@@ -32,7 +32,7 @@ export default async function BranchesPage() {
 
   const { data: branches, error } = await supabase
     .from("branches")
-    .select("id, name, address, phone, is_active")
+    .select("id, name, address, phone, is_active, menu_url")
     .eq("restaurant_id", membership.restaurant_id)
     .order("created_at", { ascending: true })
   const canManage = ["owner", "admin", "manager"].includes(membership.role)

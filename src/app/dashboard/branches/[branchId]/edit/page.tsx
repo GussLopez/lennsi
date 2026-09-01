@@ -44,9 +44,7 @@ export default async function EditBranchPage({
 
   const { data: branch } = await supabase
     .from("branches")
-    .select(
-      "id, name, address, phone, whatsapp, google_review_url, wifi_ssid, wifi_password, timezone, menu_url, is_active"
-    )
+    .select("*")
     .eq("id", branchId)
     .eq("restaurant_id", membership.restaurant_id)
     .maybeSingle()
