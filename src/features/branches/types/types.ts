@@ -4,6 +4,7 @@ export interface Branch {
   phone: string | null
   is_active: boolean
   address: string | null
+  menu_url: string  | null;
 }
 
 export type BranchFormValues = {
