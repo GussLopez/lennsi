@@ -1,6 +1,6 @@
 "use client"
 
-import { File, FileUp, Image, Save, Trash2, Upload } from "lucide-react"
+import { FileUp, Save, Trash2 } from "lucide-react"
 import { useRef, useState } from "react";
 import { saveBranch } from "@/features/branches/actions/save-branch";
 import { Button } from "@/components/ui/button"
@@ -25,20 +25,21 @@ export function BranchForm({ initialValues }: BranchFormProps) {
   const [menuFile, setMenuFile] = useState<File | null>(null);
   const [isDraggingPdf, setIsDraggingPdf] = useState(false);
   const menuInputRef = useRef<HTMLInputElement>(null);
-  const { register, handleSubmit, control, setValue, watch, formState: { errors } } = useForm({
+  const { register, handleSubmit, control, setValue, watch, formState: { errors } } = useForm<BranchFormValues>({
     defaultValues: initialValues
   });
   const isActive = watch('is_active');
 
   const handleCreateBranch = async (formData: BranchFormValues) => {
     setLoading(true);
-    const res = await saveBranch(formData);
+    const res = await saveBranch(formData, menuFile);
 
     setLoading(false);
     if (res.status === "success") {
-      toast.success("Datos actualizados");
+      setMenuFile(null);
+      toast.success(res.message);
     } else {
-      toast.error("Error al editar la sucursal")
+      toast.error(res.message);
     }
   }
 
@@ -53,7 +54,7 @@ export function BranchForm({ initialValues }: BranchFormProps) {
     if (file) selectMenu(file);
   }
 
-  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleMenuChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) selectMenu(file);
   }
@@ -73,10 +74,11 @@ export function BranchForm({ initialValues }: BranchFormProps) {
     }
 
     if (file.size > 5 * 1024 * 1024) {
-      toast.error("El logo no puede superar 5 MB");
+      toast.error("El menú no puede superar 5 MB");
       return;
     }
     setMenuFile(file);
+    setValue("menu_url", initialValues.menu_url);
   }
 
   return (
@@ -237,11 +239,11 @@ export function BranchForm({ initialValues }: BranchFormProps) {
               id="branch-menu"
               ref={menuInputRef}
               accept="application/pdf"
-              onChange={handleLogoChange}
+              onChange={handleMenuChange}
               className="sr-only"
             />
           </label>
-          {menuFile && (
+          {(menuFile || watch("menu_url")) && (
             <div className="relative w-full mt-4 border border-muted rounded-lg shadow-xs bg-white">
               <div className="flex items-center gap-4 p-2">
                 <div className="w-10 h-10 flex justify-center items-center">
@@ -252,19 +254,25 @@ export function BranchForm({ initialValues }: BranchFormProps) {
                   />
                 </div>
                 <div className="flex gap-2">
-                  <p className="text-sm font-medium">{menuFile.name}</p>
-                  <span className="text-sm text-muted-foreground">
-                    · {(menuFile.size / 1000000).toFixed(2)} MB
-                  </span>
+                  <p className="text-sm font-medium">
+                    {menuFile?.name ?? "Menú actual.pdf"}
+                  </p>
+                  {menuFile && (
+                    <span className="text-sm text-muted-foreground">
+                      · {(menuFile.size / 1000000).toFixed(2)} MB
+                    </span>
+                  )}
                 </div>
               </div>
               <Button
                 variant={'ghost'}
                 size={'icon'}
+                type="button"
                 className={'absolute top-2 right-3 text-destructive hover:bg-destructive/10 hover:text-destructive'}
                 onClick={() => {
                   setMenuFile(null);
                   setValue("menu_url", null);
+                  if (menuInputRef.current) menuInputRef.current.value = "";
                 }}
               >
                 <Trash2 />

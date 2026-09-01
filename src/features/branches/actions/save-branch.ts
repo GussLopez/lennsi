@@ -29,6 +29,7 @@ const branchSchema = z.object({
   wifiPassword: z.string().max(100, "La contraseña es demasiado larga."),
   timezone: z.string().trim().min(1, "Ingresa una zona horaria."),
   isActive: z.boolean(),
+  menuUrl: z.string().trim().max(500).nullable(),
 });
 
 type BranchField =
@@ -66,9 +67,10 @@ function getFieldErrors(
 
 export async function saveBranch(
   formData: BranchFormValues,
+  menuFile: File | null,
 ): Promise<BranchFormState> {
   const parsed = branchSchema.safeParse({
-    branchId: formData.branchId || undefined,
+    branchId: formData.branchId ? String(formData.branchId) : undefined,
     name: formData.name,
     address: formData.address,
     phone: formData.phone,
@@ -78,6 +80,7 @@ export async function saveBranch(
     wifiPassword: formData.wifiPassword ?? "",
     timezone: formData.timezone,
     isActive: formData.is_active,
+    menuUrl: formData.menu_url,
   });
 
   if (!parsed.success) {
@@ -85,6 +88,16 @@ export async function saveBranch(
       status: "error",
       message: "Revisa los campos marcados.",
       errors: getFieldErrors(parsed.error),
+    };
+  }
+
+  if (
+    menuFile &&
+    (menuFile.type !== "application/pdf" || menuFile.size > 5 * 1024 * 1024)
+  ) {
+    return {
+      status: "error",
+      message: "El menú debe ser un archivo PDF de máximo 5 MB.",
     };
   }
 
@@ -131,7 +144,23 @@ export async function saveBranch(
     wifi_password: parsed.data.wifiPassword || null,
     timezone: parsed.data.timezone,
     is_active: parsed.data.isActive === true,
+    menu_url: parsed.data.menuUrl,
     updated_at: new Date().toISOString(),
+  };
+
+  const uploadMenu = async (branchId: number) => {
+    if (!menuFile) return null;
+    const path = `${branchId}/${crypto.randomUUID()}.pdf`;
+    const { error } = await supabase.storage
+      .from("menus")
+      .upload(path, menuFile, {
+        contentType: "application/pdf",
+        cacheControl: "3600",
+        upsert: false,
+      });
+
+    if (error) return null;
+    return path;
   };
 
   if (parsed.data.branchId) {
@@ -140,19 +169,47 @@ export async function saveBranch(
       return { status: "error", message: "La sucursal no es válida." };
     }
 
+    const { data: currentBranch } = await supabase
+      .from("branches")
+      .select("id, menu_url")
+      .eq("id", branchId)
+      .eq("restaurant_id", membership.restaurant_id)
+      .maybeSingle();
+
+    if (!currentBranch) {
+      return { status: "error", message: "La sucursal no es válida." };
+    }
+
+    let menuUrl = currentBranch.menu_url;
+    if (menuFile) {
+      menuUrl = await uploadMenu(branchId);
+      if (!menuUrl) {
+        return { status: "error", message: "No se pudo subir el menú." };
+      }
+    } else if (parsed.data.menuUrl === null) {
+      menuUrl = null;
+    }
+
     const { data: branch, error } = await supabase
       .from("branches")
-      .update(values)
+      .update({ ...values, menu_url: menuUrl })
       .eq("id", branchId)
       .eq("restaurant_id", membership.restaurant_id)
       .select("id")
       .maybeSingle();
 
     if (error || !branch) {
+      if (menuFile && menuUrl) {
+        await supabase.storage.from("menus").remove([menuUrl]);
+      }
       return {
         status: "error",
         message: "No se pudo actualizar la sucursal.",
       };
+    }
+
+    if (currentBranch.menu_url && currentBranch.menu_url !== menuUrl) {
+      await supabase.storage.from("menus").remove([currentBranch.menu_url]);
     }
 
     revalidatePath("/dashboard/branches");
@@ -163,13 +220,37 @@ export async function saveBranch(
     };
   }
 
-  const { error } = await supabase.from("branches").insert({
-    ...values,
-    restaurant_id: membership.restaurant_id,
-  });
+  const { data: branch, error } = await supabase
+    .from("branches")
+    .insert({
+      ...values,
+      menu_url: null,
+      restaurant_id: membership.restaurant_id,
+    })
+    .select("id")
+    .single();
 
-  if (error) {
+  if (error || !branch) {
     return { status: "error", message: "No se pudo crear la sucursal." };
+  }
+
+  const menuUrl = menuFile ? await uploadMenu(branch.id) : null;
+  if (menuFile && menuUrl === null) {
+    await supabase.from("branches").delete().eq("id", branch.id);
+    return { status: "error", message: "No se pudo subir el menú." };
+  }
+
+  if (menuUrl) {
+    const { error: menuUpdateError } = await supabase
+      .from("branches")
+      .update({ menu_url: menuUrl })
+      .eq("id", branch.id);
+
+    if (menuUpdateError) {
+      await supabase.storage.from("menus").remove([menuUrl]);
+      await supabase.from("branches").delete().eq("id", branch.id);
+      return { status: "error", message: "No se pudo guardar el menú." };
+    }
   }
 
   revalidatePath("/dashboard/branches");
