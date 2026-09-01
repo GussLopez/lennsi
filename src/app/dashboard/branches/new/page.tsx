@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 
 export default function CreateBranchPage() {
   return (
-    <div className="mx-auto w-full max-w-5xl space-y-6">
+    <div className="mx-auto w-full max-w-4xl space-y-6">
       <div className="flex items-center gap-4">
         <Button
           size="icon"
@@ -37,6 +37,7 @@ export default function CreateBranchPage() {
           branchId: undefined,
           whatsapp: "",
           googleReviewUrl: "",
+          menu_url: null,
           wifiSsid: "",
           wifiPassword: "",
           timezone: "America/Cancun",

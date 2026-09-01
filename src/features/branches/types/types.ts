@@ -17,5 +17,6 @@ export type BranchFormValues = {
   wifiSsid: string
   wifiPassword: string
   timezone: string
+  menu_url: string | null
   is_active: boolean
 }
