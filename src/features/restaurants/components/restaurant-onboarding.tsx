@@ -29,7 +29,6 @@ import { cn } from "@/lib/utils"
 import { discoverySourceOptions } from "../data/onboarding"
 import { OnboardingSchema } from "../schemas/onboarding-schema"
 import type { OnboardingValues } from "../types"
-import { Confetti, ConfettiRef } from "@/components/ui/confetti"
 import { ConfettiSideCannons, ConfettiSideCannonsRef } from "@/components/ui/confetti-side-cannons"
 
 export default function RestaurantOnboarding() {
@@ -79,11 +78,6 @@ export default function RestaurantOnboarding() {
 
   return (
     <>
-     {/*  <Confetti 
-        ref={confettiRef}
-        manualstart
-        className="pointer-events-none fixed inset-0 z-100 size-full"
-      /> */}
       <ConfettiSideCannons ref={confettiRef} />
       <Dialog open>
         <DialogContent
