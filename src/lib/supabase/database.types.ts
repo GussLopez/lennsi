@@ -411,6 +411,16 @@ export type Database = {
         Returns: number
       }
       get_public_tag_page: { Args: { p_token: string }; Returns: Json }
+      get_restaurant_analytics: {
+        Args: {
+          p_branch_id?: number | null
+          p_date_from: string
+          p_date_to: string
+          p_restaurant_id: number
+          p_touchpoint_id?: number | null
+        }
+        Returns: Json
+      }
       record_public_tag_tap: {
         Args: {
           p_device_type?: string | null
