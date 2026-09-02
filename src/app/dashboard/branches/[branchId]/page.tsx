@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ACTIVE_RESTAURANT_COOKIE } from "@/features/dashboard/constants";
 import { createClient } from "@/lib/supabase/server";
 import { cn } from "@/lib/utils";
-import { ArrowLeft, ChevronLeft, Edit, ExternalLink, UtensilsCrossed } from "lucide-react";
+import { ArrowLeft, ChevronLeft, Edit, ExternalLink, Plus, UtensilsCrossed } from "lucide-react";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
@@ -17,7 +17,7 @@ interface PageProps {
   params: Promise<{ branchId: string }>
 }
 
-export default async function ViewBranchPage({
+export default async function BranchDetailsPage({
   params
 }: PageProps) {
   const { branchId } = await params;
@@ -95,7 +95,7 @@ export default async function ViewBranchPage({
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           {menuPublicUrl && (
             <Button
               variant={'outline'}
@@ -111,10 +111,15 @@ export default async function ViewBranchPage({
               }
             />
           )}
-          <Button>
-            <Edit />
-            Editar sucursal
-          </Button>
+          <Button
+            nativeButton={false}
+            render={
+              <Link href={`/dashboard/branches/${branch.id}/edit`}>
+                <Edit />
+                Editar sucursal
+              </Link>
+            }
+          />
         </div>
       </div>
 
@@ -201,30 +206,44 @@ export default async function ViewBranchPage({
                     <div>
                       <span className="text-xs text-muted-foreground">Tags enlazados:</span>
                       <div className="mt-3 border rounded-lg overflow-hidden">
-                        <Table>
-                          <TableHeader>
-                            <TableRow>
-                              <TableHead>Tag</TableHead>
-                              <TableHead>Estado</TableHead>
-                            </TableRow>
-                          </TableHeader>
-                          <TableBody>
-                            {touchpoint.tags.map((tag) => (
-                              <TableRow
-                                key={tag.id}
-                              >
-                                <TableCell>{tag.label}</TableCell>
-                                <TableCell>
-                                  <Badge
-                                    className={cn(tag.is_active ? 'bg-green-600/10 text-emerald-600' : 'bg-red-600/10 text-red-600')}
-                                  >
-                                    {tag.is_active ? 'Activo' : 'Inactivo'}
-                                  </Badge>
-                                </TableCell>
+                        {touchpoint.tags.length === 0 ? (
+                          <div className="flex flex-col gap-4">
+                            <p className="text-sm text-muted-foreground">No hay Tags enlazados</p>
+                            <Button
+                              render={
+                                <Link href={'/dashboard/tags/new'}>
+                                  <Plus />
+                                  Crear Tag
+                                </Link>
+                              }
+                            />
+                          </div>
+                        ) : (
+                          <Table>
+                            <TableHeader>
+                              <TableRow>
+                                <TableHead>Tag</TableHead>
+                                <TableHead>Estado</TableHead>
                               </TableRow>
-                            ))}
-                          </TableBody>
-                        </Table>
+                            </TableHeader>
+                            <TableBody>
+                              {touchpoint.tags.map((tag) => (
+                                <TableRow
+                                  key={tag.id}
+                                >
+                                  <TableCell>{tag.label}</TableCell>
+                                  <TableCell>
+                                    <Badge
+                                      className={cn(tag.is_active ? 'bg-green-600/10 text-emerald-600' : 'bg-red-600/10 text-red-600')}
+                                    >
+                                      {tag.is_active ? 'Activo' : 'Inactivo'}
+                                    </Badge>
+                                  </TableCell>
+                                </TableRow>
+                              ))}
+                            </TableBody>
+                          </Table>
+                        )}
                       </div>
                     </div>
                   </div>
