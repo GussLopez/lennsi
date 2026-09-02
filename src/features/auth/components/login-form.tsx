@@ -1,33 +1,32 @@
 'use client'
 
-import { googleOAuthAction, registerAction } from '@/features/auth/actions/auth-actions';
-import { Label } from '@/components/ui/label'
+import Link from 'next/link'
+import { googleOAuthAction, loginAction } from '@/features/auth/actions/auth-actions'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
 import Image from 'next/image'
+import { useState } from 'react'
+import { LoginFormValues, messageType } from '../types'
 import { useForm } from 'react-hook-form'
 import FormMessage from '@/components/ui/form-message'
-import { messageType, RegisterFormValues } from '../types'
-import { useState } from 'react';
 
-
-export default function RegisterForm() {
+export default function LoginForm() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<messageType | null>(null);
 
-  const { register, handleSubmit, formState: { errors } } = useForm<RegisterFormValues>({
+  const { register, handleSubmit, formState: { errors } } = useForm<LoginFormValues>({
     defaultValues: {
-      fullName: "",
       email: "",
       password: ""
     }
   })
 
-  const handleRegister = async (formData: RegisterFormValues) => {
+  const handleLogin = async (formData: LoginFormValues) => {
     setLoading(true);
-    const res = await registerAction(formData);
-    
+    const res = await loginAction(formData);
+
     if (res.error) setMessage({
       message: res.error,
       success: false
@@ -42,29 +41,13 @@ export default function RegisterForm() {
   return (
     <>
       <form
-        onSubmit={handleSubmit(handleRegister)}
         className="space-y-6"
+        onSubmit={handleSubmit(handleLogin)}
       >
         <div className="space-y-2">
-          <Label htmlFor="fullName">
-            Nombre
-          </Label>
-
-          <Input
-            id="fullName"
-            type="text"
-            autoComplete="name"
-            placeholder="Juan Pérez"
-            className="h-10 w-full"
-            {...register("fullName", {
-              required: "El nombre es requerido"
-            })}
-          />
-          {errors.fullName?.message && <FormMessage message={errors.fullName.message} />}
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="email">
+          <Label
+            htmlFor="email"
+          >
             Correo electrónico
           </Label>
 
@@ -74,7 +57,7 @@ export default function RegisterForm() {
             autoComplete="email"
             placeholder="correo@restaurante.com"
             className="h-10 w-full"
-            {...register('email', {
+            {...register("email", {
               required: "El correo es requerido"
             })}
           />
@@ -82,26 +65,25 @@ export default function RegisterForm() {
         </div>
 
         <div className="space-y-2">
-          <Label
-            htmlFor="password"
-            className="text-sm font-medium"
-          >
-            Contraseña
-          </Label>
+          <div className='flex justify-between items-center'>
+            <Label htmlFor="password">
+              Contraseña
+            </Label>
+            <Link
+              href={'/'}
+              className='text-sm font-medium text-primary hover:underline'
+            >
+              ¿Olvidaste tu contraseña?
+            </Link>
+          </div>
 
           <Input
             id="password"
             type="password"
-            autoComplete="new-password"
-            placeholder="Mínimo 8 caracteres"
-            minLength={8}
+            autoComplete="current-password"
             className="h-10 w-full"
             {...register("password", {
-              required: "La contraseña es requerida",
-              minLength: {
-                value: 8,
-                message: "Tu contraseña debe de tener 8 caracteres como mínimo"
-              }
+              required: "La contraseña es requerida"
             })}
           />
            {errors.password?.message && <FormMessage message={errors.password.message} />}
@@ -118,7 +100,6 @@ export default function RegisterForm() {
             {message.message}
           </div>
         )}
-
         <Button
           type="submit"
           disabled={loading}
@@ -127,9 +108,9 @@ export default function RegisterForm() {
           {loading ? (
             <>
               <Spinner />
-              Creando
+              Accediendo
             </>
-          ) : 'Crear cuenta'}
+          ) : 'Acceder'}
         </Button>
 
       </form>
@@ -137,7 +118,7 @@ export default function RegisterForm() {
         <span className='absolute px-2.5 -translate-x-1/2 -translate-y-1/2 text-muted-foreground bg-white left-1/2 top-1/2'>o</span>
       </div>
       <form action={googleOAuthAction}>
-        <input type="hidden" name="authPage" value="register" />
+        <input type="hidden" name="authPage" value="login" />
         <Button
           type="submit"
           variant={'outline'}

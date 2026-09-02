@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { z } from 'zod'
-import { RegisterFormValues } from '../types'
+import { LoginFormValues, RegisterFormValues } from '../types'
 
 export type AuthState = {
   error?: string
@@ -65,12 +65,11 @@ const registerSchema = z
 
 
 export async function loginAction(
-  previousState: AuthState,
-  formData: FormData
+  formData: LoginFormValues
 ): Promise<AuthState> {
   const result = loginSchema.safeParse({
-    email: formData.get('email'),
-    password: formData.get('password'),
+    email: formData.email,
+    password: formData.password,
   })
 
   if (!result.success) {

@@ -3,3 +3,13 @@ export type RegisterFormValues = {
   email: string;
   password: string;
 }
+
+export type LoginFormValues = {
+  email: string;
+  password: string;
+}
+
+export type messageType = {
+  message: string;
+  success: boolean;
+}
