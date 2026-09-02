@@ -937,7 +937,7 @@ Permitir:
 Ruta:
 
 ```text
-/t/[token]
+/go/[token]
 ```
 
 Debe:

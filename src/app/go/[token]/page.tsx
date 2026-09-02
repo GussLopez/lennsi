@@ -1,4 +1,5 @@
 import Link from "next/link"
+import { headers } from "next/headers"
 import { notFound } from "next/navigation"
 import { z } from "zod"
 
@@ -38,6 +39,19 @@ export default async function TokenPage({ params }: PageProps<"/go/[token]">) {
   const parsed = publicTagPageSchema.safeParse(data)
 
   if (error || !parsed.success) notFound()
+
+  const requestHeaders = await headers()
+  const userAgent = requestHeaders.get("user-agent")
+  const { error: tapError } = await supabase.rpc("record_public_tag_tap", {
+    p_token: token,
+    p_user_agent: userAgent,
+    p_referrer: requestHeaders.get("referer"),
+    p_device_type: getDeviceType(userAgent),
+  })
+
+  if (tapError) {
+    console.error("No se pudo registrar el tap NFC:", tapError.code)
+  }
 
   const page = parsed.data
   const template =
@@ -110,4 +124,11 @@ export default async function TokenPage({ params }: PageProps<"/go/[token]">) {
       <span className="text-sm text-muted-foreground absolute bottom-10 right-1/2 translate-x-1/2">Powered by Lennsi</span>
     </main>
   )
+}
+
+function getDeviceType(userAgent: string | null) {
+  if (!userAgent) return null
+  if (/tablet|ipad|playbook|silk/i.test(userAgent)) return "tablet"
+  if (/mobile|iphone|ipod|android/i.test(userAgent)) return "mobile"
+  return "desktop"
 }

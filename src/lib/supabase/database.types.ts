@@ -405,6 +405,15 @@ export type Database = {
         Returns: number
       }
       get_public_tag_page: { Args: { p_token: string }; Returns: Json }
+      record_public_tag_tap: {
+        Args: {
+          p_device_type?: string | null
+          p_referrer?: string | null
+          p_token: string
+          p_user_agent?: string | null
+        }
+        Returns: boolean
+      }
     }
     Enums: {
       [_ in never]: never
