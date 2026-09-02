@@ -1,38 +1,9 @@
 import { NextResponse } from "next/server";
-import { z } from "zod";
 
 import { createClient } from "@/lib/supabase/server";
+import { OnboardingSchema } from "../schemas/onboarding-schema";
 
-const schema = z
-  .object({
-    name: z.string().trim().min(2).max(120),
-    use_case: z.enum([
-      "google_reviews",
-      "menu",
-      "whatsapp",
-      "social_media",
-      "link_page",
-    ]),
-    use_case_value: z.string().trim().min(1).max(2048),
-  })
-  .superRefine(({ use_case, use_case_value }, context) => {
-    if (use_case === "whatsapp") {
-      const digits = use_case_value.replace(/\D/g, "");
-      if (digits.length < 7 || digits.length > 15) {
-        context.addIssue({
-          code: "custom",
-          path: ["use_case_value"],
-          message: "WhatsApp inválido",
-        });
-      }
-    } else if (!z.url().safeParse(use_case_value).success) {
-      context.addIssue({
-        code: "custom",
-        path: ["use_case_value"],
-        message: "URL inválida",
-      });
-    }
-  });
+const schema = OnboardingSchema;
 
 export async function POST(request: Request) {
   const supabase = await createClient();
@@ -66,11 +37,15 @@ export async function POST(request: Request) {
     );
   }
 
-  const { error } = await supabase.rpc("create_restaurant_onboarding", {
-    p_name: result.data.name,
-    p_use_case: result.data.use_case,
-    p_use_case_value: result.data.use_case_value,
-  });
+  // Los tipos generados se actualizarán después de aplicar la migración y
+  // regenerar database.types.ts. El cast mantiene esta migración local compilable.
+  const { error } = await supabase.rpc(
+    "create_restaurant_onboarding",
+    {
+      p_name: result.data.name,
+      p_discovery_source: result.data.discovery_source,
+    } as never,
+  );
 
   if (error) {
     const duplicateMembership = error.message.includes("already belongs");
