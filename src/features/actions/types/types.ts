@@ -1,11 +1,12 @@
 import { Link2 } from "lucide-react"
 
 export const ACTION_TYPES = [
-  "menu", "wifi", "google_review", "instagram", "whatsapp",
-  "promotion", "website", "custom",
+  "menu", "wifi", "google_review", "instagram", "facebook", "tiktok",
+  "whatsapp", "promotion", "website", "custom",
 ] as const
 
 export type ActionType = (typeof ACTION_TYPES)[number]
+export type ActionDisplayMode = "link" | "icon"
 
 export const ACTION_TEMPLATE_IDS = ["classic", "social", "minimal"] as const
 
@@ -17,6 +18,7 @@ export type ActionItem = {
   label: string
   url: string
   source: ActionSource
+  displayMode: ActionDisplayMode
   isEnabled: boolean
   sortOrder: number
   branchId: number | null

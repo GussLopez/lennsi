@@ -8,6 +8,8 @@ import type {
 } from "../types/types"
 import { useRestaurantStore } from "@/store/restaurant-store-provider"
 
+import { ActionTypeIcon } from "./action-type-icon"
+
 type ActionPreviewProps = {
   branchName: string | null
   scope: ActionScope
@@ -24,6 +26,9 @@ export default function ActionPreview({
   const restaurantName =
     useRestaurantStore((state) => state.name) ?? "Restaurante"
   const restaurantLogo = useRestaurantStore((state) => state.logoUrl)
+  const iconItems = items.filter((item) => item.displayMode === "icon")
+  const linkItems = items.filter((item) => item.displayMode === "link")
+
   return (
     <aside className="mx-auto w-full max-w-90 lg:sticky lg:top-24">
       <Iphone className="block">
@@ -53,8 +58,7 @@ export default function ActionPreview({
             </div>
 
             <div className="space-y-3 pb-5">
-              {items.length ? (
-                items.map((item) => (
+              {linkItems.map((item) => (
                   <div
                     key={item.clientId}
                     className={cn("flex min-h-12 items-center justify-center", template.linkStyle)}
@@ -63,8 +67,26 @@ export default function ActionPreview({
                       {item.label || "Sin label"}
                     </span>
                   </div>
-                ))
-              ) : (
+              ))}
+
+              {iconItems.length > 0 && (
+                <div className="flex flex-wrap justify-center gap-3 pt-2">
+                  {iconItems.map((item) => (
+                    <div
+                      key={item.clientId}
+                      title={item.label}
+                      className={cn(
+                        "flex size-11 items-center justify-center",
+                        template.textColor,
+                      )}
+                    >
+                      <ActionTypeIcon type={item.type} className="size-7" />
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {!items.length && (
                 <p className="py-10 text-center text-sm opacity-60">
                   Activa una acción para verla aquí.
                 </p>

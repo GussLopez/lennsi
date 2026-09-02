@@ -1,15 +1,17 @@
 import { ChevronDown, GripVertical, Trash2 } from "lucide-react"
-import type { ActionItem, ActionType } from "../types/types"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Label } from "@/components/ui/label"
-import { Switch } from "@/components/ui/switch"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { typeDetails } from "../data"
 import Link from "next/link"
-import type { BranchActionData } from "../types/types"
+
+import { Button } from "@/components/ui/button"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Switch } from "@/components/ui/switch"
 import { cn } from "@/lib/utils"
+
+import { typeDetails } from "../data"
+import type { ActionItem, ActionType, BranchActionData } from "../types/types"
+import { ActionTypeIcon } from "./action-type-icon"
 
 type ActionEditorProps = {
   item: ActionItem
@@ -22,6 +24,7 @@ type ActionEditorProps = {
 }
 
 const branchBackedTypes = ["menu", "wifi", "google_review", "whatsapp"] as const
+const socialTypes = ["instagram", "facebook", "tiktok", "whatsapp"] as const
 
 function hasBranchValue(type: ActionType, data: BranchActionData) {
   if (type === "menu") return Boolean(data.menuUrl)
@@ -49,11 +52,9 @@ export default function ActionEditor({
   branchData,
   branchId,
 }: ActionEditorProps) {
-  const selectedType =
-    typeDetails.find((detail) => detail.value === item.type) ?? typeDetails[0]
-  const Icon = selectedType.icon
   const isWhatsApp = item.type === "whatsapp"
   const canUseBranch = branchBackedTypes.includes(item.type as typeof branchBackedTypes[number])
+  const canDisplayAsIcon = socialTypes.includes(item.type as typeof socialTypes[number])
   const branchValueExists = hasBranchValue(item.type, branchData)
 
   return (
@@ -67,7 +68,7 @@ export default function ActionEditor({
           <div className="flex items-center justify-between">
             <div className="flex flex-wrap items-center gap-2">
               <span className="flex size-8 items-center justify-center rounded-lg bg-muted">
-                <Icon className="size-4" />
+                <ActionTypeIcon type={item.type} className="size-4" />
               </span>
               <Select<ActionType>
                 value={item.type}
@@ -76,9 +77,11 @@ export default function ActionEditor({
                 onValueChange={(value) => {
                   const type = value as ActionType
                   const linked = branchBackedTypes.includes(type as typeof branchBackedTypes[number])
+                  const social = socialTypes.includes(type as typeof socialTypes[number])
                   onUpdate(item.clientId, {
                     type,
                     source: linked ? "branch" : "custom",
+                    displayMode: social ? item.displayMode : "link",
                     url: "",
                   })
                 }}
@@ -198,6 +201,28 @@ export default function ActionEditor({
                       <SelectItem value="custom">Usar otro enlace</SelectItem>
                     </SelectContent>
                   </Select>
+                </div>
+              )}
+              {canDisplayAsIcon && (
+                <div className="flex items-center justify-between gap-4 rounded-lg border bg-muted/20 p-3">
+                  <div className="space-y-0.5">
+                    <Label htmlFor={`display-mode-${item.clientId}`}>
+                      Mostrar como icono
+                    </Label>
+                    <p className="text-xs text-muted-foreground">
+                      Se agrupará con los iconos de redes sociales.
+                    </p>
+                  </div>
+                  <Switch
+                    id={`display-mode-${item.clientId}`}
+                    checked={item.displayMode === "icon"}
+                    disabled={!canManage}
+                    onCheckedChange={(showAsIcon) =>
+                      onUpdate(item.clientId, {
+                        displayMode: showAsIcon ? "icon" : "link",
+                      })
+                    }
+                  />
                 </div>
               )}
             </div>

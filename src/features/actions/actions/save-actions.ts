@@ -25,10 +25,22 @@ const itemSchema = z
     label: z.string().trim().min(1).max(80),
     url: z.string().trim(),
     source: z.enum(["branch", "custom"]),
+    displayMode: z.enum(["link", "icon"]),
     isEnabled: z.boolean(),
     sortOrder: z.number().int().min(0),
   })
   .superRefine((item, context) => {
+    if (
+      item.displayMode === "icon" &&
+      !["instagram", "facebook", "tiktok", "whatsapp"].includes(item.type)
+    ) {
+      context.addIssue({
+        code: "custom",
+        path: ["displayMode"],
+        message: "Esta acción no se puede mostrar como icono.",
+      });
+    }
+
     if (item.source === "branch") {
       if (!["menu", "wifi", "google_review", "whatsapp"].includes(item.type)) {
         context.addIssue({ code: "custom", path: ["source"], message: "Esta acción no admite datos de sucursal." })
@@ -65,7 +77,7 @@ export async function saveActions(
   } catch {
     return {
       ok: false,
-      message: "Ocurri\u00f3 un error inesperado al guardar la configuraci\u00f3n.",
+      message: "Ocurrió un error inesperado al guardar la configuració.",
     };
   }
 }
@@ -176,6 +188,7 @@ async function saveActionsImpl(payload: unknown): Promise<SaveActionsResult> {
         type: item.type,
         label: item.label,
         url: item.source === "branch" ? null : item.url,
+        display_mode: item.displayMode,
         is_enabled: item.isEnabled,
         sort_order: item.sortOrder,
         updated_at: new Date().toISOString(),
@@ -197,6 +210,7 @@ async function saveActionsImpl(payload: unknown): Promise<SaveActionsResult> {
       type: item.type,
       label: item.label,
       url: item.source === "branch" ? null : item.url,
+      display_mode: item.displayMode,
       is_enabled: item.isEnabled,
       sort_order: item.sortOrder,
     }));
@@ -226,7 +240,7 @@ async function saveActionsImpl(payload: unknown): Promise<SaveActionsResult> {
       return {
         ok: false,
         message: migrationIsMissing
-          ? "Falta aplicar la migraci\u00f3n que agrega template_id a las sucursales."
+          ? "Falta aplicar la migración que agrega template_id a las sucursales."
           : "Las acciones se guardaron, pero no se pudo guardar la plantilla.",
       };
     }

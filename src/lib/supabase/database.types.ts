@@ -18,6 +18,7 @@ export type Database = {
         Row: {
           branch_id: number | null
           created_at: string
+          display_mode: string
           id: number
           is_enabled: boolean
           label: string
@@ -30,6 +31,7 @@ export type Database = {
         Insert: {
           branch_id?: number | null
           created_at?: string
+          display_mode?: string
           id?: never
           is_enabled?: boolean
           label: string
@@ -42,6 +44,7 @@ export type Database = {
         Update: {
           branch_id?: number | null
           created_at?: string
+          display_mode?: string
           id?: never
           is_enabled?: boolean
           label?: string

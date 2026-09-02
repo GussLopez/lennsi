@@ -4,6 +4,7 @@ import { notFound } from "next/navigation"
 import { z } from "zod"
 
 import { templates } from "@/features/actions/data"
+import { ActionTypeIcon } from "@/features/actions/components/action-type-icon"
 import { ACTION_TEMPLATE_IDS, ACTION_TYPES } from "@/features/actions/types/types"
 import { cn } from "@/lib/utils"
 import { createClient } from "@/lib/supabase/server"
@@ -25,6 +26,7 @@ const publicTagPageSchema = z.object({
       id: z.number(),
       type: z.enum(ACTION_TYPES),
       label: z.string(),
+      displayMode: z.enum(["link", "icon"]),
       url: z.string().nullable(),
     }),
   ),
@@ -81,6 +83,9 @@ export default async function TokenPage({ params }: PageProps<"/go/[token]">) {
     }
     return []
   })
+  const linkActions = actions.filter((action) => action.displayMode === "link")
+  const iconActions = actions.filter((action) => action.displayMode === "icon")
+
   return (
     <main
       className={cn(
@@ -110,7 +115,7 @@ export default async function TokenPage({ params }: PageProps<"/go/[token]">) {
         </header>
 
         <div className="flex w-full flex-col gap-5">
-          {actions.map((action) => (
+          {linkActions.map((action) => (
             <Link
               key={action.id}
               href={action.url}
@@ -119,6 +124,25 @@ export default async function TokenPage({ params }: PageProps<"/go/[token]">) {
               {action.label}
             </Link>
           ))}
+
+          {iconActions.length > 0 && (
+            <div className="flex flex-wrap justify-center gap-3 pt-2">
+              {iconActions.map((action) => (
+                <Link
+                  key={action.id}
+                  href={action.url}
+                  aria-label={action.label}
+                  title={action.label}
+                  className={cn(
+                    "flex size-12 items-center justify-center rounded-full border border-current/15 bg-current/10 transition hover:scale-105 hover:bg-current/15",
+                    template.textColor,
+                  )}
+                >
+                  <ActionTypeIcon type={action.type} />
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
       </div>
       <span className="text-sm text-muted-foreground absolute bottom-10 right-1/2 translate-x-1/2">Powered by Lennsi</span>

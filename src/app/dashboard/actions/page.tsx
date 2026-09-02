@@ -14,7 +14,7 @@ export default async function ActionsPage() {
   const supabase = await createClient()
   const { data: rows } = await supabase
     .from("actions")
-    .select("id, branch_id, type, label, url, is_enabled, sort_order")
+    .select("id, branch_id, type, label, url, display_mode, is_enabled, sort_order")
     .eq("restaurant_id", restaurant.id)
     .order("sort_order")
 
@@ -25,6 +25,7 @@ export default async function ActionsPage() {
     label: row.label,
     url: row.url ?? "",
     source: row.url === null ? "branch" : "custom",
+    displayMode: row.display_mode === "icon" ? "icon" : "link",
     isEnabled: row.is_enabled,
     sortOrder: row.sort_order,
     clientId: `action-${row.id}`,

@@ -67,6 +67,18 @@ export const typeDetails: Array<ActionTypeDetails & { value: ActionType }> = [
     defaultLabel: "Síguenos en Instagram",
   },
   {
+    value: "facebook",
+    label: "Facebook",
+    icon: AtSign,
+    defaultLabel: "Síguenos en Facebook",
+  },
+  {
+    value: "tiktok",
+    label: "TikTok",
+    icon: AtSign,
+    defaultLabel: "Síguenos en TikTok",
+  },
+  {
     value: "whatsapp",
     label: "WhatsApp",
     icon: MessageCircle,

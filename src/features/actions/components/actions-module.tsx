@@ -51,6 +51,7 @@ function newAction(
       "Nuevo enlace",
     url: "",
     source: "custom",
+    displayMode: "link",
     isEnabled: true,
     sortOrder: index,
     branchId,
