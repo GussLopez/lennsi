@@ -52,3 +52,19 @@ export type ActionTemplate = {
   bgColor: string
   linkStyle: string
 }
+
+
+export type PublicActionBranch = {
+  whatsapp: string | null
+  googleReviewUrl: string | null
+  menuUrl: string | null
+  wifiSsid: string | null
+  wifiPassword: string | null
+}
+
+export type ResolvePublicActionDestinationOptions = {
+  type: ActionType
+  url: string | null
+  branch: PublicActionBranch
+  getPublicMenuUrl: (path: string) => string
+}

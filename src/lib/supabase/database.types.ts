@@ -24,6 +24,7 @@ export type Database = {
           label: string
           restaurant_id: number
           sort_order: number
+          token: string
           type: string
           updated_at: string
           url: string | null
@@ -37,6 +38,7 @@ export type Database = {
           label: string
           restaurant_id: number
           sort_order?: number
+          token?: string
           type: string
           updated_at?: string
           url?: string | null
@@ -50,6 +52,7 @@ export type Database = {
           label?: string
           restaurant_id?: number
           sort_order?: number
+          token?: string
           type?: string
           updated_at?: string
           url?: string | null
@@ -416,6 +419,17 @@ export type Database = {
           p_user_agent?: string | null
         }
         Returns: boolean
+      }
+      track_public_action_click: {
+        Args: {
+          p_action_token: string
+          p_device_type?: string | null
+          p_referrer?: string | null
+          p_session_id?: string | null
+          p_tag_token: string
+          p_user_agent?: string | null
+        }
+        Returns: Json
       }
     }
     Enums: {

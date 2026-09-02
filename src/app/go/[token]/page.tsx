@@ -1,10 +1,11 @@
-import Link from "next/link"
 import { headers } from "next/headers"
 import { notFound } from "next/navigation"
 import { z } from "zod"
 
-import { templates } from "@/features/actions/data"
 import { ActionTypeIcon } from "@/features/actions/components/action-type-icon"
+import { templates } from "@/features/actions/data"
+import { resolvePublicActionDestination } from "@/features/actions/public-action-destination"
+import { getDeviceType } from "@/features/actions/public-request"
 import { ACTION_TEMPLATE_IDS, ACTION_TYPES } from "@/features/actions/types/types"
 import { cn } from "@/lib/utils"
 import { createClient } from "@/lib/supabase/server"
@@ -23,7 +24,7 @@ const publicTagPageSchema = z.object({
   templateId: z.enum(ACTION_TEMPLATE_IDS),
   actions: z.array(
     z.object({
-      id: z.number(),
+      token: z.string().uuid(),
       type: z.enum(ACTION_TYPES),
       label: z.string(),
       displayMode: z.enum(["link", "icon"]),
@@ -64,24 +65,18 @@ export default async function TokenPage({ params }: PageProps<"/go/[token]">) {
       .getPublicUrl(page.restaurantLogoPath).data.publicUrl
     : null
   const actions = page.actions.flatMap((action) => {
-    if (action.url) return [{ ...action, url: action.url }]
-    if (action.type === "whatsapp" && page.branch.whatsapp) {
-      const digits = page.branch.whatsapp.replace(/\D/g, "")
-      return digits ? [{ ...action, url: `https://wa.me/${digits}` }] : []
-    }
-    if (action.type === "google_review" && page.branch.googleReviewUrl) {
-      return [{ ...action, url: page.branch.googleReviewUrl }]
-    }
-    if (action.type === "menu" && page.branch.menuUrl) {
-      const url = supabase.storage.from("menus").getPublicUrl(page.branch.menuUrl).data.publicUrl
-      return [{ ...action, url }]
-    }
-    if (action.type === "wifi" && page.branch.wifiSsid) {
-      const escapeWifi = (value: string) => value.replace(/([\\;,:"])/g, "\\$1")
-      const password = page.branch.wifiPassword ? `P:${escapeWifi(page.branch.wifiPassword)};` : ""
-      return [{ ...action, url: `WIFI:T:${password ? "WPA" : "nopass"};S:${escapeWifi(page.branch.wifiSsid)};${password};` }]
-    }
-    return []
+    const destination = resolvePublicActionDestination({
+      type: action.type,
+      url: action.url,
+      branch: page.branch,
+      getPublicMenuUrl: (path) =>
+        supabase.storage.from("menus").getPublicUrl(path).data.publicUrl,
+    })
+
+    if (!destination) return []
+
+    const trackingUrl = `/a/${encodeURIComponent(token)}/${encodeURIComponent(action.token)}`
+    return [{ ...action, trackingUrl }]
   })
   const linkActions = actions.filter((action) => action.displayMode === "link")
   const iconActions = actions.filter((action) => action.displayMode === "icon")
@@ -116,21 +111,21 @@ export default async function TokenPage({ params }: PageProps<"/go/[token]">) {
 
         <div className="flex w-full flex-col gap-5">
           {linkActions.map((action) => (
-            <Link
-              key={action.id}
-              href={action.url}
+            <a
+              key={action.token}
+              href={action.trackingUrl}
               className={cn("border p-4 text-center text-lg font-medium shadow-sm backdrop-blur transition", template.linkStyle)}
             >
               {action.label}
-            </Link>
+            </a>
           ))}
 
           {iconActions.length > 0 && (
             <div className="flex flex-wrap justify-center gap-3 pt-2">
               {iconActions.map((action) => (
-                <Link
-                  key={action.id}
-                  href={action.url}
+                <a
+                  key={action.token}
+                  href={action.trackingUrl}
                   aria-label={action.label}
                   title={action.label}
                   className={cn(
@@ -139,7 +134,7 @@ export default async function TokenPage({ params }: PageProps<"/go/[token]">) {
                   )}
                 >
                   <ActionTypeIcon type={action.type} />
-                </Link>
+                </a>
               ))}
             </div>
           )}
@@ -148,11 +143,4 @@ export default async function TokenPage({ params }: PageProps<"/go/[token]">) {
       <span className="text-sm text-muted-foreground absolute bottom-10 right-1/2 translate-x-1/2">Powered by Lennsi</span>
     </main>
   )
-}
-
-function getDeviceType(userAgent: string | null) {
-  if (!userAgent) return null
-  if (/tablet|ipad|playbook|silk/i.test(userAgent)) return "tablet"
-  if (/mobile|iphone|ipod|android/i.test(userAgent)) return "mobile"
-  return "desktop"
 }
