@@ -11,12 +11,16 @@ import { useForm } from 'react-hook-form'
 import FormMessage from '@/components/ui/form-message'
 import { OAuthSubmitButton } from './oauth-submit-button'
 import Link from 'next/link'
+import { Eye, EyeOff } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 
 type LoginFormProps = {
   initialError?: string
 }
 
 export default function LoginForm({ initialError }: LoginFormProps) {
+  const router = useRouter()
+  const [viewPassword, setViewPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<MessageType | null>(
     initialError ? { message: initialError, success: false } : null,
@@ -35,6 +39,12 @@ export default function LoginForm({ initialError }: LoginFormProps) {
 
     try {
       const res = await loginAction(formData);
+
+      if (res.redirectTo) {
+        router.replace(res.redirectTo)
+        router.refresh()
+        return
+      }
 
       if (res.error) setMessage({
         message: res.error,
@@ -84,24 +94,33 @@ export default function LoginForm({ initialError }: LoginFormProps) {
               Contraseña
             </Label>
             <Link
-              href={'/forgor-password'}
+              href={'/forgot-password'}
               className='text-sm font-medium text-primary hover:underline'
             >
               ¿Olvidaste tu contraseña?
             </Link>
           </div>
 
-          <Input
-            id="password"
-            type="password"
-            autoComplete="current-password"
-            className="h-10 w-full"
-            maxLength={128}
-            aria-invalid={Boolean(errors.password)}
-            {...register("password", {
-              required: "La contraseña es requerida"
-            })}
-          />
+          <div className='relative'>
+            <Input
+              id="password"
+              type={viewPassword ? "text" : "password"}
+              autoComplete="current-password"
+              className="h-10 w-full"
+              maxLength={128}
+              aria-invalid={Boolean(errors.password)}
+              {...register("password", {
+                required: "La contraseña es requerida"
+              })}
+            />
+            <button
+              className='absolute top-1/2 -translate-y-1/2 right-4 text-muted-foreground'
+              onClick={() => setViewPassword(prev => !prev)}
+              type='button'
+            >
+              {viewPassword ? <EyeOff className='size-4.5' />  : <Eye className='size-4.5' />}
+            </button>
+          </div>
           {errors.password?.message && <FormMessage message={errors.password.message} />}
         </div>
 

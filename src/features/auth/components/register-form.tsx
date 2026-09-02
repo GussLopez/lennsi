@@ -10,6 +10,8 @@ import FormMessage from '@/components/ui/form-message'
 import { MessageType, RegisterFormValues } from '../types'
 import { useState } from 'react';
 import { OAuthSubmitButton } from './oauth-submit-button'
+import { Eye, EyeOff } from 'lucide-react';
+import { useRouter } from 'next/navigation'
 
 
 type RegisterFormProps = {
@@ -17,7 +19,9 @@ type RegisterFormProps = {
 }
 
 export default function RegisterForm({ initialError }: RegisterFormProps) {
+  const router = useRouter()
   const [loading, setLoading] = useState(false);
+  const [viewPassword, setViewPassword] = useState(false);
   const [message, setMessage] = useState<MessageType | null>(
     initialError ? { message: initialError, success: false } : null,
   );
@@ -36,6 +40,12 @@ export default function RegisterForm({ initialError }: RegisterFormProps) {
 
     try {
       const res = await registerAction(formData);
+
+      if (res.redirectTo) {
+        router.replace(res.redirectTo)
+        router.refresh()
+        return
+      }
 
       if (res.error) setMessage({
         message: res.error,
@@ -110,23 +120,31 @@ export default function RegisterForm({ initialError }: RegisterFormProps) {
             Contraseña
           </Label>
 
-          <Input
-            id="password"
-            type="password"
-            autoComplete="new-password"
-            placeholder="Mínimo 8 caracteres"
-            minLength={8}
-            maxLength={128}
-            className="h-10 w-full"
-            aria-invalid={Boolean(errors.password)}
-            {...register("password", {
-              required: "La contraseña es requerida",
-              minLength: {
-                value: 8,
-                message: "Tu contraseña debe de tener 8 caracteres como mínimo"
-              }
-            })}
-          />
+          <div className='relative'>
+            <Input
+              id="password"
+              type={viewPassword ? "text" : "password"}
+              autoComplete="new-password"
+              placeholder="Mínimo 8 caracteres"
+              maxLength={128}
+              className="h-10 w-full"
+              aria-invalid={Boolean(errors.password)}
+              {...register("password", {
+                required: "La contraseña es requerida",
+                minLength: {
+                  value: 8,
+                  message: "Tu contraseña debe de tener 8 caracteres como mínimo"
+                }
+              })}
+            />
+            <button
+              className='absolute top-1/2 -translate-y-1/2 right-4 text-muted-foreground'
+              onClick={() => setViewPassword(prev => !prev)}
+              type='button'
+            >
+              {viewPassword ? <EyeOff className='size-4.5' />  : <Eye className='size-4.5' />}
+            </button>
+          </div>
           {errors.password?.message && <FormMessage message={errors.password.message} />}
         </div>
 

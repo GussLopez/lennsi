@@ -9,6 +9,7 @@ import { LoginFormValues, RegisterFormValues } from '../types'
 export type AuthState = {
   error?: string
   success?: string
+  redirectTo?: '/dashboard'
 }
 
 export async function googleOAuthAction(formData: FormData) {
@@ -96,7 +97,7 @@ export async function loginAction(
     }
   }
 
-  redirect('/dashboard')
+  return { redirectTo: '/dashboard' }
 }
 
 
@@ -148,7 +149,7 @@ export async function registerAction(
    * Supabase crea inmediatamente una sesión.
    */
   if (data.session) {
-    redirect('/dashboard')
+    return { redirectTo: '/dashboard' }
   }
 
   /*
