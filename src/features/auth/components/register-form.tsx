@@ -1,5 +1,5 @@
 'use client'
-import { useSearchParams } from 'next/navigation'
+
 import { googleOAuthAction, registerAction } from '@/features/auth/actions/auth-actions';
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
@@ -10,7 +10,6 @@ import { useForm } from 'react-hook-form'
 import FormMessage from '@/components/ui/form-message'
 import { RegisterFormValues } from '../types'
 import { useState } from 'react';
-import toast from 'react-hot-toast';
 
 type messageType = {
   message: string;
@@ -19,7 +18,6 @@ type messageType = {
 export default function RegisterForm() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<messageType | null>(null);
-  const searchParams = useSearchParams();
 
   const { register, handleSubmit, formState: { errors } } = useForm<RegisterFormValues>({
     defaultValues: {
@@ -30,6 +28,7 @@ export default function RegisterForm() {
   })
 
   const handleRegister = async (formData: RegisterFormValues) => {
+    setLoading(true);
     const res = await registerAction(formData);
     
     if (res.error) setMessage({
@@ -41,7 +40,7 @@ export default function RegisterForm() {
       message: res.success,
       success: true
     });
-    
+    setLoading(false);
   }
   return (
     <>
