@@ -9,7 +9,7 @@ export type LoginFormValues = {
   password: string;
 }
 
-export type messageType = {
+export type MessageType = {
   message: string;
   success: boolean;
 }

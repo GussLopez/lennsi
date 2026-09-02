@@ -1,20 +1,26 @@
 'use client'
 
-import Link from 'next/link'
 import { googleOAuthAction, loginAction } from '@/features/auth/actions/auth-actions'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
-import Image from 'next/image'
 import { useState } from 'react'
-import { LoginFormValues, messageType } from '../types'
+import { LoginFormValues, MessageType } from '../types'
 import { useForm } from 'react-hook-form'
 import FormMessage from '@/components/ui/form-message'
+import { OAuthSubmitButton } from './oauth-submit-button'
+import Link from 'next/link'
 
-export default function LoginForm() {
+type LoginFormProps = {
+  initialError?: string
+}
+
+export default function LoginForm({ initialError }: LoginFormProps) {
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState<messageType | null>(null);
+  const [message, setMessage] = useState<MessageType | null>(
+    initialError ? { message: initialError, success: false } : null,
+  );
 
   const { register, handleSubmit, formState: { errors } } = useForm<LoginFormValues>({
     defaultValues: {
@@ -35,12 +41,7 @@ export default function LoginForm() {
         success: false
       });
 
-      if (res.success) setMessage({
-        message: res.success,
-        success: true
-      });
-      setLoading(false);
-    } catch (error) {
+    } catch {
       setMessage({
         success: false,
         message: "No se pudo completar la solicitud.",
@@ -68,6 +69,8 @@ export default function LoginForm() {
             autoComplete="email"
             placeholder="correo@restaurante.com"
             className="h-10 w-full"
+            maxLength={254}
+            aria-invalid={Boolean(errors.email)}
             {...register("email", {
               required: "El correo es requerido"
             })}
@@ -93,6 +96,8 @@ export default function LoginForm() {
             type="password"
             autoComplete="current-password"
             className="h-10 w-full"
+            maxLength={128}
+            aria-invalid={Boolean(errors.password)}
             {...register("password", {
               required: "La contraseña es requerida"
             })}
@@ -106,11 +111,6 @@ export default function LoginForm() {
           </div>
         )}
 
-        {message && message.success && (
-          <div className="rounded-lg bg-green-50 px-4 py-3 text-sm text-green-700">
-            {message.message}
-          </div>
-        )}
         <Button
           type="submit"
           disabled={loading}
@@ -130,20 +130,7 @@ export default function LoginForm() {
       </div>
       <form action={googleOAuthAction}>
         <input type="hidden" name="authPage" value="login" />
-        <Button
-          type="submit"
-          variant={'outline'}
-          className='h-10 w-full'
-        >
-          <Image
-            src="/icons/google.svg"
-            alt="Google Logo"
-            className='w-4 h-4'
-            width={16}
-            height={16}
-          />
-          Acceder con Google
-        </Button>
+        <OAuthSubmitButton label="Acceder con Google" />
       </form>
     </>
   )

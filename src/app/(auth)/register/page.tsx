@@ -1,7 +1,11 @@
 import RegisterForm from "@/features/auth/components/register-form";
 import Link from "next/link";
 
-export default function RegisterPage() {
+export default async function RegisterPage({ searchParams }: PageProps<"/register">) {
+  const query = await searchParams
+  const initialError = query.error
+    ? "No se pudo completar el registro con Google. Intenta nuevamente."
+    : undefined
   return (
     <main className="grid lg:grid-cols-2 min-h-screen">
       <div className='hidden lg:block bg-black'></div>
@@ -17,7 +21,7 @@ export default function RegisterPage() {
             </p>
           </div>
 
-          <RegisterForm />
+          <RegisterForm initialError={initialError} />
           <p className="mt-6 text-center text-sm text-zinc-500">
             ¿Ya tienes cuenta?{' '}
 
@@ -34,4 +38,3 @@ export default function RegisterPage() {
     </main>
   )
 }
-

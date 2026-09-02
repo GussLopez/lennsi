@@ -39,10 +39,12 @@ const loginSchema = z.object({
   email: z
     .string()
     .trim()
+    .max(254, 'El correo electrónico es demasiado largo.')
     .email('Ingresa un correo electrónico válido.'),
 
   password: z
     .string()
+    .max(128, 'La contraseña es demasiado larga.')
     .min(1, 'Ingresa tu contraseña.'),
 })
 
@@ -51,16 +53,19 @@ const registerSchema = z
     fullName: z
       .string()
       .trim()
-      .min(2, 'Ingresa tu nombre.'),
+      .min(2, 'Ingresa tu nombre.')
+      .max(100, 'El nombre es demasiado largo.'),
 
     email: z
       .string()
       .trim()
+      .max(254, 'El correo electrónico es demasiado largo.')
       .email('Ingresa un correo electrónico válido.'),
 
     password: z
       .string()
-      .min(8, 'La contraseña debe tener al menos 8 caracteres.'),
+      .min(8, 'La contraseña debe tener al menos 8 caracteres.')
+      .max(128, 'La contraseña es demasiado larga.'),
   })
 
 
@@ -106,7 +111,7 @@ export async function registerAction(
 
   if (!result.success) {
     return {
-      error: "No se pudo crear la cuenta. Revisa los datos e intenta nuevamente.",
+      error: result.error.issues[0]?.message ?? 'Datos inválidos.',
     }
   }
 
@@ -134,7 +139,7 @@ export async function registerAction(
 
   if (error) {
     return {
-      error: error.message,
+      error: 'No se pudo crear la cuenta. Revisa los datos e intenta nuevamente.',
     }
   }
 

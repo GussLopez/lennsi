@@ -1,7 +1,11 @@
 import LoginForm from "@/features/auth/components/login-form";
 import Link from "next/link";
 
-export default function LoginPage() {
+export default async function LoginPage({ searchParams }: PageProps<"/login">) {
+  const query = await searchParams
+  const initialError = query.error
+    ? "No se pudo iniciar sesión con Google. Intenta nuevamente."
+    : undefined
   
   return (
   <main className="grid lg:grid-cols-2 min-h-screen">
@@ -18,7 +22,7 @@ export default function LoginPage() {
               Accede al panel de tu restaurante.
             </p>
           </div>
-          <LoginForm />
+          <LoginForm initialError={initialError} />
           <p className="mt-6 text-center text-sm text-zinc-500">
             ¿No tienes cuenta?{' '}
 

@@ -5,16 +5,22 @@ import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
-import Image from 'next/image'
 import { useForm } from 'react-hook-form'
 import FormMessage from '@/components/ui/form-message'
-import { messageType, RegisterFormValues } from '../types'
+import { MessageType, RegisterFormValues } from '../types'
 import { useState } from 'react';
+import { OAuthSubmitButton } from './oauth-submit-button'
 
 
-export default function RegisterForm() {
+type RegisterFormProps = {
+  initialError?: string
+}
+
+export default function RegisterForm({ initialError }: RegisterFormProps) {
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState<messageType | null>(null);
+  const [message, setMessage] = useState<MessageType | null>(
+    initialError ? { message: initialError, success: false } : null,
+  );
 
   const { register, handleSubmit, formState: { errors } } = useForm<RegisterFormValues>({
     defaultValues: {
@@ -40,7 +46,7 @@ export default function RegisterForm() {
         message: res.success,
         success: true
       });
-    } catch (error) {
+    } catch {
       setMessage({
         success: false,
         message: "No se pudo completar la solicitud.",
@@ -67,6 +73,8 @@ export default function RegisterForm() {
             autoComplete="name"
             placeholder="Juan Pérez"
             className="h-10 w-full"
+            maxLength={100}
+            aria-invalid={Boolean(errors.fullName)}
             {...register("fullName", {
               required: "El nombre es requerido"
             })}
@@ -85,6 +93,8 @@ export default function RegisterForm() {
             autoComplete="email"
             placeholder="correo@restaurante.com"
             className="h-10 w-full"
+            maxLength={254}
+            aria-invalid={Boolean(errors.email)}
             {...register('email', {
               required: "El correo es requerido"
             })}
@@ -106,7 +116,9 @@ export default function RegisterForm() {
             autoComplete="new-password"
             placeholder="Mínimo 8 caracteres"
             minLength={8}
+            maxLength={128}
             className="h-10 w-full"
+            aria-invalid={Boolean(errors.password)}
             {...register("password", {
               required: "La contraseña es requerida",
               minLength: {
@@ -149,20 +161,7 @@ export default function RegisterForm() {
       </div>
       <form action={googleOAuthAction}>
         <input type="hidden" name="authPage" value="register" />
-        <Button
-          type="submit"
-          variant={'outline'}
-          className='h-10 w-full'
-        >
-          <Image
-            src="/icons/google.svg"
-            alt="Google Logo"
-            className='w-4 h-4'
-            width={16}
-            height={16}
-          />
-          Acceder con Google
-        </Button>
+        <OAuthSubmitButton label="Registrarse con Google" />
       </form>
     </>
   )
