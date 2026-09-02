@@ -3,7 +3,6 @@
 import { Trash2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useState, useTransition } from "react"
-
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
 import { DataTable } from "@/components/ui/data-table"
@@ -11,6 +10,7 @@ import { Spinner } from "@/components/ui/spinner"
 import { deleteTouchpoints, type DeleteTouchpointsResult } from "@/features/touchpoints/actions/delete-touchpoints"
 import { touchpointColumns } from "@/features/touchpoints/components/touchpoint-columns"
 import type { Touchpoint } from "@/features/touchpoints/types/types"
+import toast from "react-hot-toast"
 
 type TouchpointsTableProps = {
   touchpoints: Touchpoint[]
@@ -19,7 +19,6 @@ type TouchpointsTableProps = {
 
 export function TouchpointsTable({ touchpoints, canManage }: TouchpointsTableProps) {
   const [selectedTouchpoints, setSelectedTouchpoints] = useState<Touchpoint[]>([])
-  const [result, setResult] = useState<DeleteTouchpointsResult | null>(null)
   const [dialogOpen, setDialogOpen] = useState(false)
   const [isPending, startTransition] = useTransition()
   const router = useRouter()
@@ -29,7 +28,7 @@ export function TouchpointsTable({ touchpoints, canManage }: TouchpointsTablePro
       const nextResult = await deleteTouchpoints(
         selectedTouchpoints.map((touchpoint) => touchpoint.id),
       )
-      setResult(nextResult)
+      toast.success(nextResult.message);
 
       if (nextResult.status === "success") {
         setSelectedTouchpoints([])
@@ -80,16 +79,6 @@ export function TouchpointsTable({ touchpoints, canManage }: TouchpointsTablePro
             </AlertDialogContent>
           </AlertDialog>
         </div>
-      )}
-
-      {result && (
-        <p
-          role="status"
-          aria-live="polite"
-          className={result.status === "success" ? "text-sm text-emerald-600" : "text-sm text-destructive"}
-        >
-          {result.message}
-        </p>
       )}
     </div>
   )

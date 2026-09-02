@@ -54,10 +54,10 @@ export default async function TouchpointsPage() {
       <div className="flex items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
-            Touchpoints
+            Puntos NFC
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Administra los touchpoints de {branch?.name ?? "la sucursal seleccionada"}.
+            Administra los puntos NFC de {branch?.name ?? "la sucursal seleccionada"}.
           </p>
         </div>
         {branch && canManage && (
