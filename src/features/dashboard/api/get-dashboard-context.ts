@@ -60,7 +60,7 @@ export const getDashboardContext = cache(async () => {
 
   const { data: branchRows } = await supabase
     .from("branches")
-    .select("id, name, restaurant_id, template_id")
+    .select("id, name, restaurant_id, template_id, whatsapp, google_review_url, menu_url, wifi_ssid, wifi_password")
     .eq("restaurant_id", activeRestaurant.id)
     .order("created_at", { ascending: true })
 

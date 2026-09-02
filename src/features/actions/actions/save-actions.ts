@@ -23,11 +23,18 @@ const itemSchema = z
     id: z.number().int().positive().nullable(),
     type: z.enum(ACTION_TYPES),
     label: z.string().trim().min(1).max(80),
-    url: z.string().trim().min(1),
+    url: z.string().trim(),
+    source: z.enum(["branch", "custom"]),
     isEnabled: z.boolean(),
     sortOrder: z.number().int().min(0),
   })
   .superRefine((item, context) => {
+    if (item.source === "branch") {
+      if (!["menu", "wifi", "google_review", "whatsapp"].includes(item.type)) {
+        context.addIssue({ code: "custom", path: ["source"], message: "Esta acción no admite datos de sucursal." })
+      }
+      return
+    }
     const isValid =
       item.type === "whatsapp"
         ? isValidWhatsAppValue(item.url)
@@ -168,7 +175,7 @@ async function saveActionsImpl(payload: unknown): Promise<SaveActionsResult> {
       .update({
         type: item.type,
         label: item.label,
-        url: item.url,
+        url: item.source === "branch" ? null : item.url,
         is_enabled: item.isEnabled,
         sort_order: item.sortOrder,
         updated_at: new Date().toISOString(),
@@ -189,7 +196,7 @@ async function saveActionsImpl(payload: unknown): Promise<SaveActionsResult> {
       branch_id: branchId,
       type: item.type,
       label: item.label,
-      url: item.url,
+      url: item.source === "branch" ? null : item.url,
       is_enabled: item.isEnabled,
       sort_order: item.sortOrder,
     }));

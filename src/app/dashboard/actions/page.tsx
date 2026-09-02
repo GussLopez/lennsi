@@ -24,6 +24,7 @@ export default async function ActionsPage() {
     type: row.type as ActionType,
     label: row.label,
     url: row.url ?? "",
+    source: row.url === null ? "branch" : "custom",
     isEnabled: row.is_enabled,
     sortOrder: row.sort_order,
     clientId: `action-${row.id}`,
@@ -39,6 +40,13 @@ export default async function ActionsPage() {
     key={`${restaurant.id}:${branch?.id ?? "none"}`}
     branchName={branch?.name ?? null}
     activeBranchId={branch?.id ?? null}
+    branchData={{
+      whatsapp: branch?.whatsapp ?? null,
+      googleReviewUrl: branch?.google_review_url ?? null,
+      menuUrl: branch?.menu_url ?? null,
+      wifiSsid: branch?.wifi_ssid ?? null,
+      wifiPassword: branch?.wifi_password ?? null,
+    }}
     canManage={["owner", "admin", "manager"].includes(restaurant.role)}
     initialBranchTemplateId={branchTemplateId}
     initialGlobal={actions.filter((item) => item.branchId === null)}

@@ -11,13 +11,20 @@ const publicTagPageSchema = z.object({
   restaurantName: z.string(),
   restaurantLogoPath: z.string().nullable(),
   branchName: z.string(),
+  branch: z.object({
+    whatsapp: z.string().nullable(),
+    googleReviewUrl: z.string().nullable(),
+    menuUrl: z.string().nullable(),
+    wifiSsid: z.string().nullable(),
+    wifiPassword: z.string().nullable(),
+  }),
   templateId: z.enum(ACTION_TEMPLATE_IDS),
   actions: z.array(
     z.object({
       id: z.number(),
       type: z.enum(ACTION_TYPES),
       label: z.string(),
-      url: z.string(),
+      url: z.string().nullable(),
     }),
   ),
 })
@@ -40,6 +47,26 @@ export default async function TokenPage({ params }: PageProps<"/go/[token]">) {
       .from("restaurants-logos")
       .getPublicUrl(page.restaurantLogoPath).data.publicUrl
     : null
+  const actions = page.actions.flatMap((action) => {
+    if (action.url) return [{ ...action, url: action.url }]
+    if (action.type === "whatsapp" && page.branch.whatsapp) {
+      const digits = page.branch.whatsapp.replace(/\D/g, "")
+      return digits ? [{ ...action, url: `https://wa.me/${digits}` }] : []
+    }
+    if (action.type === "google_review" && page.branch.googleReviewUrl) {
+      return [{ ...action, url: page.branch.googleReviewUrl }]
+    }
+    if (action.type === "menu" && page.branch.menuUrl) {
+      const url = supabase.storage.from("menus").getPublicUrl(page.branch.menuUrl).data.publicUrl
+      return [{ ...action, url }]
+    }
+    if (action.type === "wifi" && page.branch.wifiSsid) {
+      const escapeWifi = (value: string) => value.replace(/([\\;,:"])/g, "\\$1")
+      const password = page.branch.wifiPassword ? `P:${escapeWifi(page.branch.wifiPassword)};` : ""
+      return [{ ...action, url: `WIFI:T:${password ? "WPA" : "nopass"};S:${escapeWifi(page.branch.wifiSsid)};${password};` }]
+    }
+    return []
+  })
   return (
     <main
       className={cn(
@@ -69,7 +96,7 @@ export default async function TokenPage({ params }: PageProps<"/go/[token]">) {
         </header>
 
         <div className="flex w-full flex-col gap-5">
-          {page.actions.map((action) => (
+          {actions.map((action) => (
             <Link
               key={action.id}
               href={action.url}

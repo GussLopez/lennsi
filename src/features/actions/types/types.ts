@@ -16,6 +16,7 @@ export type ActionItem = {
   type: ActionType
   label: string
   url: string
+  source: ActionSource
   isEnabled: boolean
   sortOrder: number
   branchId: number | null
@@ -23,6 +24,15 @@ export type ActionItem = {
 }
 
 export type ActionScope = "global" | "branch"
+export type ActionSource = "branch" | "custom"
+
+export type BranchActionData = {
+  whatsapp: string | null
+  googleReviewUrl: string | null
+  menuUrl: string | null
+  wifiSsid: string | null
+  wifiPassword: string | null
+}
 
 
 

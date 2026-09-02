@@ -18,6 +18,7 @@ import type {
   ActionScope,
   ActionTemplateId,
   ActionType,
+  BranchActionData,
 } from "@/features/actions/types/types"
 import { cn } from "@/lib/utils"
 import { Reorder } from "motion/react"
@@ -30,6 +31,7 @@ import toast from "react-hot-toast"
 type ActionModulesProps = {
   branchName: string | null
   activeBranchId: number | null
+  branchData: BranchActionData
   canManage: boolean
   initialBranchTemplateId: ActionTemplateId
   initialGlobal: ActionItem[]
@@ -48,6 +50,7 @@ function newAction(
       typeDetails.find((detail) => detail.value === type)?.defaultLabel ??
       "Nuevo enlace",
     url: "",
+    source: "custom",
     isEnabled: true,
     sortOrder: index,
     branchId,
@@ -88,7 +91,7 @@ export function ActionsModule(props: ActionModulesProps) {
         item.clientId === clientId ? { ...item, ...patch } : item
       )
     )
-    if (patch.url !== undefined) {
+    if (patch.url !== undefined || patch.source !== undefined) {
       setUrlErrors((current) => {
         const next = { ...current }
         delete next[clientId]
@@ -105,6 +108,7 @@ export function ActionsModule(props: ActionModulesProps) {
     const errors = Object.fromEntries(
       items.flatMap((item) => {
         const url = item.url.trim()
+        if (item.source === "branch") return []
         if (!url) return [[item.clientId, "El enlace es obligatorio."]]
         if (item.type === "whatsapp" && !isValidWhatsAppValue(url)) {
           return [[item.clientId, "Ingresa un número de WhatsApp válido o un enlace."]]
@@ -270,6 +274,8 @@ export function ActionsModule(props: ActionModulesProps) {
                       item={item}
                       urlError={urlErrors[item.clientId]}
                       canManage={props.canManage}
+                      branchData={props.branchData}
+                      branchId={props.activeBranchId}
                       onUpdate={update}
                       onDelete={() =>
                         setItems((current) =>
