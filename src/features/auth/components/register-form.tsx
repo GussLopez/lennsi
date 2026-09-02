@@ -26,18 +26,29 @@ export default function RegisterForm() {
 
   const handleRegister = async (formData: RegisterFormValues) => {
     setLoading(true);
-    const res = await registerAction(formData);
-    
-    if (res.error) setMessage({
-      message: res.error,
-      success: false
-    });
-    
-    if (res.success) setMessage({
-      message: res.success,
-      success: true
-    });
-    setLoading(false);
+    setMessage(null);
+
+    try {
+      const res = await registerAction(formData);
+
+      if (res.error) setMessage({
+        message: res.error,
+        success: false
+      });
+
+      if (res.success) setMessage({
+        message: res.success,
+        success: true
+      });
+    } catch (error) {
+      setMessage({
+        success: false,
+        message: "No se pudo completar la solicitud.",
+      })
+    } finally {
+      setLoading(false);
+
+    }
   }
   return (
     <>
@@ -78,7 +89,7 @@ export default function RegisterForm() {
               required: "El correo es requerido"
             })}
           />
-           {errors.email?.message && <FormMessage message={errors.email.message} />}
+          {errors.email?.message && <FormMessage message={errors.email.message} />}
         </div>
 
         <div className="space-y-2">
@@ -104,7 +115,7 @@ export default function RegisterForm() {
               }
             })}
           />
-           {errors.password?.message && <FormMessage message={errors.password.message} />}
+          {errors.password?.message && <FormMessage message={errors.password.message} />}
         </div>
 
         {message && !message.success && (

@@ -25,18 +25,29 @@ export default function LoginForm() {
 
   const handleLogin = async (formData: LoginFormValues) => {
     setLoading(true);
-    const res = await loginAction(formData);
+    setMessage(null);
 
-    if (res.error) setMessage({
-      message: res.error,
-      success: false
-    });
-    
-    if (res.success) setMessage({
-      message: res.success,
-      success: true
-    });
-    setLoading(false);
+    try {
+      const res = await loginAction(formData);
+
+      if (res.error) setMessage({
+        message: res.error,
+        success: false
+      });
+
+      if (res.success) setMessage({
+        message: res.success,
+        success: true
+      });
+      setLoading(false);
+    } catch (error) {
+      setMessage({
+        success: false,
+        message: "No se pudo completar la solicitud.",
+      })
+    } finally {
+      setLoading(false);
+    }
   }
   return (
     <>
@@ -61,7 +72,7 @@ export default function LoginForm() {
               required: "El correo es requerido"
             })}
           />
-           {errors.email?.message && <FormMessage message={errors.email.message} />}
+          {errors.email?.message && <FormMessage message={errors.email.message} />}
         </div>
 
         <div className="space-y-2">
@@ -70,7 +81,7 @@ export default function LoginForm() {
               Contraseña
             </Label>
             <Link
-              href={'/'}
+              href={'/forgor-password'}
               className='text-sm font-medium text-primary hover:underline'
             >
               ¿Olvidaste tu contraseña?
@@ -86,7 +97,7 @@ export default function LoginForm() {
               required: "La contraseña es requerida"
             })}
           />
-           {errors.password?.message && <FormMessage message={errors.password.message} />}
+          {errors.password?.message && <FormMessage message={errors.password.message} />}
         </div>
 
         {message && !message.success && (

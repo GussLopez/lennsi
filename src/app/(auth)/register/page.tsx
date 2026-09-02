@@ -2,10 +2,9 @@ import RegisterForm from "@/features/auth/components/register-form";
 import Link from "next/link";
 
 export default function RegisterPage() {
-
   return (
-    <main className="grid grid-cols-2 min-h-screen">
-      <div className='bg-black'></div>
+    <main className="grid lg:grid-cols-2 min-h-screen">
+      <div className='hidden lg:block bg-black'></div>
 
       <div className="flex justify-center items-center">
         <div className="w-full max-w-sm p-6">

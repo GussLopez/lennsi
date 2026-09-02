@@ -106,7 +106,7 @@ export async function registerAction(
 
   if (!result.success) {
     return {
-      error: result.error.issues[0]?.message ?? 'Datos inválidos.',
+      error: "No se pudo crear la cuenta. Revisa los datos e intenta nuevamente.",
     }
   }
 
