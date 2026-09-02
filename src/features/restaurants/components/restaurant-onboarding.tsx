@@ -1,12 +1,9 @@
 "use client"
 
-import * as React from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Check } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { Controller, useForm, useWatch } from "react-hook-form"
-import { z } from "zod"
-
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
@@ -14,6 +11,10 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Spinner } from "@/components/ui/spinner"
 import { cn } from "@/lib/utils"
+import { useState } from "react"
+import { OnboardingValues } from "../types"
+import { OnboardingSchema } from "../schemas/onboarding-schema"
+import React from "react"
 
 const useCases = [
   { value: "google_reviews", label: "Reseñas de Google" },
@@ -25,40 +26,37 @@ const useCases = [
 
 type UseCase = (typeof useCases)[number]["value"]
 
-const onboardingSchema = z.object({
-  name: z.string().trim().min(2, "Ingresa el nombre de tu restaurante."),
-  use_case: z.enum(["google_reviews", "menu", "whatsapp", "social_media", "link_page"], {
-    error: "Selecciona qué quieres configurar primero.",
-  }),
-  use_case_value: z.string().trim().min(1, "Completa este campo."),
-}).superRefine(({ use_case, use_case_value }, context) => {
-  if (use_case === "whatsapp") {
-    const digits = use_case_value.replace(/\D/g, "")
-    if (digits.length < 7 || digits.length > 15) {
-      context.addIssue({ code: "custom", path: ["use_case_value"], message: "Ingresa un número de WhatsApp válido." })
-    }
-  } else if (!z.url().safeParse(use_case_value).success) {
-    context.addIssue({
-      code: "custom",
-      path: ["use_case_value"],
-      message: "Ingresa una URL completa, por ejemplo https://...",
-    })
-  }
-})
-
-type OnboardingValues = z.infer<typeof onboardingSchema>
-
 const dynamicFields: Record<UseCase, { label: string; placeholder: string; type: string }> = {
-  google_reviews: { label: "Enlace para dejar una reseña", placeholder: "https://g.page/r/.../review", type: "url" },
-  menu: { label: "Enlace de tu menú", placeholder: "https://tu-restaurante.com/menu", type: "url" },
-  whatsapp: { label: "Número de WhatsApp", placeholder: "+529981234567", type: "tel" },
-  social_media: { label: "Enlace de tu red social principal", placeholder: "https://instagram.com/tu-restaurante", type: "url" },
-  link_page: { label: "Enlace de tu sitio web", placeholder: "https://tu-restaurante.com", type: "url" },
+  google_reviews: {
+    label: "Enlace para dejar una reseña",
+    placeholder: "https://g.page/r/.../review",
+    type: "url"
+  },
+  menu: {
+    label: "Enlace de tu menú",
+    placeholder: "https://tu-restaurante.com/menu",
+    type: "url"
+  },
+  whatsapp: {
+    label: "Número de WhatsApp",
+    placeholder: "+529981234567",
+    type: "tel"
+  },
+  social_media: {
+    label: "Enlace de tu red social principal",
+    placeholder: "https://instagram.com/tu-restaurante",
+    type: "url"
+  },
+  link_page: {
+    label: "Enlace de tu sitio web",
+    placeholder: "https://tu-restaurante.com",
+    type: "url"
+  },
 }
 
 export default function RestaurantOnboarding() {
   const router = useRouter()
-  const [step, setStep] = React.useState(1)
+  const [step, setStep] = useState(1)
   const {
     control,
     formState: { errors, isSubmitting },
@@ -68,7 +66,7 @@ export default function RestaurantOnboarding() {
     setValue,
     trigger,
   } = useForm<OnboardingValues>({
-    resolver: zodResolver(onboardingSchema),
+    resolver: zodResolver(OnboardingSchema),
     defaultValues: { name: "", use_case: undefined, use_case_value: "" },
     mode: "onTouched",
   })
@@ -107,7 +105,9 @@ export default function RestaurantOnboarding() {
       >
         <DialogHeader>
           <DialogTitle>Crea tu restaurante</DialogTitle>
-          <DialogDescription>Para comenzar, configura tu primer restaurante.</DialogDescription>
+          <DialogDescription>
+            Para comenzar, configura tu primer restaurante.
+          </DialogDescription>
         </DialogHeader>
 
         <div className="grid grid-cols-[auto_1fr_auto_1fr_auto] items-center gap-2" aria-label={`Paso ${step} de 3`}>
@@ -156,11 +156,9 @@ export default function RestaurantOnboarding() {
           )}
 
           {step === 3 && dynamicField && (
-            <div className="space-y-2">
-              <Label htmlFor="restaurant-use-case-value">{dynamicField.label}</Label>
-              <Input id="restaurant-use-case-value" type={dynamicField.type} placeholder={dynamicField.placeholder}
-                autoFocus aria-invalid={Boolean(errors.use_case_value)} {...register("use_case_value")} />
-              {errors.use_case_value && <p className="text-sm text-destructive">{errors.use_case_value.message}</p>}
+            <div className="py-5 space-y-2 text-center">
+              <p className="text-2xl font-semibold">¡Todo listo!</p>
+              <span className="text-muted-foreground">Empiza a controlar tu negocio con Lennsi</span>
             </div>
           )}
 

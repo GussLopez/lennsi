@@ -42,20 +42,16 @@ export default function RegisterForm({ initialError }: RegisterFormProps) {
       const res = await registerAction(formData);
 
       if (res.redirectTo) {
-        router.replace(res.redirectTo)
-        router.refresh()
-        return
+        router.replace(res.redirectTo);
+        router.refresh();
+        return;
       }
 
       if (res.error) setMessage({
         message: res.error,
         success: false
       });
-
-      if (res.success) setMessage({
-        message: res.success,
-        success: true
-      });
+  
     } catch {
       setMessage({
         success: false,
