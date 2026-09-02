@@ -12,8 +12,8 @@ const navigation = [
   { title: "Resumen", url: "/dashboard", icon: LayoutDashboard },
   { title: "Sucursales", url: "/dashboard/branches", icon: Building2 },
   { title: "Puntos NFC", url: "/dashboard/touchpoints", icon: Zap },
-  { title: "Acciones", url: "/dashboard/actions", icon: MousePointerClick },
-  { title: "Tags", url: "/dashboard/tags", icon: Nfc },
+  { title: "Página del Cliente", url: "/dashboard/actions", icon: MousePointerClick },
+  { title: "Tags NFC", url: "/dashboard/tags", icon: Nfc },
   { title: "Analytics", url: "/dashboard/analytics", icon: BarChart3 },
   { title: "Configuración", url: "/dashboard/settings", icon: Settings2 },
 ]
