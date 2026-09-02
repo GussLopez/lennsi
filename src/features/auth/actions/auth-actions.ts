@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { z } from 'zod'
+import { RegisterFormValues } from '../types'
 
 export type AuthState = {
   error?: string
@@ -60,16 +61,7 @@ const registerSchema = z
     password: z
       .string()
       .min(8, 'La contraseña debe tener al menos 8 caracteres.'),
-
-    confirmPassword: z.string(),
   })
-  .refine(
-    (data) => data.password === data.confirmPassword,
-    {
-      message: 'Las contraseñas no coinciden.',
-      path: ['confirmPassword'],
-    }
-  )
 
 
 export async function loginAction(
@@ -105,14 +97,12 @@ export async function loginAction(
 
 
 export async function registerAction(
-  previousState: AuthState,
-  formData: FormData
+  formData: RegisterFormValues
 ): Promise<AuthState> {
   const result = registerSchema.safeParse({
-    fullName: formData.get('fullName'),
-    email: formData.get('email'),
-    password: formData.get('password'),
-    confirmPassword: formData.get('confirmPassword'),
+    fullName: formData.fullName,
+    email: formData.email,
+    password: formData.password,
   })
 
   if (!result.success) {
