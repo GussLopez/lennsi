@@ -1,6 +1,5 @@
 import { ChevronDown, GripVertical, Trash2 } from "lucide-react"
 import Link from "next/link"
-
 import { Button } from "@/components/ui/button"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { Input } from "@/components/ui/input"
@@ -8,7 +7,6 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { cn } from "@/lib/utils"
-
 import { typeDetails } from "../data"
 import type { ActionItem, ActionType, BranchActionData } from "../types/types"
 import { ActionTypeIcon } from "./action-type-icon"
@@ -16,6 +14,7 @@ import { ActionTypeIcon } from "./action-type-icon"
 type ActionEditorProps = {
   item: ActionItem
   canManage: boolean
+  onDragStart: (e: React.PointerEvent) => void
   urlError?: string
   onUpdate: (clientId: string, patch: Partial<ActionItem>) => void
   onDelete: () => void
@@ -46,6 +45,7 @@ function branchValueLabel(type: ActionType, data: BranchActionData) {
 export default function ActionEditor({
   item,
   canManage,
+  onDragStart,
   urlError,
   onUpdate,
   onDelete,
@@ -63,7 +63,16 @@ export default function ActionEditor({
         className={cn("flex gap-3 p-4 items-start sm:px-5 rounded-lg border border-input shadow-xs bg-background",
           item.isEnabled ? 'opacity-100' : 'opacity-60')}
       >
-        <GripVertical className="mt-2 hidden size-4 text-muted-foreground sm:block cursor-grab" />
+        <button
+          type="button"
+          aria-label="Cambiar posición"
+          disabled={!canManage}
+          onPointerDown={onDragStart}
+          className="mt-2 cursor-grab touch-none active:cursor-grabbing disabled:cursor-default text-muted-foreground"
+        >
+
+          <GripVertical className="size-4" />
+        </button>
         <div className="w-full space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex flex-wrap items-center gap-2">
@@ -112,7 +121,7 @@ export default function ActionEditor({
                 size={'icon-sm'}
                 onClick={onDelete}
               >
-                <Trash2 className="size-4"/>
+                <Trash2 className="size-4" />
               </Button>
               <CollapsibleTrigger
                 render={

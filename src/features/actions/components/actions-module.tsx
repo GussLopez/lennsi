@@ -2,7 +2,6 @@
 
 import { Plus, Save } from "lucide-react"
 import { startTransition, useMemo, useState } from "react"
-
 import { Button } from "@/components/ui/button"
 import {
   Select,
@@ -27,6 +26,7 @@ import { isValidHttpUrl, isValidWhatsAppValue } from "../validation"
 import ActionEditor from "./action-editor"
 import ActionPreview from "./action-preview"
 import toast from "react-hot-toast"
+import SortableAction from "./sortable-action"
 
 type ActionModulesProps = {
   branchName: string | null
@@ -255,38 +255,28 @@ export function ActionsModule(props: ActionModulesProps) {
                 as="div"
                 values={items}
                 onReorder={setItems}
-                aria-label="Reorable list"
+                aria-label="Lista reordenable"
                 className="flex flex-col gap-5"
               >
 
                 {items.map((item) => (
-                  <Reorder.Item
-                    as="div"
-                    key={item.clientId}
-                    value={item}
-                    transition={{
-                      type: "spring",
-                      stiffness: 350,
-                      damping: 30,
-                    }}
-                    whileDrag={{ scale: 1.08 }}
-                  >
-                    <ActionEditor
-                      item={item}
-                      urlError={urlErrors[item.clientId]}
-                      canManage={props.canManage}
-                      branchData={props.branchData}
-                      branchId={props.activeBranchId}
-                      onUpdate={update}
-                      onDelete={() =>
-                        setItems((current) =>
-                          current.filter(
-                            (entry) => entry.clientId !== item.clientId
-                          )
-                        )
-                      }
-                    />
-                  </Reorder.Item>
+                  <SortableAction key={item.clientId} item={item}>
+                    {(startDragging) => (
+                      <ActionEditor
+                        item={item}
+                        urlError={urlErrors[item.clientId]}
+                        canManage={props.canManage}
+                        branchData={props.branchData}
+                        branchId={props.activeBranchId}
+                        onDragStart={startDragging}
+                        onUpdate={update}
+                        onDelete={() => 
+                          setItems((current) => 
+                            current.filter((entry) => entry.clientId !== item.clientId))
+                        }
+                      />
+                    )}
+                  </SortableAction>
                 ))}
               </Reorder.Group>
             )}
