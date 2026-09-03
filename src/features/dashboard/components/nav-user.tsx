@@ -17,16 +17,32 @@ export function NavUser({ user }: { user: { name: string; email: string } }) {
     <SidebarMenu>
       <SidebarMenuItem>
         <DropdownMenu>
-          <DropdownMenuTrigger render={
-            <SidebarMenuButton size="lg" className="data-[state=open]:bg-sidebar-accent">
-              <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-semibold">{initials || "U"}</span>
-              <span className="grid min-w-0 flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{user.name}</span>
-                <span className="truncate text-xs text-muted-foreground">{user.email}</span>
-              </span>
-              <ChevronsUpDown className="ml-auto size-4" />
-            </SidebarMenuButton>
-          } />
+          <DropdownMenuTrigger
+            render={
+              <SidebarMenuButton
+                size="lg"
+                className="data-[state=open]:bg-sidebar-accent"
+              >
+                <span
+                  className="flex size-8 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-semibold"
+                >
+                  {initials || "U"}
+                </span>
+                <span
+                  className="grid min-w-0 flex-1 text-left text-sm leading-tight"
+                >
+                  <span className="truncate font-medium">
+                    {user.name}
+                  </span>
+                  <span className="truncate text-xs text-muted-foreground"
+                  >
+                    {user.email}
+                  </span>
+                </span>
+                <ChevronsUpDown className="ml-auto size-4" />
+              </SidebarMenuButton>
+            }
+          />
           <DropdownMenuContent
             className="min-w-60"
             side={isMobile ? "bottom" : "right"}
@@ -34,7 +50,6 @@ export function NavUser({ user }: { user: { name: string; email: string } }) {
             sideOffset={4}
           >
             <DropdownMenuGroup>
-
               <DropdownMenuLabel>
                 <span className="block truncate font-medium text-foreground">
                   {user.name}
@@ -46,7 +61,8 @@ export function NavUser({ user }: { user: { name: string; email: string } }) {
               <DropdownMenuSeparator />
             </DropdownMenuGroup>
             <DropdownMenuItem
-              onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}>
+              onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
+            >
               {resolvedTheme === "dark" ? <Sun /> : <Moon />}
               {resolvedTheme === "dark" ? "Usar tema claro" : "Usar tema oscuro"}
             </DropdownMenuItem>
@@ -62,6 +78,8 @@ export function NavUser({ user }: { user: { name: string; email: string } }) {
               Cerrar sesión
             </DropdownMenuItem>
           </DropdownMenuContent>
-        </DropdownMenu></SidebarMenuItem></SidebarMenu>
+        </DropdownMenu>
+      </SidebarMenuItem>
+    </SidebarMenu>
   )
 }

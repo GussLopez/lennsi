@@ -54,9 +54,19 @@ export function NavHeader({ restaurants, activeRestaurantId, branches, activeBra
                 disabled={isPending}
                 className="data-[state=open]:bg-sidebar-accent"
               >
-                <span
-                  className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                  <Utensils className="size-4" />
+                {/* <div className="w-8 h-8 flex justify-center items-center rounded-lg bg-primary">
+                  <img
+                    src="/img/lennn.svg"
+                    alt="Lennsi Logo"
+                    className="w-5 h-5"
+                  />
+                </div> */}
+                <span className="flex size-8 shrink-0 items-center justify-center">
+                  <img
+                    src="/img/lennsi.svg"
+                    alt="Lennsi Logo"
+                    className="w-6.5 h-6.5"
+                  />
                 </span>
                 <span className="grid min-w-0 flex-1 text-left leading-tight">
                   <span className="truncate font-semibold">

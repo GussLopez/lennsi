@@ -15,9 +15,18 @@ export function NavMain({ items }: { items: { title: string; url: string; icon: 
           const isActive = pathname === item.url || (item.url !== "/dashboard" && pathname.startsWith(`${item.url}/`))
           return (
             <SidebarMenuItem key={item.url}>
-              <SidebarMenuButton tooltip={item.title} isActive={isActive} render={
-                <Link href={item.url}><item.icon /><span>{item.title}</span></Link>
-              } />
+              <SidebarMenuButton
+                tooltip={item.title}
+                isActive={isActive}
+                render={
+                  <Link href={item.url}>
+                    <item.icon />
+                    <span>
+                      {item.title}
+                    </span>
+                  </Link>
+                }
+              />
             </SidebarMenuItem>
           )
         })}
