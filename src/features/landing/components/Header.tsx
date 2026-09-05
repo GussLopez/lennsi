@@ -10,7 +10,7 @@ export default function Header() {
     { label: "Precios", path: "/pricing" },
   ]
   return (
-    <header className="h-16 lg:h-22 flex items-center">
+    <header className="fixed inset-0 top-0 h-16 flex items-center backdrop-blur-sm bg-background/90">
       <div className="w-full max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between gap-5">
           <Link href='/'>
@@ -20,7 +20,7 @@ export default function Header() {
               className="w-30 h-"
             />
           </Link>
-          <nav>
+          <nav className="hidden lg:block">
             <ul className="flex items-center gap-9 group">
               {links.map((link) => (
                 <li key={link.path}>
