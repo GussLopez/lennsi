@@ -1,5 +1,5 @@
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import CtaButton from "./cta-button";
 
 export default function Header() {
   const links = [
@@ -21,12 +21,12 @@ export default function Header() {
             />
           </Link>
           <nav>
-            <ul className="flex items-center gap-9">
+            <ul className="flex items-center gap-9 group">
               {links.map((link) => (
                 <li key={link.path}>
                   <Link
                     href={link.path}
-                    className="text-[15px] font-medium"
+                    className="text-[15px] font-medium group-has-[a:hover]:not-hover:opacity-50 transition-opacity duration-200 ease-in-out"
                   >
                     {link.label}
                   </Link>
@@ -36,16 +36,10 @@ export default function Header() {
           </nav>
 
           <div className="flex gap-4 items-center">
-            <Button
-              size={'xl'}
-              variant={'chunk'}
-              nativeButton={false}
-              className='bg-muted text-charcoal hover:bg-charcoal hover:text-muted font-medium duration-300 rounded-[12px]'
-              render={
-                <Link href={'/login'}>
-                  Acceder
-                </Link>
-              }
+            <CtaButton
+              link="/login"
+              className="bg-charcoal hover:bg-primary cursor-pointer"
+              text="Acceder"
             />
           </div>
         </div>
