@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import CtaButton from "./cta-button";
+import { DiaTextReveal } from "@/components/animate/dia-text-reveal";
 
 export default function Hero() {
 
@@ -13,7 +14,11 @@ export default function Hero() {
           Conexiones digitales para restaurantes
         </span>
         <h1 className="text-[60px] text-6xl font-semibold text-charcoal">
-          Una mesa. Un toque. Más formas de conectar.
+          Una mesa. Un toque.{" "}
+          <DiaTextReveal
+            text="Más formas de conectar."
+            colors={["#A97CF8", "#F38CB8", "#FDCC92"]}
+          />
         </h1>
         <p className="text-xl text-muted-foreground">
           Acerca tu menú, tus promociones y tus redes sociales a cada mesa con etiquetas NFC. Gestiona tus enlaces desde Lennsi y descubre cómo interactúan tus clientes con tu restaurante.
