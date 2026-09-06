@@ -6,6 +6,10 @@ export default function Home() {
     <div> 
       <Header />
       <Hero />
+
+      <div className="w-full h-screen">
+
+      </div>
     </div>
   );
 }
