@@ -1,4 +1,5 @@
 import Link from "next/link";
+import CtaButton from "./cta-button";
 
 export default function Footer() {
   const privacyLinks = [
@@ -20,6 +21,17 @@ export default function Footer() {
               className="w-30 h-auto"
             />
           </Link>
+          <div className="flex gap-3">
+            <CtaButton
+              link="/"
+              text="Acceder"
+            />
+            <CtaButton
+              link="/"
+              text="Ver como funciona"
+              className="bg-charcoal"
+            />
+          </div>
         </div>
         <div className="flex justify-between items-center text-xs text-charcoal">
           <p>2026 © Lennsi.com | All rights reserved.</p>
@@ -30,7 +42,7 @@ export default function Footer() {
                 <Link
                   key={i}
                   href={link.link}
-                  className="hover:text-charcoal/50"
+                  className="hover:text-charcoal/50 transition-colors"
                 >
                   {link.text}
                 </Link>
