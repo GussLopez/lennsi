@@ -10,14 +10,14 @@ export default function Header() {
     { label: "Precios", path: "/pricing" },
   ]
   return (
-    <header className="fixed inset-0 top-0 h-16 flex items-center backdrop-blur-sm bg-background/90">
+    <header className="fixed inset-0 top-0 h-16 flex items-center z-50 backdrop-blur-sm bg-background">
       <div className="w-full max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between gap-5">
           <Link href='/'>
             <img
               src="/img/lennsi-logo.svg"
               alt="Lennsi Logo"
-              className="w-30 h-"
+              className="w-30 h-auto"
             />
           </Link>
           <nav className="hidden lg:block">
