@@ -1,0 +1,92 @@
+'use client'
+
+import { Nfc } from "lucide-react";
+import { motion, useMotionValue, useReducedMotion, useScroll, useTransform } from "motion/react";
+import { type RefObject, useEffect, useRef } from "react";
+
+// Distance from the icon's bottom edge to the phone, in pixels.
+const SEPARATION = 24;
+// Move faster than the page so the icon travels down in the viewport.
+const APPROACH_SPEED = 1.5;
+
+type NfcScanProps = {
+  phone: RefObject<HTMLDivElement | null>;
+  scanning: boolean;
+  onScanningChange: (scanning: boolean) => void;
+};
+
+export default function NfcScan({ phone, scanning, onScanningChange }: NfcScanProps) {
+  const ref = useRef<HTMLDivElement>(null);
+  const distance = useMotionValue(0);
+  const arrivalScroll = useMotionValue(1);
+  const { scrollY } = useScroll();
+  const reducedMotion = useReducedMotion();
+  const progress = useTransform(() =>
+    Math.min(1, Math.max(0, scrollY.get() / arrivalScroll.get()))
+  );
+  const y = useTransform(() =>
+    distance.get() * (reducedMotion ? 1 : progress.get())
+  );
+  const opacity = useTransform(progress, [1, 1], [0, 1]);
+
+  useEffect(() => {
+    const anchor = ref.current;
+    const target = phone.current;
+    if (!anchor || !target) return;
+
+    const updateScanning = () => {
+      onScanningChange(scrollY.get() >= arrivalScroll.get());
+    };
+    const measure = () => {
+      // Measure the stationary wrapper, never the translated icon.
+      distance.set(Math.max(0,
+        target.getBoundingClientRect().top -
+        anchor.getBoundingClientRect().bottom - SEPARATION
+      ));
+      arrivalScroll.set(Math.max(1, distance.get() / APPROACH_SPEED));
+      updateScanning();
+    };
+    const frame = requestAnimationFrame(measure);
+    const observer = new ResizeObserver(measure);
+    observer.observe(target);
+    observer.observe(anchor);
+    if (anchor.offsetParent instanceof HTMLElement) {
+      observer.observe(anchor.offsetParent);
+    }
+    window.addEventListener("resize", measure);
+    const unsubscribe = scrollY.on("change", updateScanning);
+
+    return () => {
+      cancelAnimationFrame(frame);
+      observer.disconnect();
+      window.removeEventListener("resize", measure);
+      unsubscribe();
+    };
+  }, [phone, distance, arrivalScroll, scrollY, onScanningChange]);
+
+  return (
+    <div
+      ref={ref}
+      aria-hidden="true"
+      className="pointer-events-none absolute top-30 right-1/2 translate-x-1/2"
+    >
+      <motion.div style={{ y, opacity }}>
+        <motion.div
+          className="origin-bottom"
+          animate={scanning && !reducedMotion
+            ? { scale: [1, 1.12, 1] }
+            : { scale: 1 }}
+          transition={scanning && !reducedMotion
+            ? { duration: 2, repeat: Infinity }
+            : { duration: 0.2 }}
+        >
+          <img
+            src="/img/lennsi.svg"
+            alt="Lennsi Logo"
+            className="size-10"
+          />
+        </motion.div>
+      </motion.div>
+    </div>
+  );
+}
