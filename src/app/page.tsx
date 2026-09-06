@@ -1,3 +1,4 @@
+import Footer from "@/features/landing/components/footer";
 import Header from "@/features/landing/components/Header";
 import Hero from "@/features/landing/components/Hero";
 
@@ -10,6 +11,7 @@ export default function Home() {
       <div className="w-full h-screen">
 
       </div>
+      <Footer />
     </div>
   );
 }
