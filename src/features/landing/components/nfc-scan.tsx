@@ -1,12 +1,9 @@
 'use client'
 
-import { Nfc } from "lucide-react";
 import { motion, useMotionValue, useReducedMotion, useScroll, useTransform } from "motion/react";
 import { type RefObject, useEffect, useRef } from "react";
 
-// Distance from the icon's bottom edge to the phone, in pixels.
 const SEPARATION = 24;
-// Move faster than the page so the icon travels down in the viewport.
 const APPROACH_SPEED = 1.5;
 
 type NfcScanProps = {
@@ -38,7 +35,6 @@ export default function NfcScan({ phone, scanning, onScanningChange }: NfcScanPr
       onScanningChange(scrollY.get() >= arrivalScroll.get());
     };
     const measure = () => {
-      // Measure the stationary wrapper, never the translated icon.
       distance.set(Math.max(0,
         target.getBoundingClientRect().top -
         anchor.getBoundingClientRect().bottom - SEPARATION
@@ -70,7 +66,12 @@ export default function NfcScan({ phone, scanning, onScanningChange }: NfcScanPr
       aria-hidden="true"
       className="pointer-events-none absolute top-30 right-1/2 translate-x-1/2"
     >
-      <motion.div style={{ y, opacity }}>
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95, filter: "blur(4px)" }}
+        animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+        transition={{ duration: .6, type: "spring" }}
+        style={{ y, opacity }}
+      >
         <motion.div
           className="origin-bottom"
           animate={scanning && !reducedMotion
