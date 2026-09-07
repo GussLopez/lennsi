@@ -11,17 +11,15 @@ export default function Footer() {
   ]
 
   const privacyLinks = [
-    { text: 'Cookie Settings', link: '/' },
-    { text: 'Privacy', link: '/' },
-    { text: 'Disclaimer', link: '/' },
-    { text: 'Platform Terms', link: '/' },
-    { text: 'Accessibility', link: '/' },
+    { text: 'Privacy Policy', link: '/' },
+    { text: 'Terms of Use', link: '/' },
+    { text: 'Trust Site', link: '/' },
   ]
   const year = new Date().getFullYear();
   return (
-    <footer className="pt-20 pb-4 rounded-t-[60px] bg-white">
+    <footer className="pt-20 pb-6 rounded-t-[60px] bg-white">
       <div className="max-w-7xl mx-auto px-4 flex flex-col gap-20">
-        <div className="flex items-center justify-between gap-5">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-10 lg:gap-5">
           <Link href='/'>
             <img
               src="/img/lennsi-logo.svg"
@@ -42,7 +40,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="grid grid-cols-4">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-10">
           <div className="flex flex-col gap-5">
             <p className="font-medium text-charcoal/50">Grow online discovery</p>
             <ul className="flex flex-col gap-3 text-lg font-semibold text-charcoal">
@@ -83,16 +81,16 @@ export default function Footer() {
             </ul>
           </div>
         </div>
-        <div className="flex justify-between items-center text-xs text-charcoal">
-          <p>{year} © Lennsi Todos los derechos reservados.</p>
+        <div className="flex flex-col gap-4 lg:flex-row justify-between items-center text-xs text-muted-foreground">
+          <p className="text-center lg:text-start">{year} © Lennsi Todos los derechos reservados.</p>
 
           <nav>
-            <ul className="flex items-center gap-3">
+            <ul className="flex items-center gap-4">
               {privacyLinks.map((link) => (
                 <Link
                   key={link.text}
                   href={link.link}
-                  className="hover:text-charcoal/50 transition-colors"
+                  className="hover:text-charcoal transition-colors"
                 >
                   {link.text}
                 </Link>
