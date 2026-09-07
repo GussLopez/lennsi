@@ -1,0 +1,72 @@
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+
+const faqs = [
+  {
+    question: '¿Qué puedo compartir con Lennsi?',
+    answer: 'Puedes configurar enlaces a tu menú, promociones, redes sociales, WhatsApp, sitio web y página de reseñas de Google, además de enlaces personalizados.',
+    value: 'share'
+  },
+  {
+    question: '¿Qué necesita mi cliente para usar una etiqueta NFC?',
+    answer: 'Un teléfono compatible con NFC y acceso a internet para abrir el contenido. La forma de leer la etiqueta puede variar según el dispositivo y su configuración.',
+    value: 'needs'
+  },
+  {
+    question: '¿Puedo gestionar varias sucursales?',
+    answer: 'Lennsi permite organizar sucursales y sus respectivos puntos de contacto y etiquetas desde el panel.',
+    value: 'manage'
+  },
+  {
+    question: '¿Qué es un punto de contacto?',
+    answer: 'Es el lugar de tu restaurante donde colocas una etiqueta: por ejemplo, una mesa, la barra, la terraza o la entrada. Identificarlo te ayuda a organizar tus etiquetas y consultar su actividad.',
+    value: 'touchpoint'
+  },
+  {
+    question: '¿Puedo cambiar mis enlaces?',
+    answer: 'Puedes editar las acciones y sus destinos desde el panel para mantener tu contenido actualizado.',
+    value: 'links'
+  },
+  {
+    question: '¿Qué puedo ver en la analítica?',
+    answer: 'Puedes consultar accesos, interacciones, clics hacia reseñas de Google y actividad por acción, sucursal y punto de contacto.',
+    value: 'Analytics'
+  },
+]
+
+export default function Faq() {
+
+  return (
+    <section className="max-w-7xl mx-auto px-4 mb-40 py-10">
+      <div className="grid lg:grid-cols-2 gap-10">
+        <div className="p-12 rounded-[25px] bg-muted relative overflow-hidden">
+          <h2
+            className="text-4xl font-semibold text-charcoal">Preguntas frecuentes</h2>
+
+          <div
+            aria-hidden={true}
+            className="absolute top-[-10%] lg:top-0 lg:bottom-[-30%] right-[-5%] lg:left-[-10%] size-90 pointer-events-none"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 264.77 281.92">
+              <g id="Capa_2" data-name="Capa 2"><g id="Capa_1-2" data-name="Capa 1"><path className="fill-primary lg:fill-charcoal/6" d="M264.75,149c0,20.48.06,40.95,0,61.43,0,7.62-3.79,13.33-10.17,17.17Q229.07,242.92,203.41,258,185,268.77,166.53,279.27c-7.57,4.32-15.61,3.28-21.16-2.63a17.08,17.08,0,0,1-4.57-12.24,128.62,128.62,0,0,0-3.51-32.9C129,199,108.71,177.83,76.64,168.12c-15.73-4.76-31.87-5.65-48.17-4-2.91.29-5.81.69-8.71,1.05-6.92.87-12.86-3.1-14.32-9.58a12.64,12.64,0,0,1,8.87-15.09,65.51,65.51,0,0,1,11.93-1.92c20.86-1.75,41.45-.25,61.53,5.92,21.2,6.52,39.29,17.9,53.29,35.31A114.52,114.52,0,0,1,164,229.09c1.05,5.09,1.63,10.29,2.35,15.44.43,3.13,1.75,4.07,4.77,3.09a15.73,15.73,0,0,0,3.05-1.37c10.88-6.34,21.78-12.66,32.61-19.09q11.93-7.09,23.67-14.46a24.6,24.6,0,0,0,4.77-3.92,11.2,11.2,0,0,0,3-8q0-31-.07-61.9c0-13.67-.21-27.34-.12-41A9.4,9.4,0,0,0,233.17,89c-4.36-2.64-8.74-5.27-13.09-7.93L159.81,44.23q-11.3-6.9-22.6-13.79a8.42,8.42,0,0,0-9.44-.09Q96.66,49,65.46,67.56c-11.34,6.72-22.82,13.2-34.19,19.86-2.86,1.68-4.63,4.1-4.55,7.68.1,4.62,0,9.25,0,13.88a13.14,13.14,0,0,1-13.33,13.2,13,13,0,0,1-13.3-13c-.07-7.5-.14-15,0-22.5A17.63,17.63,0,0,1,8.88,71.42c9.69-6.06,19.47-12,29.24-17.91q39.24-23.86,78.51-47.7c1.41-.86,2.81-1.73,4.24-2.54,7.81-4.42,15.66-4.36,23.34.17,8.2,4.82,16.3,9.83,24.41,14.79q40.83,25,81.63,50c1.63,1,3.31,1.91,4.93,2.93,6.19,3.87,9.56,9.39,9.56,16.77Q264.77,118.44,264.75,149Z" /><path className="fill-primary lg:fill-charcoal/6" d="M42.51,180.6c16.93.13,32.87,4,47,13.68,16.62,11.43,26.38,27.32,30,47.08,1.76,9.51,1.51,19.06.58,28.61-.68,7-7.45,12.26-14.42,11.58a12.91,12.91,0,0,1-12-14c.46-6.43.9-12.86-.17-19.25-3.24-19.53-14.42-32.5-33-39-11.57-4.07-23.42-3.59-35.23-.81-8.61,2-16.29-3.81-16.07-12.34a13.26,13.26,0,0,1,9.26-12.15C26.31,181.4,34.35,180.75,42.51,180.6Z" /><path className="fill-primary lg:fill-charcoal/6" d="M47.87,270.81a21.38,21.38,0,0,1-21.56-21.44C26.4,237.22,37,226.88,49.2,227s21.36,9.29,21.28,21.17C70.4,260.46,60,270.89,47.87,270.81Z" /></g></g></svg>
+          </div>
+        </div>
+        <div>
+          <Accordion className='border border-input/60 p-3 rounded-[25px]'>
+            {faqs.map((faq) => (
+              <AccordionItem
+                key={faq.value}
+                value={faq.value}
+                className='px-4'
+              >
+                <AccordionTrigger className='text-base font-semibold cursor-pointer'>{faq.question}</AccordionTrigger>
+                <AccordionContent>
+                  {faq.answer}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </div>
+      </div>
+    </section>
+  )
+}
