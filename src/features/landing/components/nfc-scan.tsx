@@ -1,7 +1,8 @@
 'use client'
 
+import { cn } from "@/lib/utils";
 import { motion, useMotionValue, useReducedMotion, useScroll, useTransform } from "motion/react";
-import { type RefObject, useEffect, useRef } from "react";
+import { type RefObject, useEffect, useRef, useState } from "react";
 
 const SEPARATION = 24;
 const APPROACH_SPEED = 1.5;
@@ -18,6 +19,7 @@ export default function NfcScan({ phone, scanning, onScanningChange }: NfcScanPr
   const arrivalScroll = useMotionValue(1);
   const { scrollY } = useScroll();
   const reducedMotion = useReducedMotion();
+  const [pastTitle, setPastTitle] = useState(false);
   const progress = useTransform(() =>
     Math.min(1, Math.max(0, scrollY.get() / arrivalScroll.get()))
   );
@@ -60,11 +62,38 @@ export default function NfcScan({ phone, scanning, onScanningChange }: NfcScanPr
     };
   }, [phone, distance, arrivalScroll, scrollY, onScanningChange]);
 
+  useEffect(() => {
+    const anchor = ref.current;
+    const title = document.getElementById("hero-title");
+    if (!anchor || !title) return;
+
+    const update = () => {
+      const scanTop = anchor.getBoundingClientRect().top + y.get();
+      const titleBottom = title.getBoundingClientRect().bottom;
+
+      setPastTitle(scanTop >= titleBottom);
+    }
+
+    const unsubscribeY = y.on("change", update);
+    const unsubscribeScroll = scrollY.on("change", update);
+    const observer = new ResizeObserver(update);
+
+    observer.observe(title);
+    observer.observe(anchor);
+    window.addEventListener("resize", update);
+
+    return () => {
+      unsubscribeY();
+      unsubscribeScroll();
+      observer.disconnect();
+      window.removeEventListener("resize", update);
+    };
+  }, [y, scrollY]);
   return (
     <div
       ref={ref}
       aria-hidden="true"
-      className="pointer-events-none absolute top-30 right-1/2 translate-x-1/2"
+      className="pointer-events-none absolute top-24 right-1/2 translate-x-1/2"
     >
       <motion.div
         initial={{ opacity: 0, scale: 0.95, filter: "blur(4px)" }}
@@ -73,7 +102,11 @@ export default function NfcScan({ phone, scanning, onScanningChange }: NfcScanPr
         style={{ y, opacity }}
       >
         <motion.div
-          className="origin-bottom"
+          className={cn("origin-bottom rounded-full border p-3",
+            pastTitle 
+              ? "bg-white border-input shadow-lg"
+              : "bg-transparent border-transparent shadow-none"
+          )}
           animate={scanning && !reducedMotion
             ? { scale: [1, 1.12, 1] }
             : { scale: 1 }}
