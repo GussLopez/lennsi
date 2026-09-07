@@ -32,7 +32,7 @@ export default function PhoneDemo() {
               className="absolute inset-x-[3%] inset-y-[1.5%] rounded-[60px] bg-white"
             />
             <img
-              src="/img/hero/phone.avif"
+              src="/img/mocks/phone.avif"
               alt="Mock del celular"
               className="relative md:w-90 lg:w-110"
             />
@@ -49,14 +49,14 @@ export default function PhoneDemo() {
               className='w-full max-w-92 absolute top-20 right-1/2 translate-x-1/2'
             >
               <img
-                src="/img/hero/notification.svg"
+                src="/img/mocks/notification.svg"
                 alt="Notificacion"
                 className='w-full'
               />
             </motion.div>
             <div className="absolute top-3 right-1/2 translate-x-1/2">
               <img
-                src="/img/hero/phone-status.svg"
+                src="/img/mocks/phone-status.svg"
                 alt="Estatus del celular"
                 className="min-w-100"
               />

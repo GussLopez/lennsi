@@ -129,7 +129,7 @@ export default async function TokenPage({ params }: PageProps<"/go/[token]">) {
                   aria-label={action.label}
                   title={action.label}
                   className={cn(
-                    "flex size-16 items-center justify-center",
+                    "flex size-24 items-center justify-center",
                     template.textColor,
                   )}
                 >
