@@ -129,7 +129,7 @@ export default async function TokenPage({ params }: PageProps<"/go/[token]">) {
                   aria-label={action.label}
                   title={action.label}
                   className={cn(
-                    "flex size-12 items-center justify-center rounded-full border border-current/15 bg-current/10 transition hover:scale-105 hover:bg-current/15",
+                    "flex size-16 items-center justify-center",
                     template.textColor,
                   )}
                 >
@@ -140,7 +140,9 @@ export default async function TokenPage({ params }: PageProps<"/go/[token]">) {
           )}
         </div>
       </div>
-      <span className="text-sm text-muted-foreground absolute bottom-10 right-1/2 translate-x-1/2">Powered by Lennsi</span>
+      <span
+        className="text-sm text-muted-foreground absolute bottom-10 right-1/2 translate-x-1/2"
+      >Powered by Lennsi</span>
     </main>
   )
 }
