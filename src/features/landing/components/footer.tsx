@@ -17,7 +17,7 @@ export default function Footer() {
   ]
   const year = new Date().getFullYear();
   return (
-    <footer className="pt-20 pb-6 rounded-t-[60px] bg-white">
+    <footer className="pt-20 pb-6 -mt-24 rounded-t-[60px] relative z-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 flex flex-col gap-20">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-10 lg:gap-5">
           <Link href='/'>
