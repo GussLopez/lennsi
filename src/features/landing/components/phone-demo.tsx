@@ -34,7 +34,7 @@ export default function PhoneDemo() {
             <img
               src="/img/hero/phone.avif"
               alt="Mock del celular"
-              className="relative max-w-110"
+              className="relative md:w-90 lg:w-110"
             />
             <motion.div
               initial={{ opacity: 0, scale: 0, y: -20 }}

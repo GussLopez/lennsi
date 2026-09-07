@@ -10,8 +10,8 @@ export default function Hero() {
     <div className="max-w-7xl mx-auto px-4 pt-25 lg:pt-42 relative">
       <div className="flex flex-col gap-16 sm:gap-50">
         <div className="flex flex-col items-center z-10 pb-5 bg-background">
-          <div className="space-y-8 text-center max-w-7xl px-12">
-            <h1 className="text-3xl sm:text-6xl lg:text-[80px] lg:tracking-tighter font-semibold text-charcoal">
+          <div className="space-y-8 text-center max-w-7xl lg:px-12">
+            <h1 className="text-5xl md:text-6xl lg:text-[80px] lg:tracking-tighter font-semibold text-charcoal">
               La experiencia de tu negocio{" "}
               <DiaTextReveal
                 text="también es digital."
