@@ -166,7 +166,7 @@ export function RestaurantSettingsForm({
           <div className="border-b px-5 py-4 sm:px-6">
             <h2 className="font-semibold">Información general</h2>
             <p className="mt-1 text-sm text-muted-foreground">
-              Datos visibles y enlaces principales de tu negocio.
+              Datos visibles y enlaces principales de tu restaurante.
             </p>
           </div>
 

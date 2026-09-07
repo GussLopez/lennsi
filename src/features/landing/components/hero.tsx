@@ -15,7 +15,7 @@ export default function Hero() {
               id="hero-title"
               className="text-5xl md:text-6xl lg:text-[80px] lg:tracking-tighter font-semibold text-charcoal"
             >
-              La experiencia de tu negocio{" "}
+              La experiencia de tu restaurante{" "}
               <DiaTextReveal
                 text="también es digital."
                 colors={["#A97CF8", "#F38CB8", "#FDCC92"]}

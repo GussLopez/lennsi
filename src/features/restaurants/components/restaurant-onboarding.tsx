@@ -181,7 +181,7 @@ export default function RestaurantOnboarding() {
               <div className="space-y-2 py-5 text-center">
                 <p className="text-2xl font-semibold">¡Todo listo!</p>
                 <span className="text-muted-foreground">
-                  Empieza a controlar tu negocio con Lennsi
+                  Empieza a controlar tu restaurante con Lennsi
                 </span>
               </div>
             )}
