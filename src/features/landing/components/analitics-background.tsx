@@ -31,12 +31,12 @@ export default function AnalyticsBackground() {
       >
         <div className="flex items-center justify-between">
           <div className="flex flex-col text-white">
-            <span className="text-[10px]">Sucursal</span>
-            <p className="text-xs font-medium">Principal</p>
+            <span className="text-[10px]">Sucursal:</span>
+            <p className="text-xs font-medium">Sucursal Centro</p>
           </div>
           <div className="flex items-center gap-3 text-white">
             <div>
-              <span className="text-[10px]">Overal Score</span>
+              <span className="text-[10px]">Clics al menú</span>
               <div className="flex items-center gap-0.5">
                 <div className="h-2 w-2 rounded-full bg-red-500" />
                 <div className="h-2 w-2 rounded-full bg-red-500" />
@@ -47,7 +47,7 @@ export default function AnalyticsBackground() {
             </div>
             <span className="text-2xl tracking-tighter font-semibold">
               <NumberTicker
-                value={89}
+                value={55}
                 delay={1}
               />
               %
@@ -55,7 +55,7 @@ export default function AnalyticsBackground() {
           </div>
         </div>
         <div className="p-2 space-y-3 border border-input/10 rounded-md">
-          <p className="text-[11px] text-white">Rendimiento Reciente</p>
+          <p className="text-[11px] text-white">Menú: % del total de clics</p>
           <div className="min-h-30 grid grid-cols-2 gap-10 py-3 px-5 relative text-white">
             <Separator className="absolute top-4.5 z-10 w-full bg-input/10" />
             <Separator className="absolute bottom-7.5 z-10 w-full bg-input/10" />
@@ -75,13 +75,13 @@ export default function AnalyticsBackground() {
               >
                 <div className="p-2">
                   <NumberTicker
-                    value={80}
+                    value={40}
                     delay={1}
                     className="tracking-tighter"
                   />{"%"}
                 </div>
               </motion.div>
-              <span className="text-[9px] text-center">60 días</span>
+              <span className="text-[9px] text-center">Mes anterior</span>
             </div>
             <div className="flex flex-col justify-end items-center gap-1 z-30">
               <motion.div
@@ -98,13 +98,13 @@ export default function AnalyticsBackground() {
               >
                 <div className="p-2">
                   <NumberTicker
-                    value={98}
+                    value={55}
                     delay={1}
                     className="tracking-tighter"
                   />{"%"}
                 </div>
               </motion.div>
-              <span className="text-[9px] text-center">7 días</span>
+              <span className="text-[9px] text-center">Este mes</span>
             </div>
           </div>
         </div>
@@ -122,7 +122,7 @@ export default function AnalyticsBackground() {
           value={3582}
           className="text-2xl font-semibold tracking-tighter text-white"
         />
-        <p className="text-sm font-medium text-muted/90">Taps del mes</p>
+        <p className="text-sm font-medium text-muted/90">Accesos del mes</p>
       </motion.div>
 
       {/* Today Taps */}
@@ -137,7 +137,7 @@ export default function AnalyticsBackground() {
           value={102}
           className="text-2xl font-semibold tracking-tighter text-white"
         />
-        <p className="text-sm font-medium text-muted/90">Taps de hoy</p>
+        <p className="text-sm font-medium text-muted/90">Accesos de hoy</p>
       </motion.div>
       {/* Preview */}
       <motion.div
@@ -152,7 +152,7 @@ export default function AnalyticsBackground() {
             <div className="w-7 h-7 flex justify-center font-medium items-center text-xs rounded-sm bg-primary">
               CT
             </div>
-            <p className="text-[13px] font-medium">Café Tarti</p>
+            <p className="text-[13px] font-medium">Café Tarti · Demo</p>
           </div>
           <div>
             <EllipsisVertical className="size-3 text-white/50" />
@@ -170,14 +170,14 @@ export default function AnalyticsBackground() {
             <span className="text-base font-medium">4,238</span>
             <div className="flex items-center gap-1 text-[10px]">
               <MessageCircleMore className="size-2.5 shrink-0 text-red-500" />
-              <span>Interacciones</span>
+              <span>Clics del mes</span>
             </div>
           </div>
           <div>
             <span className="text-base font-medium">24</span>
             <div className="flex items-center gap-1 text-[10px]">
               <Nfc className="size-2.5 shrink-0 text-red-500" />
-              <span>Touchpoints</span>
+              <span>Etiquetas NFC</span>
             </div>
           </div>
         </div>
@@ -207,19 +207,19 @@ export default function AnalyticsBackground() {
         aria-hidden={true}
         className="w-full max-w-68 p-4 flex flex-col gap-5 rounded-2xl border absolute bottom-[24%] right-[10%] border-input/10 pointer-events-none"
       >
-        <span className="text-sm font-medium text-muted/90">Interacciónes</span>
+        <span className="text-sm font-medium text-muted/90">Clics por acción · Este mes</span>
 
         <div className="flex flex-col gap-3">
           <div className="flex flex-col gap-1">
             <div className="flex justify-between items-center text-[10px] text-white">
-              <span>Menú</span>
+              <span>Ver menú</span>
               <span>55%</span>
             </div>
             <div className="w-[55%] h-1 rounded-full bg-red-500" />
           </div>
           <div className="flex flex-col gap-1">
             <div className="flex justify-between items-center text-[10px] text-white">
-              <span>Reseñas</span>
+              <span>Ir a reseñas de Google</span>
               <span>34%</span>
             </div>
             <div className="w-[34%] h-1 rounded-full bg-amber-500" />
