@@ -143,7 +143,11 @@ export default function AnalyticsBackground() {
       <motion.div
         initial={{ opacity: 0, x: 100 }}
         whileInView={{ opacity: 1, x: 0 }}
-        transition={{ duration: .8, type: "spring" }}
+        transition={{
+          duration: .8,
+          type: "spring",
+          delay: .6
+        }}
         viewport={{ once: true }}
         className="w-full max-w-80 space-y-3 p-4 rounded-xl border absolute z-30 bottom-[10%] right-1/2 translate-x-1/2 border-input/10 bg-charcoal pointer-events-none"
       >
@@ -152,7 +156,7 @@ export default function AnalyticsBackground() {
             <div className="w-7 h-7 flex justify-center font-medium items-center text-xs rounded-sm bg-primary">
               CT
             </div>
-            <p className="text-[13px] font-medium">Café Tarti · Demo</p>
+            <p className="text-[13px] font-medium">Café Tarti</p>
           </div>
           <div>
             <EllipsisVertical className="size-3 text-white/50" />
