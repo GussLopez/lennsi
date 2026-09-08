@@ -38,7 +38,7 @@ export default function Faq() {
   return (
     <section className="max-w-7xl mx-auto px-4 mb-40 py-10">
       <div className="grid lg:grid-cols-2 gap-10">
-        <div className="p-12 rounded-[25px] bg-muted relative overflow-hidden">
+        <div className="p-12 rounded-[25px] bg-muted/60 relative overflow-hidden">
           <h2
             className="text-4xl font-semibold text-charcoal">Preguntas frecuentes</h2>
 

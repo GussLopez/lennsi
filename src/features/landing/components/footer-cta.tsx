@@ -5,7 +5,7 @@ import * as motion from 'motion/react-client'
 export default function FooterCta() {
 
   return (
-    <section className="w-full h-200 lg:h-130 relative z-20 rounded-t-[60px] bg-linear-to-tr from-charcoal to-charcoal/85">
+    <section className="w-full h-200 lg:h-130 relative z-20 rounded-t-[60px] bg-charcoal">
       <div className="min-h-130 max-w-7xl grid lg:grid-cols-2 items-center gap-10 mx-auto px-6 pb-32 lg:px-8 lg:pb-40 pt-16  relative z-10">
         <div className="max-w-xl">
           <h2 className="text-4xl sm:text-5xl lg:text-5xl font-bold tracking-tight text-balance text-white">
@@ -19,7 +19,7 @@ export default function FooterCta() {
             />
 
             <CtaButton
-              link="/#como-funciona"
+              link="/how-lennsi-works"
               text="Ver cómo funciona"
               className="bg-white/5 text-white hover:bg-white/15"
             />
