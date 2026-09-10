@@ -4,6 +4,7 @@ import Footer from "@/features/landing/components/footer";
 import FooterCta from "@/features/landing/components/footer-cta";
 import Header from "@/features/landing/components/header";
 import Hero from "@/features/landing/components/hero";
+import ScrollSlider from "@/features/landing/components/scroll-slider";
 
 export default function Home() {
   return (
@@ -15,6 +16,7 @@ export default function Home() {
 
       </div>
       <Analytics />
+      <ScrollSlider />
       <Faq />
       <FooterCta />
       <Footer />
