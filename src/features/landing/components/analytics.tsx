@@ -1,5 +1,5 @@
 import { Star, Utensils } from "lucide-react";
-import AnalyticsBackground from "./analitics-background";
+import AnalyticsBackground from "./analytics-background";
 
 export default function Analytics() {
   return (

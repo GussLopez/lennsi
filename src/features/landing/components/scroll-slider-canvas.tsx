@@ -18,7 +18,6 @@ import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "motion/react";
 import { NumberTicker } from "@/components/animate/number-ticker";
 import { useEffect, useState } from "react";
-import { Spinner } from "@/components/ui/spinner";
 
 const scenes = [
   {
@@ -86,7 +85,7 @@ function ContentPreview() {
             <motion.div
               key={link.label}
               initial={{ opacity: 0, y: 20, x: 10 }}
-              animate={{ opacity: 1, y: 0, x: 0 }}
+              whileInView={{ opacity: 1, y: 0, x: 0 }}
               transition={{ duration: .3, type: "spring", delay: .1 * (i + 1) }}
               className={cn(
                 "flex items-center gap-3 rounded-xl p-3",
@@ -146,7 +145,7 @@ function SpacesPreview() {
           {["01", "02", "03", "04", "05", "06"].map((table, i) => (
             <motion.div
               initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
+              whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: .4, type: "spring", delay: .1 * (i + 2) }}
               key={table}
               className={cn(
@@ -187,7 +186,7 @@ function SpacesPreview() {
                   key="success"
                   className="flex size-5 items-center justify-center rounded-full bg-emerald-50 text-emerald-700"
                   initial={{ opacity: 0, scale: .5 }}
-                  animate={{ opacity: 1, scale: 1 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
                   transition={{
                     type: "spring",
                     stiffness: 400,
@@ -229,7 +228,7 @@ function ActivityPreview() {
             <motion.div
               key={index}
               initial={{ height: 0 }}
-              animate={{ height: `${height}%` }}
+              whileInView={{ height: `${height}%` }}
               transition={{ duration: .3, delay: .1 * index }}
               className={cn("flex-1 rounded-t-md", index === 6 ? "bg-primary" : "bg-red-100")}
             />
@@ -251,7 +250,7 @@ function ActivityPreview() {
               <div className="h-1.5 flex-1 rounded-full bg-neutral-100">
                 <motion.div
                   initial={{ width: 0 }}
-                  animate={{ width: item.width }}
+                  whileInView={{ width: item.width }}
                   transition={{ duration: .8, type: "spring", delay: 0.3 * (i + 1) }}
                   className="h-full rounded-full bg-charcoal"
                 />
@@ -280,7 +279,7 @@ export function ScrollSliderCanvas({ index }: { index: number }) {
       )}>
       <motion.div
         initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
+        whileInView={{ scale: 1 }}
         transition={{ duration: .6, type: "spring", bounce: .15 }}
         aria-hidden="true"
         className="relative flex flex-1 items-center justify-center py-6">
