@@ -219,21 +219,39 @@ export default function AnalyticsBackground() {
               <span>Ver menú</span>
               <span>55%</span>
             </div>
-            <div className="w-[55%] h-1 rounded-full bg-red-500" />
+            <motion.div
+              initial={{ width: 0 }}
+              whileInView={{ width: "55%" }}
+              transition={{ duration: .8, type: "spring", delay: 1 }}
+              viewport={{ once: true }}
+              className="w-[55%] h-1 rounded-full bg-red-500"
+            />
           </div>
           <div className="flex flex-col gap-1">
             <div className="flex justify-between items-center text-[10px] text-white">
               <span>Ir a reseñas de Google</span>
               <span>34%</span>
             </div>
-            <div className="w-[34%] h-1 rounded-full bg-amber-500" />
+            <motion.div
+              initial={{ width: 0 }}
+              whileInView={{ width: "34%" }}
+              transition={{ duration: .8, type: "spring", delay: 1.1 }}
+              viewport={{ once: true }}
+              className="h-1 rounded-full bg-amber-500"
+            />
           </div>
           <div className="flex flex-col gap-1">
             <div className="flex justify-between items-center text-[10px] text-white">
               <span>Redes sociales</span>
               <span>11%</span>
             </div>
-            <div className="w-[11%] h-1 rounded-full bg-lime-500" />
+            <motion.div
+              initial={{ width: 0 }}
+              whileInView={{ width: "11%" }}
+              transition={{ duration: .8, type: "spring", delay: 1.2 }}
+              viewport={{ once: true }}
+              className="h-1 rounded-full bg-lime-500"
+            />
           </div>
         </div>
       </motion.div>
