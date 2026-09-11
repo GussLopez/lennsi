@@ -1,4 +1,5 @@
 import Analytics from "@/features/landing/components/analytics";
+import Branches from "@/features/landing/components/branches";
 import Faq from "@/features/landing/components/faq";
 import Footer from "@/features/landing/components/footer";
 import FooterCta from "@/features/landing/components/footer-cta";
@@ -15,6 +16,7 @@ export default function Home() {
       <div className="w-full h-screen">
 
       </div>
+      <Branches />
       <Analytics />
       <ScrollSlider />
       <Faq />
