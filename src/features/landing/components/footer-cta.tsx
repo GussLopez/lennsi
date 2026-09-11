@@ -1,5 +1,6 @@
 import Image from "next/image";
 import CtaButton from "./cta-button";
+import FooterCtaPulse from "./footer-cta-pulse";
 import * as motion from 'motion/react-client'
 
 export default function FooterCta() {
@@ -29,16 +30,20 @@ export default function FooterCta() {
           initial={{ opacity: 0, y: -50 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: .8, type: "spring" }}
-
+          viewport={{ once: true }}
           className="relative h-full block"
         >
-          <Image
-            src="/img/mocks/cta-mockup.webp"
-            alt="Plataforma Lennsi mostrada en un celular"
-            width={650}
-            height={900}
-            className="absolute left-1/2 top-1/2 w-80 lg:w-100 max-w-none -translate-x-1/2 lg:translate-y-[-33%] rotate-[5deg] object-contain"
-          />
+          <div className="absolute left-1/2 top-1/2 w-80 lg:w-100 max-w-none -translate-x-1/2 lg:translate-y-[-33%] rotate-[5deg]">
+            <Image
+              src="/img/mocks/cta-mockup.webp"
+              alt="Plataforma Lennsi mostrada en un celular"
+              width={1242}
+              height={2820}
+              sizes="(min-width: 1024px) 400px, 320px"
+              className="h-auto w-full object-contain"
+            />
+            <FooterCtaPulse />
+          </div>
         </motion.div>
       </div>
     </section>
