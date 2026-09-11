@@ -41,6 +41,7 @@
   --color-smoke: var(--smoke);
   --color-interaction: var(--interaction);
   --color-charcoal: var(--charcoal);
+  --color-sand: var(--sand);
 
   --color-popover-foreground: var(--popover-foreground);
   --color-popover: var(--popover);
@@ -68,6 +69,7 @@
   --interaction: #f39c12;
   --charcoal: #1e2229;
   --smoke: #f8f9fa;
+  --sand: #eeeae4;
 
 
 

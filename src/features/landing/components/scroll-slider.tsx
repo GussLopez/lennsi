@@ -62,8 +62,6 @@ export default function ScrollSlider() {
           </div>
         </div>
         <div className="relative">
-          {/* <div className="h-[30vh] absolute top-[-50vh] right-0 bottom-16 left-0 bg-[linear-gradient(0deg,rgba(255,255,255,0)_0%,rgba(255,255,255,1)_14%)] transition-opacity duration-1000 opacity-100 delay-800" /> */}
-
           <div className="space-y-16 lg:max-w-102 lg:space-y-[50vh]">
             <div className="space-y-4">
               <h3

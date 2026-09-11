@@ -33,7 +33,7 @@ const scenes = [
   {
     label: "Tu actividad",
     caption: "Entiende qué conecta con tus clientes.",
-    background: "bg-[#eeeae4] text-charcoal",
+    background: "bg-sand text-charcoal",
   },
 ];
 
