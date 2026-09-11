@@ -4,14 +4,6 @@ import Image from "next/image";
 import { motion, useInView, useReducedMotion } from "motion/react";
 import { useRef } from "react";
 
-const BEAM_PATHS = [
-  "M160 160 V80 Q160 48 128 48 H64",
-  "M160 160 V96 Q160 64 192 64 H256",
-  "M160 160 H288",
-  "M160 160 V240 Q160 272 192 272 H256",
-  "M160 160 V224 Q160 256 128 256 H64",
-  "M160 160 H32",
-];
 const PULSE_DURATION = 3;
 
 export default function FooterCtaPulse() {
@@ -31,10 +23,6 @@ export default function FooterCtaPulse() {
         fill="none"
         className="absolute inset-0 size-full"
       >
-        {BEAM_PATHS.map((path) => (
-          <path key={path} d={path} stroke="currentColor" strokeOpacity={0.1} />
-        ))}
-
         {animate && (
           <>
             {[0, 1, 2].map((index) => (
@@ -53,31 +41,7 @@ export default function FooterCtaPulse() {
                   ease: "easeOut",
                 }}
               />
-            ))}
-
-            {BEAM_PATHS.map((path, index) => (
-              <g key={path}>
-                {/* A soft trail and a bright core travel along the same path. */}
-                {[6, 2].map((strokeWidth) => (
-                  <motion.path
-                    key={strokeWidth}
-                    d={path}
-                    stroke="currentColor"
-                    strokeWidth={strokeWidth}
-                    strokeOpacity={strokeWidth === 6 ? 0.12 : 0.85}
-                    strokeLinecap="round"
-                    initial={{ pathLength: 0.16, pathOffset: 0, opacity: 0 }}
-                    animate={{ pathOffset: [0, 1], opacity: [0, 1, 1, 0] }}
-                    transition={{
-                      duration: PULSE_DURATION,
-                      delay: index * 0.18,
-                      repeat: Infinity,
-                      ease: "linear",
-                    }}
-                  />
-                ))}
-              </g>
-            ))}
+            ))}            
           </>
         )}
       </svg>
