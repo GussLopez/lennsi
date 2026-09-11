@@ -28,7 +28,7 @@ export default function FooterCta() {
         <motion.div
           initial={{ opacity: 0, y: -50 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: .8, type: "spring", delay: 1 }}
+          transition={{ duration: .8, type: "spring" }}
 
           className="relative h-full block"
         >
