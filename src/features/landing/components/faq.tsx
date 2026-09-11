@@ -4,6 +4,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import * as motion from "motion/react-client";
 
 const faqs = [
   {
@@ -49,10 +50,10 @@ export default function Faq() {
     <section
       id="preguntas-frecuentes"
       aria-labelledby="faq-title"
-      className="scroll-mt-24 bg-sand/35 py-20 text-charcoal sm:py-24 lg:py-32"
+      className=" bg-sand/35 py-20 text-charcoal sm:py-24 lg:py-32"
     >
       <div className="mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20">
-        <div className="lg:sticky lg:top-28 lg:self-start">
+        <div>
           <p className="flex items-center gap-2 font-lora text-sm">
             <span aria-hidden="true" className="size-2 bg-primary" />
             Preguntas frecuentes
@@ -74,26 +75,32 @@ export default function Faq() {
           className="min-w-0 gap-2"
         >
           {faqs.map((faq, index) => (
-            <AccordionItem
+            <motion.div
               key={faq.value}
-              value={faq.value}
-              className="group/faq rounded-2xl border border-transparent px-4 transition-colors duration-200 not-last:border-b hover:bg-white/60 data-open:border-charcoal/10 data-open:bg-white motion-reduce:transition-none sm:px-6"
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: .8, type: "spring", delay: .3 }}
             >
-              <AccordionTrigger className="items-center gap-4 rounded-xl py-6 text-base font-medium hover:no-underline focus-visible:ring-primary/40 motion-reduce:transition-none sm:gap-5 sm:text-lg cursor-pointer">
-                <span
-                  aria-hidden="true"
-                  className="w-5 shrink-0 font-mono text-xs text-charcoal/45 group-data-open/faq:text-primary"
-                >
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <span className="flex-1 group-data-open/faq:text-primary">
-                  {faq.question}
-                </span>
-              </AccordionTrigger>
-              <AccordionContent className="pr-2 pb-6 pl-9 text-sm leading-7 text-charcoal/70 sm:pr-8 sm:pl-10 sm:text-base">
-                {faq.answer}
-              </AccordionContent>
-            </AccordionItem>
+              <AccordionItem
+                value={faq.value}
+                className="group/faq rounded-2xl border border-transparent px-4 transition-colors duration-200 not-last:border-b hover:bg-white/60 data-open:border-charcoal/10 data-open:bg-white motion-reduce:transition-none sm:px-6"
+              >
+                <AccordionTrigger className="items-center gap-4 rounded-xl py-6 text-base font-medium hover:no-underline focus-visible:ring-primary/40 motion-reduce:transition-none sm:gap-5 sm:text-lg cursor-pointer">
+                  <span
+                    aria-hidden="true"
+                    className="w-5 shrink-0 font-mono text-xs text-charcoal/45 group-data-open/faq:text-primary"
+                  >
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <span className="flex-1 group-data-open/faq:text-primary">
+                    {faq.question}
+                  </span>
+                </AccordionTrigger>
+                <AccordionContent className="pr-2 pb-6 pl-9 text-sm leading-7 text-charcoal/70 sm:pr-8 sm:pl-10 sm:text-base">
+                  {faq.answer}
+                </AccordionContent>
+              </AccordionItem>
+            </motion.div>
           ))}
         </Accordion>
       </div>
