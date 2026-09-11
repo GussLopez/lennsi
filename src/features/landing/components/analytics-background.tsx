@@ -19,7 +19,7 @@ export default function AnalyticsBackground() {
     }
   }
   return (
-    <>
+    <div className="w-full flex flex-col items-center gap-5">
       {/* Chart */}
       <motion.div
         aria-hidden={true}
@@ -27,7 +27,7 @@ export default function AnalyticsBackground() {
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
-        className="w-full max-w-80 p-4 rounded-2xl space-y-4 border absolute top-[4%] left-[20%] border-input/10 pointer-events-none"
+        className="w-full max-w-80 p-4 rounded-2xl space-y-4 border xl:absolute top-[4%] left-[20%] border-input/10 pointer-events-none"
       >
         <div className="flex items-center justify-between">
           <div className="flex flex-col text-white">
@@ -116,7 +116,7 @@ export default function AnalyticsBackground() {
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
-        className="w-full max-w-55 p-4 rounded-2xl border absolute bottom-[30%] left-[10%] border-input/10 pointer-events-none"
+        className="w-full max-w-55 p-4 rounded-2xl border xl:absolute bottom-[30%] left-[10%] border-input/10 pointer-events-none"
       >
         <NumberTicker
           value={3582}
@@ -131,7 +131,7 @@ export default function AnalyticsBackground() {
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
-        className="w-full max-w-55 p-4 rounded-2xl border absolute bottom-[15%] left-[15%] border-input/10 pointer-events-none"
+        className="w-full max-w-55 p-4 rounded-2xl border xl:absolute bottom-[15%] left-[15%] border-input/10 pointer-events-none"
       >
         <NumberTicker
           value={102}
@@ -149,7 +149,7 @@ export default function AnalyticsBackground() {
           delay: .6
         }}
         viewport={{ once: true }}
-        className="w-full max-w-80 space-y-3 p-4 rounded-xl border absolute z-30 bottom-[10%] right-1/2 translate-x-1/2 border-input/10 bg-charcoal pointer-events-none"
+        className="w-full max-w-80 space-y-3 p-4 rounded-xl border x:absolute z-30 bottom-[10%] right-1/2 xl:translate-x-1/2 border-input/10 bg-charcoal pointer-events-none"
       >
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-2 text-white">
@@ -192,14 +192,14 @@ export default function AnalyticsBackground() {
         whileInView={{ opacity: 1, x: 0 }}
         transition={{ duration: .4, type: "spring", delay: .5 }}
         viewport={{ once: true }}
-        className="w-full max-w-73 space-y-3 p-4 rounded-lg border absolute z-20 bottom-[9%] right-1/2 translate-x-1/2 border-input/10 bg-charcoal pointer-events-none"
+        className="hidden xl:block w-full max-w-73 space-y-3 p-4 rounded-lg border xl:absolute z-20 bottom-[9%] right-1/2 translate-x-1/2 border-input/10 bg-charcoal pointer-events-none"
       />
       <motion.div
         initial={{ opacity: 0, x: 100 }}
         whileInView={{ opacity: 1, x: 0 }}
         transition={{ duration: .4, type: "spring", delay: .6 }}
         viewport={{ once: true }}
-        className="w-full max-w-60 space-y-3 p-4 rounded-lg border absolute z-10 bottom-[8%] right-1/2 translate-x-1/2 border-input/10 pointer-events-none"
+        className="hidden xl:block w-full max-w-60 space-y-3 p-4 rounded-lg border x:absolute z-10 bottom-[8%] right-1/2 translate-x-1/2 border-input/10 pointer-events-none"
       />
 
       {/* Interactions */}
@@ -209,7 +209,7 @@ export default function AnalyticsBackground() {
         whileInView="visible"
         viewport={{ once: true }}
         aria-hidden={true}
-        className="w-full max-w-68 p-4 flex flex-col gap-5 rounded-2xl border absolute bottom-[24%] right-[10%] border-input/10 pointer-events-none"
+        className="w-full max-w-68 p-4 flex flex-col gap-5 rounded-2xl border xl:absolute bottom-[24%] right-[10%] border-input/10 pointer-events-none"
       >
         <span className="text-sm font-medium text-muted/90">Clics por acción · Este mes</span>
 
@@ -255,6 +255,6 @@ export default function AnalyticsBackground() {
           </div>
         </div>
       </motion.div>
-    </>
+    </div>
   )
 }
