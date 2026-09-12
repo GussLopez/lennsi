@@ -149,7 +149,7 @@ export default function AnalyticsBackground() {
           delay: .6
         }}
         viewport={{ once: true }}
-        className="w-full max-w-80 space-y-3 p-4 rounded-xl border x:absolute z-30 bottom-[10%] right-1/2 xl:translate-x-1/2 border-input/10 bg-charcoal pointer-events-none"
+        className="w-full max-w-80 space-y-3 p-4 rounded-xl border xl:absolute z-30 bottom-[10%] right-1/2 xl:translate-x-1/2 border-input/10 bg-charcoal pointer-events-none"
       >
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-2 text-white">
@@ -199,7 +199,7 @@ export default function AnalyticsBackground() {
         whileInView={{ opacity: 1, x: 0 }}
         transition={{ duration: .4, type: "spring", delay: .6 }}
         viewport={{ once: true }}
-        className="hidden xl:block w-full max-w-60 space-y-3 p-4 rounded-lg border x:absolute z-10 bottom-[8%] right-1/2 translate-x-1/2 border-input/10 pointer-events-none"
+        className="hidden xl:block w-full max-w-60 space-y-3 p-4 rounded-lg border xl:absolute z-10 bottom-[8%] right-1/2 translate-x-1/2 border-input/10 pointer-events-none"
       />
 
       {/* Interactions */}
