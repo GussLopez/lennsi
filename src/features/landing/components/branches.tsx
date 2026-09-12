@@ -25,16 +25,16 @@ export default function Branches() {
 
   ]
   return (
-    <section className="max-w-7xl mx-auto px-4 py-24 grid grid-cols-2 gap-12 lg:gap-16">
+    <section className="max-w-7xl mx-auto px-4 py-34 grid lg:grid-cols-2 gap-12 lg:gap-16">
       <div className="max-w-lg space-y-5">
-        <h2 className="text-4xl font-semibold text-charcoal">
+        <h2 className="text-3xl lg:text-4xl font-semibold text-charcoal">
           Cada sucursal tiene su espacio. Tú tienes la visión completa.
         </h2>
         <p className="max-w-100 text-muted-foreground">
           Gestiona tus sucursales desde un mismo panel. Organiza las etiquetas de cada ubicación y consulta la actividad de los puntos donde tus clientes interactúan con tu restaurante.
         </p>
       </div>
-      <div className="grid grid-cols-2 gap-y-12 gap-x-8">
+      <div className="grid lg:grid-cols-2 gap-12">
         {cards.map((card, i) => (
           <div
             key={i}
