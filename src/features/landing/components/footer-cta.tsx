@@ -1,6 +1,6 @@
 import Image from "next/image";
 import CtaButton from "./cta-button";
-import FooterCtaPulse from "./footer-cta-pulse";
+import { Ripple } from "@/components/animate/ripple";
 import * as motion from 'motion/react-client'
 
 export default function FooterCta() {
@@ -42,7 +42,29 @@ export default function FooterCta() {
               sizes="(min-width: 1024px) 400px, 320px"
               className="h-auto w-full object-contain"
             />
-            <FooterCtaPulse />
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute left-[5%] top-[12%] aspect-square w-[83%] overflow-hidden"
+            >
+              <Ripple
+                mainCircleSize={70}
+                mainCircleOpacity={0.3}
+                numCircles={6}
+                circleGap={34}
+                className="text-primary"
+              />
+              <div className="absolute inset-0 grid place-items-center">
+                <div className="grid aspect-square w-[27%] place-items-center rounded-full bg-white p-[6%] shadow-lg shadow-primary/10 ring-1 ring-primary/10">
+                  <Image
+                    src="/img/lennsi.svg"
+                    alt="Lennsi Logo"
+                    width={265}
+                    height={282}
+                    className="h-auto w-full"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         </motion.div>
       </div>

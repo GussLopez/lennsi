@@ -41,7 +41,7 @@ export default function FooterCtaPulse() {
                   ease: "easeOut",
                 }}
               />
-            ))}            
+            ))}
           </>
         )}
       </svg>
@@ -50,13 +50,15 @@ export default function FooterCtaPulse() {
         <motion.div
           className="grid aspect-square w-[27%] place-items-center rounded-[25%] bg-white p-[6%] shadow-lg shadow-primary/10 ring-1 ring-primary/10"
           animate={{ scale: animate ? [1, 1.06, 1] : 1 }}
-          transition={animate
-            ? { duration: PULSE_DURATION, repeat: Infinity, ease: "easeInOut" }
-            : { duration: 0 }}
+          transition={
+            animate
+              ? { duration: PULSE_DURATION, repeat: Infinity, ease: "easeInOut" }
+              : { duration: 0 }
+          }
         >
           <Image
             src="/img/lennsi.svg"
-            alt=""
+            alt="Lennsi Logo"
             width={265}
             height={282}
             className="h-auto w-full"
