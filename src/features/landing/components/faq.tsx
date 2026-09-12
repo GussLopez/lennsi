@@ -80,6 +80,7 @@ export default function Faq() {
               initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: .8, type: "spring", delay: .3 }}
+              viewport={{ once: true }}
             >
               <AccordionItem
                 value={faq.value}

@@ -1,18 +1,19 @@
 import LoginForm from "@/features/auth/components/login-form";
 import Link from "next/link";
+import AuthCanvas from "@/features/auth/components/auth-canvas";
 
 export default async function LoginPage({ searchParams }: PageProps<"/login">) {
   const query = await searchParams
   const initialError = query.error
     ? "No se pudo iniciar sesión con Google. Intenta nuevamente."
     : undefined
-  
-  return (
-  <main className="grid lg:grid-cols-2 min-h-screen">
-      <div className='hidden lg:block bg-black'></div>
 
-      <div className="flex justify-center items-center">
-        <div className="w-full max-w-sm p-6">
+  return (
+    <main className="min-h-screen grid lg:grid-cols-2">
+      <AuthCanvas />
+
+      <div className="flex justify-center items-center px-6 py-12">
+        <div className="w-full max-w-md p-6">
           <div className="mb-8">
             <h1 className="text-xl font-semibold tracking-tight">
               Iniciar sesión
@@ -35,6 +36,6 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
           </p>
         </div>
       </div>
-    </main>  
-  )  
+    </main>
+  )
 }

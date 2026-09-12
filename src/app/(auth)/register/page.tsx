@@ -1,3 +1,4 @@
+import AuthCanvas from "@/features/auth/components/auth-canvas";
 import RegisterForm from "@/features/auth/components/register-form";
 import Link from "next/link";
 
@@ -8,10 +9,10 @@ export default async function RegisterPage({ searchParams }: PageProps<"/registe
     : undefined
   return (
     <main className="grid lg:grid-cols-2 min-h-screen">
-      <div className='hidden lg:block bg-black'></div>
+      <AuthCanvas />
 
       <div className="flex justify-center items-center">
-        <div className="w-full max-w-sm p-6">
+        <div className="w-full max-w-md p-6">
           <div className="mb-8">
             <h1 className="text-xl font-semibold tracking-tight">
               Crear cuenta
