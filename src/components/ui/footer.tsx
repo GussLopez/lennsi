@@ -1,5 +1,5 @@
 import Link from "next/link";
-import CtaButton from "./cta-button";
+import CtaButton from "../../features/landing/components/cta-button";
 
 export default function Footer() {
   const appLinks = [

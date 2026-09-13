@@ -1,5 +1,5 @@
 import Image from "next/image";
-import CtaButton from "./cta-button";
+import CtaButton from "../../features/landing/components/cta-button";
 import { Ripple } from "@/components/animate/ripple";
 import * as motion from 'motion/react-client'
 

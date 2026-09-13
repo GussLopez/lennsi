@@ -1,9 +1,9 @@
 import Analytics from "@/features/landing/components/analytics";
 import Branches from "@/features/landing/components/branches";
 import Faq from "@/features/landing/components/faq";
-import Footer from "@/features/landing/components/footer";
-import FooterCta from "@/features/landing/components/footer-cta";
-import Header from "@/features/landing/components/header";
+import Footer from "@/components/ui/footer";
+import FooterCta from "@/components/ui/footer-cta";
+import Header from "@/components/ui/header";
 import Hero from "@/features/landing/components/hero";
 import ScrollSlider from "@/features/landing/components/scroll-slider";
 

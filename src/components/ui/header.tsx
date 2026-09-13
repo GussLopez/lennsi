@@ -1,12 +1,10 @@
 import Link from "next/link";
-import CtaButton from "./cta-button";
+import CtaButton from "../../features/landing/components/cta-button";
 
 export default function Header() {
   const links = [
-    { label: "Products", path: "/products" },
-    { label: "Solutions", path: "/solutions" },
-    { label: "How it works", path: "/how-lennsi-works" },
-    { label: "Insights", path: "/insights" },
+    { label: "Productos", path: "/products" },
+    { label: "Como funciona", path: "/how-lennsi-works" },
     { label: "Precios", path: "/pricing" },
   ]
   return (
@@ -26,7 +24,7 @@ export default function Header() {
                 <li key={link.path}>
                   <Link
                     href={link.path}
-                    className="text-[15px] font-medium group-has-[a:hover]:not-hover:opacity-50 transition-opacity duration-200 ease-in-out"
+                    className="text-sm font-medium hover:text-muted-foreground transition-colors"
                   >
                     {link.label}
                   </Link>
