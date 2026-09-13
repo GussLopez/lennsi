@@ -102,7 +102,9 @@ export default function ScrollSlider() {
               <p className="text-muted-foreground">
                 Consulta la actividad por periodo, sucursal y punto de contacto para entender dónde y cómo se utiliza tu contenido.
               </p>
-              <div className="pt-4 lg:hidden"><ScrollSliderCanvas index={2} /></div>
+              <div className="pt-4 lg:hidden">
+                <ScrollSliderCanvas index={2} />
+              </div>
             </div>
           </div>
         </div>

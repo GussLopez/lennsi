@@ -150,7 +150,7 @@ function SpacesPreview() {
               key={table}
               className={cn(
                 "flex h-14 flex-col items-center justify-center gap-1 rounded-xl border text-[10px]",
-                table === "04" ? "border-primary bg-primary text-white shadow-lg shadow-primary/20" : "border-neutral-200 bg-white text-neutral-500",
+                table === "04" ? "border-primary bg-primary text-white" : "border-neutral-200 bg-white text-neutral-500",
               )}>
               {table === "04"
                 ? <Nfc className="size-4" />
@@ -283,7 +283,12 @@ export function ScrollSliderCanvas({ index }: { index: number }) {
         transition={{ duration: .6, type: "spring", bounce: .15 }}
         aria-hidden="true"
         className="relative flex flex-1 items-center justify-center py-6">
-        {index === 0 ? <ContentPreview /> : index === 1 ? <SpacesPreview /> : <ActivityPreview />}
+        {index === 0
+          ? <ContentPreview />
+          : index === 1
+            ? <SpacesPreview />
+            : <ActivityPreview />
+        }
       </motion.div>
       <div aria-hidden="true" className="flex items-center justify-between gap-3">
         <p className="text-xs opacity-80">
