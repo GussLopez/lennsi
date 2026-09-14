@@ -94,12 +94,12 @@ export default function StepTwo() {
           </div>
         </div>
         <motion.div
-          initial={{ rotate: 0 }}
-          whileInView={{ rotate: -3 }}
+          initial={{ scale: 0 }}
+          whileInView={{ scale: 1 }}
           transition={{ duration: .3, type: "spring", delay: .3 }}
           viewport={{ once: true }}
           data-part="appearance-card"
-          className="z-20 -mt-2 flex w-[85%] max-w-76 items-center gap-3 rounded-2xl border border-neutral-100 bg-white p-3 text-charcoal shadow-xl"
+          className="z-20 -mt-4 flex w-[85%] max-w-76 items-center gap-3 rounded-2xl border border-neutral-100 bg-white p-3 text-charcoal shadow-xl"
         >
           <Palette className="size-4 shrink-0 text-neutral-400" />
           <span className="flex-1 text-[10px] font-medium">A tu estilo</span>
