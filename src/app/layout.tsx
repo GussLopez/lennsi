@@ -10,8 +10,8 @@ const lora = Lora({ subsets: ['latin'], variable: '--font-lora' });
 const raleway = Raleway({ subsets: ['latin'], variable: '--font-raleway' });
 
 export const metadata: Metadata = {
-  title: "Lennsi",
-  description: "Gestiona tu restaurante con Lennsi",
+  title: "Lennsi | Conecta tu restaurante con NFC",
+  description: "Conecta tu menú, promociones y redes sociales con etiquetas NFC. Gestiona sucursales, enlaces e interacciones de tu restaurante desde Lennsi",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
