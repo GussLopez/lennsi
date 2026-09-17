@@ -1,4 +1,3 @@
-import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import CtaButton from "./cta-button";
 import { DiaTextReveal } from "@/components/animate/dia-text-reveal";
@@ -34,7 +33,29 @@ export default function Hero() {
               className={'flex items-center gap-1 text-base font-bold text-charcoal transition-colors group'}
             >
               Cómo funciona
-              <ChevronRight className="group-hover:translate-x-1.5 transition-transform" />
+              <svg
+                aria-hidden="true"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="size-6 shrink-0"
+              >
+                <g className="transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-1 group-focus-visible:translate-x-1 motion-reduce:transition-none">
+                  <path
+                    d="M5 12h8"
+                    className="origin-[15px_12px] scale-x-0 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-x-100 group-focus-visible:scale-x-100 motion-reduce:transition-none"
+                  />
+                  <path
+                    d="m9 6 6 6-6 6"
+                    className="origin-[15px_12px] transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-y-[0.833333] group-focus-visible:scale-y-[0.33333] motion-reduce:transition-none"
+                  />
+                </g>
+              </svg>
             </Link>
           </div>
         </div>
