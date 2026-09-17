@@ -14,7 +14,7 @@ export default function Footer() {
 
   const legalLinks = [
     { text: 'Políticas de Privacidad', link: '/legal/privacy' },
-    { text: 'Términos y Condiciones', link: '/legal/terms-condition' },
+    { text: 'Términos y Condiciones', link: '/legal/terms-conditions' },
   ]
   const year = new Date().getFullYear();
   return (
