@@ -1,5 +1,7 @@
 import Link from "next/link";
 import CtaButton from "../../features/landing/components/cta-button";
+import { Button } from "./button";
+import { Menu } from "lucide-react";
 
 export default function Header() {
   const links = [
@@ -36,9 +38,16 @@ export default function Header() {
           <div className="flex gap-4 items-center">
             <CtaButton
               link="/login"
-              className="bg-charcoal hover:bg-primary cursor-pointer"
+              className="bg-charcoal hover:bg-primary cursor-pointer hidden lg:block"
               text="Acceder"
             />
+            <Button 
+              variant={'ghost'}
+              size={'icon-lg'}
+              className='flex lg:hidden'
+            >
+              <Menu className="size-6"/>
+            </Button>
           </div>
         </div>
       </div>

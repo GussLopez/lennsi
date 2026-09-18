@@ -4,7 +4,7 @@ import { NumberTicker } from "@/components/animate/number-ticker";
 
 export default function Analytics() {
   return (
-    <section className="bg-charcoal relative flex flex-col items-center gap-5 xl:block min-h-screen xl:h-auto py-8">
+    <section className="relative flex flex-col items-center gap-5 xl:block min-h-screen xl:h-auto py-8 overflow-hidden bg-charcoal">
       <div
         aria-hidden={true}
         className="w-fit px-4 py-1 flex items-center gap-4 rounded-full border xl:absolute top-[15%] right-[18%] border-input/10 text-sm text-white pointer-events-none">
@@ -29,7 +29,7 @@ export default function Analytics() {
       </div>
       <div className="max-w-7xl xl:min-h-screen py-20 xl:py-0 mx-auto px-4 flex justify-center items-center">
         <div className="max-w-2xl">
-          <h2 className="text-6xl text-center font-bold tracking-tight text-white">
+          <h2 className="text-5xl md:text-6xl text-center font-bold tracking-tight text-white">
             Descubre qué despierta el interés de tus clientes.
           </h2>
         </div>

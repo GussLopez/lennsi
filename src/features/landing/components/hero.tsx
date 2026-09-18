@@ -12,7 +12,7 @@ export default function Hero() {
           <div className="space-y-8 text-center max-w-7xl lg:px-12">
             <h1
               id="hero-title"
-              className="text-5xl md:text-6xl lg:text-[80px] lg:tracking-tighter font-semibold text-charcoal"
+              className="text-4xl text-[40px] md:text-6xl lg:text-[80px] lg:tracking-tighter font-semibold text-charcoal"
             >
               La experiencia de tu restaurante{" "}
               <DiaTextReveal
@@ -22,7 +22,7 @@ export default function Hero() {
             </h1>
           </div>
 
-          <div className="flex items-center gap-5 mt-10">
+          <div className="flex items-center gap-5 mt-10 mb-10 lg:mb-0">
             <CtaButton
               link="/login"
               className="bg-primary hover:bg-charcoal cursor-pointer"
