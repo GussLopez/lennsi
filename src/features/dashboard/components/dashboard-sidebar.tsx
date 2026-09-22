@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { BarChart3, Building2, LayoutDashboard, MousePointerClick, Nfc, Settings2, Zap } from "lucide-react"
+import { BarChart3, Building2, LayoutDashboard, MousePointerClick, Nfc, Settings2, Signpost, Zap } from "lucide-react"
 
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail } from "@/components/ui/sidebar"
 import { NavHeader } from "./nav-header"
@@ -15,6 +15,7 @@ const navigation = [
   { title: "Página del Cliente", url: "/dashboard/actions", icon: MousePointerClick },
   { title: "Tags NFC", url: "/dashboard/tags", icon: Nfc },
   { title: "Analytics", url: "/dashboard/analytics", icon: BarChart3 },
+  { title: "Carteles", url: "/dashboard/signs", icon: Signpost },
   { title: "Configuración", url: "/dashboard/settings", icon: Settings2 },
 ]
 
