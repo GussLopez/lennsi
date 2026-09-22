@@ -1,7 +1,6 @@
 import Link from "next/link";
 import CtaButton from "../../features/landing/components/cta-button";
-import { Button } from "./button";
-import { Menu } from "lucide-react";
+import MobileNav from "./mobile-nav";
 
 export default function Header() {
   const links = [
@@ -41,13 +40,7 @@ export default function Header() {
               className="bg-charcoal hover:bg-primary cursor-pointer hidden lg:block"
               text="Acceder"
             />
-            <Button 
-              variant={'ghost'}
-              size={'icon-lg'}
-              className='flex lg:hidden'
-            >
-              <Menu className="size-6"/>
-            </Button>
+            <MobileNav />
           </div>
         </div>
       </div>
